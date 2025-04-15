@@ -30,5 +30,11 @@ export function createEnemy(world: World, scene: Scene, x: number, y: number, z:
     entity.addTag(EntityTag.Enemy)
     scene.add(enemyMesh)
     scene.add(bar)
+
+    entity.addComponent(ComponentType.HealthBar, { mesh: bar })
+
+    entity.addComponent(ComponentType.Visual, {
+        meshes: [enemyMesh, bar],
+    })
     return entity
 }

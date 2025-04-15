@@ -7,6 +7,7 @@ import { System } from '@/engine'
 import { ComponentType } from './ComponentType'
 import type { MeshComponent } from '@/shared/components/Mesh'
 import type { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
+import type { VisualComponent } from '@/shared/components/Visual'
 
 export class World {
     private nextEntityId = 0
@@ -25,16 +26,10 @@ export class World {
         const entity = this.entities.get(entityId)
         if (!entity) return null
 
-        const meshComponent = entity.getComponent<MeshComponent>(ComponentType.Mesh)
+        const visual = entity.getComponent<VisualComponent>(ComponentType.Visual)
 
-        if (meshComponent) {
-            const parent = meshComponent.mesh.parent
-            if (parent) {
-                parent.remove(meshComponent.mesh)
-                console.log(`✅ Removed mesh from parent`, meshComponent.mesh)
-            } else {
-                console.warn(`⚠️ Mesh has no parent, cannot remove`, meshComponent.mesh)
-            }
+        if (visual?.meshes) {
+            visual.meshes.forEach((mesh) => mesh.parent?.remove(mesh))
         }
 
         this.debugDrawSystem?.removeEntity(entityId)

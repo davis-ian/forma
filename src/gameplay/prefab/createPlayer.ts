@@ -41,5 +41,8 @@ export function createPlayer(world: World, scene: Scene, x: number, y: number, z
 
     scene.add(playerMesh)
     scene.add(bar)
+
+    entity.addComponent(ComponentType.HealthBar, { mesh: bar })
+    entity.addComponent(ComponentType.Visual, { meshes: playerMesh, bar })
     return entity
 }

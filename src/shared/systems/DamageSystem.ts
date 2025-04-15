@@ -20,6 +20,10 @@ export class DamageSystem extends System {
             const damage = damageEntity.getComponent<DamageComponent>(ComponentType.Damage)!
             const damagePos = damageEntity.getComponent<PositionComponent>(ComponentType.Position)!
 
+            if (!damage.damagedEntities) {
+                damage.damagedEntities = new Set()
+            }
+
             if (!damagePos) continue
             const damageHitbox = damageEntity.getComponent<HitboxComponent>(ComponentType.Hitbox)!
 
@@ -27,6 +31,10 @@ export class DamageSystem extends System {
 
             for (const targetEntity of entities) {
                 if (!targetEntity.hasComponent(ComponentType.Hurtbox)) continue
+
+                if (damage.damagedEntities.has(targetEntity.id)) {
+                    continue
+                }
 
                 const hurtbox = targetEntity.getComponent<HurtboxComponent>(ComponentType.Hurtbox)!
                 const targetPos = targetEntity.getComponent<PositionComponent>(
@@ -45,14 +53,12 @@ export class DamageSystem extends System {
                     )
                     if (targetHealth) {
                         targetHealth.current -= damage.amount
+                        damage.damagedEntities.add(targetEntity.id)
                     }
 
                     if (debug) {
                         console.log(`Entity ${targetEntity.id} took ${damage.amount} damage`)
                     }
-
-                    // Optional: destroy hitbox entity if it's one-time use
-                    // world.destroyEntity(damageEntity.id)
                 }
             }
         }

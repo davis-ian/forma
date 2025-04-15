@@ -9,7 +9,8 @@ export enum ComponentType {
     Hurtbox = 'hurtbox',
     Hitbox = 'hitbox',
     Lifespan = 'lifespan',
-    HealBar = 'healthbar',
+    HealthBar = 'healthbar',
+    Visual = 'visual',
 }
 
 export enum EntityTag {

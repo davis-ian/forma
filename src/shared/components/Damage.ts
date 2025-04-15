@@ -5,4 +5,5 @@ export interface DamageComponent {
     type?: string
     sourceId?: EntityId
     statusEffects?: string[]
+    damagedEntities?: Set<EntityId>
 }
