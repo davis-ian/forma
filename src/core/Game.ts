@@ -22,6 +22,8 @@ import { ComponentType } from '@/engine/ComponentType'
 import { spawnAttackHitbox } from '@/gameplay/actions'
 import { LifespanSystem } from '@/shared/systems/LifespanSystem'
 import { PlayerAttackSystem } from '@/shared/systems/PlayerAttackSystem'
+import { DamageSystem } from '@/shared/systems/DamageSystem'
+import { HealthBarSystem } from '@/shared/systems/HealthBarSystem'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -74,6 +76,8 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new InputSystem())
     world.addSystem(new LifespanSystem())
     world.addSystem(new PlayerAttackSystem())
+    world.addSystem(new DamageSystem())
+    world.addSystem(new HealthBarSystem())
     world.addSystem(new CameraSystem(camera))
 
     if (debug) {

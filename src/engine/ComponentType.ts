@@ -9,10 +9,12 @@ export enum ComponentType {
     Hurtbox = 'hurtbox',
     Hitbox = 'hitbox',
     Lifespan = 'lifespan',
+    HealBar = 'healthbar',
 }
 
 export enum EntityTag {
-    CameraFollow = 'CameraFollow',
-    Player = 'Player',
-    UI = 'UI',
+    CameraFollow = 'camera-follow',
+    Player = 'player',
+    Enemy = 'enemy',
+    UI = 'ui',
 }

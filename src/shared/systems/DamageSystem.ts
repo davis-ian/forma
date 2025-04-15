@@ -12,7 +12,7 @@ export class DamageSystem extends System {
     update(world: World) {
         //TODO: Current algo is O(n^2) -> revist to handle with better performance
 
-        const entities = world.entities.values()
+        const entities = Array.from(world.entities.values())
 
         for (const damageEntity of entities) {
             if (!damageEntity.hasComponent(ComponentType.Damage)) continue

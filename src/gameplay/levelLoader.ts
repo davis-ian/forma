@@ -2,9 +2,10 @@ import { BoxGeometry, Mesh, MeshStandardMaterial, Scene } from 'three'
 import { Entity, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { MeshComponent } from '@/shared/components/Mesh'
-import { createPlayer } from './prefab/player'
+import { createPlayer } from './prefab/createPlayer'
 import { TileType } from './level/TileType'
 import type { PositionComponent } from '@/shared/components/Position'
+import { createEnemy } from './prefab/createEnemy'
 
 // World is laid out with X (left/right), Z (forward/back), Y (up/down)
 // Tile (0,0) = top-left of map
@@ -43,11 +44,12 @@ export function loadLevel(world: World, level: string[][], scene: Scene) {
 
             if (tile === TileType.PlayerStart) {
                 console.log('✅ Player tile detected!')
-                const player = createPlayer(world)
-                const playerMesh = player.getComponent<MeshComponent>(ComponentType.Mesh)!.mesh
-                setEntityPosition(player, x, playerY, z)
-                setTilePosition(playerMesh, x, playerY, z)
-                scene.add(playerMesh)
+                const player = createPlayer(world, scene, x, playerY, z)
+            }
+
+            if (tile === TileType.Enemy) {
+                console.log('✅ Enemy tile detected!')
+                const enemy = createEnemy(world, scene, x, 0.5, z)
             }
         }
     }

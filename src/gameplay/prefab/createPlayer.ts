@@ -1,15 +1,19 @@
 import { World } from '@/engine'
 import { ComponentType, EntityTag } from '@/engine/ComponentType'
-import { Mesh, BoxGeometry, MeshStandardMaterial } from 'three'
+import { Mesh, BoxGeometry, MeshStandardMaterial, Scene, MeshBasicMaterial } from 'three'
 
-export function createPlayer(world: World) {
+export function createPlayer(world: World, scene: Scene, x: number, y: number, z: number) {
     const entity = world.createEntity()
 
-    entity.addComponent(ComponentType.Position, { x: 0, y: 0, z: 0 })
+    entity.addComponent(ComponentType.Position, { x, y, z })
     entity.addComponent(ComponentType.Velocity, { x: 0, y: 0, z: 0 })
     entity.addComponent(ComponentType.Input, {})
+    const playerMesh = new Mesh(
+        new BoxGeometry(1, 1, 1),
+        new MeshStandardMaterial({ color: 'blue' })
+    )
     entity.addComponent(ComponentType.Mesh, {
-        mesh: new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 'blue' })),
+        mesh: playerMesh,
     })
     entity.addComponent(ComponentType.Input, {
         up: false,
@@ -30,9 +34,12 @@ export function createPlayer(world: World) {
         offsetZ: 0,
     })
 
-    entity.addComponent(ComponentType.Health, {
-        current: 5,
-        max: 5,
-    })
+    entity.addComponent(ComponentType.Health, { current: 5, max: 5 })
+
+    const bar = new Mesh(new BoxGeometry(1, 0.1, 0.1), new MeshBasicMaterial({ color: 'green' }))
+    bar.geometry.translate(0.5, 0, 0)
+
+    scene.add(playerMesh)
+    scene.add(bar)
     return entity
 }
