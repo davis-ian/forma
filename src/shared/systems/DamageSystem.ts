@@ -57,6 +57,12 @@ export class DamageSystem extends System {
                     }
 
                     if (debug) {
+                        console.log('--- HIT DETECTED ---')
+                        console.log('Hitbox AABB min:', damageBox.min)
+                        console.log('Hitbox AABB max:', damageBox.max)
+                        console.log('Target AABB min:', hurtboxBox.min)
+                        console.log('Target AABB max:', hurtboxBox.max)
+
                         console.log(`Entity ${targetEntity.id} took ${damage.amount} damage`)
                     }
                 }

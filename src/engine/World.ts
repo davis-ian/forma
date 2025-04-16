@@ -5,16 +5,17 @@ import { Entity } from '@/engine'
 import type { EntityId } from '@/engine'
 import { System } from '@/engine'
 import { ComponentType } from './ComponentType'
-import type { MeshComponent } from '@/shared/components/Mesh'
-import type { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
+// import type { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
 import type { VisualComponent } from '@/shared/components/Visual'
+import type { Scene } from 'three'
 
 export class World {
     private nextEntityId = 0
     public entities: Map<EntityId, Entity> = new Map()
     public systems: System[] = []
     private tags = new Map<string, Set<EntityId>>()
-    private debugDrawSystem?: DebugDrawSystem
+    // private debugDrawSystem?: DebugDrawSystem
+    public scene!: Scene
 
     createEntity(): Entity {
         const entity = new Entity(this.nextEntityId++, this)
@@ -29,10 +30,10 @@ export class World {
         const visual = entity.getComponent<VisualComponent>(ComponentType.Visual)
 
         if (visual?.meshes) {
-            visual.meshes.forEach((mesh) => mesh.parent?.remove(mesh))
+            visual.meshes.forEach((item) => item.mesh.parent?.remove(item.mesh))
         }
 
-        this.debugDrawSystem?.removeEntity(entityId)
+        // this.debugDrawSystem?.removeEntity(entityId)
 
         this.entities.delete(entityId)
         return entity
@@ -48,9 +49,9 @@ export class World {
         }
     }
 
-    setDebugDrawSystem(system: DebugDrawSystem) {
-        this.debugDrawSystem = system
-    }
+    // setDebugDrawSystem(system: DebugDrawSystem) {
+    //     this.debugDrawSystem = system
+    // }
 
     getEntitiesWithComponent(component: ComponentType): Entity[] {
         let entites: Entity[] = []
@@ -89,5 +90,11 @@ export class World {
         return Array.from(ids)
             .map((id) => this.entities.get(id)!)
             .filter(Boolean)
+    }
+
+    setScene(scene: Scene) {
+        this.scene = scene
+
+        console.log(scene, 'SCENE SET')
     }
 }

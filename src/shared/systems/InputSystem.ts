@@ -1,6 +1,7 @@
 import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '@/shared/components/Input'
+import type { RotationComponent } from '../components/Rotation'
 
 export class InputSystem extends System {
     private keys = new Set<string>()
@@ -21,6 +22,20 @@ export class InputSystem extends System {
                 input.left = this.keys.has('KeyA') || this.keys.has('ArrowLeft')
                 input.right = this.keys.has('KeyD') || this.keys.has('ArrowRight')
                 input.attack = this.keys.has('Space')
+
+                const moveX = (input.right ? 1 : 0) - (input.left ? 1 : 0)
+                const moveZ = (input.down ? 1 : 0) - (input.up ? 1 : 0)
+
+                const mag = Math.hypot(moveX, moveZ)
+
+                if (mag > 0 && entity.hasComponent(ComponentType.Rotation)) {
+                    const rot = entity.getComponent<RotationComponent>(ComponentType.Rotation)!
+
+                    const dirX = moveX / mag
+                    const dirZ = moveZ / mag
+
+                    rot.y = Math.atan2(dirX, dirZ)
+                }
             }
         }
     }

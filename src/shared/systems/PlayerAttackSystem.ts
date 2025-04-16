@@ -1,9 +1,11 @@
 import { System, type World } from '@/engine'
-import { ComponentType, EntityTag } from '@/engine/ComponentType'
+import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '../components/Input'
 import { spawnAttackHitbox } from '@/gameplay/actions'
+import { EntityTag } from '@/engine/EntityTag'
 
 const attackCooldown = 0.4
+const debug = true
 
 export class PlayerAttackSystem extends System {
     private attackCooldown = 0
@@ -21,7 +23,7 @@ export class PlayerAttackSystem extends System {
         if (!input) return
 
         if (input.attack && this.attackCooldown <= 0) {
-            spawnAttackHitbox(world, player)
+            spawnAttackHitbox(world, player, debug)
             this.attackCooldown = attackCooldown
         }
     }

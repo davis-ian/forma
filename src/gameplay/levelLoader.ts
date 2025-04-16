@@ -1,7 +1,6 @@
 import { BoxGeometry, Mesh, MeshStandardMaterial, Scene } from 'three'
 import { Entity, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
-import type { MeshComponent } from '@/shared/components/Mesh'
 import { createPlayer } from './prefab/createPlayer'
 import { TileType } from './level/TileType'
 import type { PositionComponent } from '@/shared/components/Position'

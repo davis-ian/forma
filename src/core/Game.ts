@@ -8,23 +8,20 @@ import {
 } from 'three'
 
 // ECS imports
-import { Entity, World } from '@/engine'
+import { World } from '@/engine'
 import { RenderSystem } from '@/shared/systems/RenderSystem'
 import { RotationSystem } from '@/shared/systems/RotationSystem'
 import { MovementSystem } from '@/shared/systems/MovementSystem'
 import { InputSystem } from '@/shared/systems/InputSystem'
-import { testLevel } from '@/gameplay/level/levels/testLevel'
-import { loadLevel } from '@/gameplay/levelLoader'
 import { CameraSystem } from '@/shared/systems/CameraSystem'
-import { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
-import type { PositionComponent } from '@/shared/components/Position'
-import { ComponentType } from '@/engine/ComponentType'
-import { spawnAttackHitbox } from '@/gameplay/actions'
 import { LifespanSystem } from '@/shared/systems/LifespanSystem'
 import { PlayerAttackSystem } from '@/shared/systems/PlayerAttackSystem'
 import { DamageSystem } from '@/shared/systems/DamageSystem'
 import { HealthBarSystem } from '@/shared/systems/HealthBarSystem'
 import { HealthSystem } from '@/shared/systems/HealthSystem'
+import { spawnRoom } from '@/gameplay/level/rooms/spawnRoom'
+import { room1, room2, room3, room4 } from '@/gameplay/level/rooms/templates'
+import { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -71,6 +68,8 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
      * Initialize ECS world and register systems
      */
     const world = new World()
+    world.setScene(scene)
+
     world.addSystem(new RenderSystem())
     world.addSystem(new RotationSystem())
     world.addSystem(new MovementSystem())
@@ -81,19 +80,18 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new HealthBarSystem())
     world.addSystem(new HealthSystem())
     world.addSystem(new CameraSystem(camera))
-
-    if (debug) {
-        const debugSystem = new DebugDrawSystem(scene)
-        world.setDebugDrawSystem(debugSystem)
-        world.addSystem(debugSystem)
-    }
+    world.addSystem(new DebugDrawSystem())
 
     /**
      * Create a cube mesh and attach to ECS entity
      * The cube's transform will be driven by ECS data and systems
      */
 
-    loadLevel(world, testLevel, scene)
+    // loadLevel(world, testLevel, scene)
+    spawnRoom(world, room1)
+    // spawnRoom(world, scene, room2)
+    // spawnRoom(world, scene, room3)
+    // spawnRoom(world, scene, room4)
 
     /**
      * Animation loop

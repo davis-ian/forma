@@ -4,14 +4,17 @@ import type { MeshComponent } from '../components/Mesh'
 import { ComponentType } from '@/engine/ComponentType'
 
 export class RenderSystem extends System {
-  update(world: World, deltaTime: number, debug: boolean = false) {
-    for (const entity of world.entities.values()) {
-      if (entity.hasComponent(ComponentType.Position) && entity.hasComponent(ComponentType.Mesh)) {
-        const pos = entity.getComponent<PositionComponent>(ComponentType.Position)!
-        const { mesh } = entity.getComponent<MeshComponent>(ComponentType.Mesh)!
+    update(world: World) {
+        for (const entity of world.entities.values()) {
+            if (
+                entity.hasComponent(ComponentType.Position) &&
+                entity.hasComponent(ComponentType.Mesh)
+            ) {
+                const pos = entity.getComponent<PositionComponent>(ComponentType.Position)!
+                const { mesh } = entity.getComponent<MeshComponent>(ComponentType.Mesh)!
 
-        mesh.position.set(pos.x, pos.y, pos.z)
-      }
+                mesh.position.set(pos.x, pos.y, pos.z)
+            }
+        }
     }
-  }
 }

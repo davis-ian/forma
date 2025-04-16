@@ -1,5 +1,8 @@
-import type { Object3D } from 'three'
+import type { Mesh, Object3D } from 'three'
 
 export interface VisualComponent {
-    meshes: Object3D[] //could be mesh, group, etc
+    meshes: {
+        mesh: Object3D
+        ignoreRotation?: boolean
+    }[] //could be mesh, group, etc
 }

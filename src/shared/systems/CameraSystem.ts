@@ -1,7 +1,8 @@
 import { System, World } from '@/engine'
-import { ComponentType, EntityTag } from '@/engine/ComponentType'
+import { ComponentType } from '@/engine/ComponentType'
 import { Vector3, type PerspectiveCamera } from 'three'
 import type { PositionComponent } from '../components/Position'
+import { EntityTag } from '@/engine/EntityTag'
 
 export class CameraSystem extends System {
     private camera: PerspectiveCamera
