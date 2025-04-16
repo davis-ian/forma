@@ -43,12 +43,12 @@ export function loadLevel(world: World, level: string[][], scene: Scene) {
 
             if (tile === TileType.PlayerStart) {
                 console.log('✅ Player tile detected!')
-                const player = createPlayer(world, scene, x, playerY, z)
+                createPlayer(world, x, playerY, z)
             }
 
             if (tile === TileType.Enemy) {
                 console.log('✅ Enemy tile detected!')
-                const enemy = createEnemy(world, scene, x, 0.5, z)
+                createEnemy(world, x, 0.5, z)
             }
         }
     }

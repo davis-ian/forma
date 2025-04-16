@@ -2,7 +2,7 @@ import { World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/shared/components/Visual'
-import { addBoxDebugHelper } from '@/shared/utils/createBoxDebugHelper'
+import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { Mesh, BoxGeometry, MeshStandardMaterial, Scene, MeshBasicMaterial, Object3D } from 'three'
 
 const player = {
@@ -86,21 +86,7 @@ export function createPlayer(
     console.log('PLAYER CREATED SUCCESSFULLY')
 
     if (debug) {
-        addBoxDebugHelper(
-            world,
-            entity,
-            {
-                width: player.width,
-                height: player.height,
-                depth: player.depth,
-            },
-            {
-                x: hurtboxOffset.x,
-                y: hurtboxOffset.y,
-                z: hurtboxOffset.z,
-            },
-            0x00ff00
-        )
+        addBoxDeugHelperForEntity(world, entity, { colorOverride: 0xfc33ff })
     }
 
     return entity

@@ -8,7 +8,6 @@ import {
 } from 'three'
 
 // ECS imports
-import { World } from '@/engine'
 import { RenderSystem } from '@/shared/systems/RenderSystem'
 import { RotationSystem } from '@/shared/systems/RotationSystem'
 import { MovementSystem } from '@/shared/systems/MovementSystem'
@@ -22,6 +21,10 @@ import { HealthSystem } from '@/shared/systems/HealthSystem'
 import { spawnRoom } from '@/gameplay/level/rooms/spawnRoom'
 import { room1, room2, room3, room4 } from '@/gameplay/level/rooms/templates'
 import { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
+import { registerDebugHandler } from '@/shared/utils/DebugVisualRegistry'
+import { ComponentType } from '@/engine/ComponentType'
+import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
+import { World } from '@/engine'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -61,6 +64,16 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
         console.log('Canvas size:', renderer.domElement.width, renderer.domElement.height)
     }
+    registerDebugHandler((world, entity) => {
+        if (entity.hasComponent(ComponentType.Hitbox)) {
+            addBoxDeugHelperForEntity(world, entity)
+        }
+    })
+    registerDebugHandler((world, entity) => {
+        if (entity.hasComponent(ComponentType.Hurtbox)) {
+            addBoxDeugHelperForEntity(world, entity)
+        }
+    })
 
     const clock = new Clock()
 

@@ -2,10 +2,11 @@ import type { Entity, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { PositionComponent } from '@/shared/components/Position'
 import type { RotationComponent } from '@/shared/components/Rotation'
-import { addBoxDebugHelper } from '@/shared/utils/createBoxDebugHelper'
+import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 
 //TODO: Support different sized hitboxes, current implementation only works with cube hit boxes
 // revisit when weapons need different ranges
+// Currently using static hitboxes, circle back to this, a dynamic or hybric approach may have better gameplay feel
 
 const hitbox = {
     width: 1,
@@ -59,10 +60,6 @@ export function spawnAttackHitbox(world: World, attackerEntity: Entity, debug: b
 
     if (debug) {
         hitboxEntity.addComponent(ComponentType.Visual, { meshes: [] })
-        addBoxDebugHelper(world, hitboxEntity, {
-            width: hitbox.width,
-            height: hitbox.height,
-            depth: hitbox.depth,
-        })
+        addBoxDeugHelperForEntity(world, hitboxEntity)
     }
 }

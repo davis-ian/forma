@@ -4,33 +4,65 @@ import { ComponentType } from '@/engine/ComponentType'
 import type { RotationComponent } from '../components/Rotation'
 import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
 import type { VisualComponent } from '../components/Visual'
+import type { HitboxComponent } from '../components/Hitbox'
+import type { HurtboxComponent } from '../components/Hurtbox'
 
-export function addBoxDebugHelper(
-    world: World,
-    entity: Entity,
-    size: { width: number; height: number; depth: number },
-    offset = { x: 0, y: 0, z: 0 },
-    color = 0xff0000
-) {
+export interface Options {
+    colorOverride?: number
+}
+
+export function addBoxDeugHelperForEntity(world: World, entity: Entity, options: Options = {}) {
     const pos = entity.getComponent<PositionComponent>(ComponentType.Position)
+
+    if (!pos) return
+
     const rot = entity.getComponent<RotationComponent>(ComponentType.Rotation)
+    const visual = entity.getComponent<VisualComponent>(ComponentType.Visual)
 
-    const geom = new BoxGeometry(size.width, size.height, size.depth)
-    const mat = new MeshBasicMaterial({ color, wireframe: true })
-    const mesh = new Mesh(geom, mat)
+    //Detect which box component exists
+    const boxComp =
+        entity.getComponent<HitboxComponent>(ComponentType.Hitbox) ||
+        entity.getComponent<HurtboxComponent>(ComponentType.Hurtbox)
 
-    if (pos) {
-        mesh.position.set(pos.x + offset.x, pos.y + offset.y, pos.z + offset.z)
-    }
+    if (!boxComp) return
 
+    const { width, height, depth, offsetX = 0, offsetY = 0, offsetZ = 0 } = boxComp
+
+    const color = options.colorOverride ?? getDefaultDebugColorForEntity(entity)
+
+    const geometry = new BoxGeometry(width, height, depth)
+    const material = new MeshBasicMaterial({ color: color, wireframe: true })
+    const mesh = new Mesh(geometry, material)
+
+    // Apply absolute position + offset
+    mesh.position.set(pos.x + offsetX, pos.y + offsetY, pos.z + offsetZ)
+
+    //Apply rotation if applicable
     if (rot) {
-        mesh.rotation.set(rot.x, rot.y, 0)
+        mesh.rotation.set(rot.x, rot.y, rot.z)
     }
 
     world.scene.add(mesh)
 
-    const visual = entity.getComponent<VisualComponent>(ComponentType.Visual)
     if (visual) {
         visual.meshes.push({ mesh, ignoreRotation: false })
+    } else {
+        entity.addComponent(ComponentType.Visual, { meshes: [{ mesh, ignoreRotation: false }] })
     }
+}
+
+export const DefaultDebugColors: Partial<Record<ComponentType, number>> = {
+    [ComponentType.Hitbox]: 0xfc33ff,
+    [ComponentType.Hurtbox]: 0x33c9ff,
+    [ComponentType.HealthBar]: 0x33ff77,
+}
+
+export function getDefaultDebugColorForEntity(entity: Entity): number {
+    for (const [type, color] of Object.entries(DefaultDebugColors)) {
+        if (entity.hasComponent(type as ComponentType)) {
+            return color
+        }
+    }
+
+    return 0xffffff // Fallback color if no matching component
 }

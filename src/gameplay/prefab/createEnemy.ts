@@ -2,8 +2,8 @@ import type { World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/shared/components/Visual'
-import { addBoxDebugHelper } from '@/shared/utils/createBoxDebugHelper'
-import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial, Scene } from 'three'
+import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
+import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 
 const enemy = {
     width: 1,
@@ -36,12 +36,12 @@ export function createEnemy(world: World, x: number, y: number, z: number, debug
     })
 
     entity.addComponent(ComponentType.Hurtbox, {
-        width: 1,
-        height: 1,
-        depth: 1,
-        offsetX: 0,
-        offsetY: 0.5,
-        offsetZ: 0,
+        width: enemy.width,
+        height: enemy.height,
+        depth: enemy.depth,
+        offsetX: hurtboxOffset.x,
+        offsetY: hurtboxOffset.y,
+        offsetZ: hurtboxOffset.z,
     })
 
     entity.addComponent(ComponentType.Health, { current: 5, max: 5 })
@@ -65,21 +65,7 @@ export function createEnemy(world: World, x: number, y: number, z: number, debug
     entity.addComponent(ComponentType.Visual, visual)
 
     if (debug) {
-        addBoxDebugHelper(
-            world,
-            entity,
-            {
-                width: enemy.width,
-                height: enemy.height,
-                depth: enemy.depth,
-            },
-            {
-                x: hurtboxOffset.x,
-                y: hurtboxOffset.y,
-                z: hurtboxOffset.z,
-            },
-            0x00ff00
-        )
+        addBoxDeugHelperForEntity(world, entity, { colorOverride: 0x33c9ff })
     }
 
     return entity
