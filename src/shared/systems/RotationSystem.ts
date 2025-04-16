@@ -9,6 +9,7 @@ import { ComponentType } from '@/engine/ComponentType'
 
 export class RotationSystem extends System {
     update(world: World, deltaTime: number): void {
+        //TODO: fix rotation system
         // for (const entity of world.entities.values()) {
         //     if (
         //         entity.hasComponent(ComponentType.Mesh) &&
