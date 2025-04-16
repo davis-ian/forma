@@ -1,5 +1,4 @@
-import type { RoomDefinition } from '../RoomDefinition'
-import { TileType } from '../TileType'
+import { TileType, type RoomDefinition } from '../types'
 
 const W = TileType.Wall
 const F = TileType.Floor
@@ -23,6 +22,8 @@ export const room1: RoomDefinition = {
     wallColor: '#444444',
     floorColor: '#222222',
     enemyWaves: [[{ x: 1, z: 1 }], [{ x: 5, z: 1 }]],
+    height: 0,
+    width: 0,
 }
 
 export const tiles2: TileType[][] = [
@@ -39,7 +40,9 @@ export const room2: RoomDefinition = {
     offsetZ: 0,
     wallColor: '#3c3c3c',
     floorColor: '#1a1a1a',
-    enemyWaves: [[{ x: 4, z: 2 }]], // optional, see below
+    enemyWaves: [[{ x: 4, z: 2 }]],
+    height: 0,
+    width: 0,
 }
 
 export const tiles3: TileType[][] = [
@@ -56,6 +59,8 @@ export const room3: RoomDefinition = {
     offsetZ: 10,
     wallColor: '#552222',
     floorColor: '#220000',
+    height: 0,
+    width: 0,
 }
 
 export const tiles4: TileType[][] = [
@@ -72,4 +77,6 @@ export const room4: RoomDefinition = {
     offsetZ: 10,
     wallColor: '#224422',
     floorColor: '#001100',
+    height: 0,
+    width: 0,
 }

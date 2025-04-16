@@ -1,9 +1,8 @@
 import type { World } from '@/engine'
 import { BoxGeometry, Mesh, MeshStandardMaterial, type Scene } from 'three'
-import type { RoomDefinition } from '../RoomDefinition'
-import { TileType } from '../TileType'
 import { createPlayer } from '@/gameplay/prefab/createPlayer'
 import { createEnemy } from '@/gameplay/prefab/createEnemy'
+import { TileType, type RoomDefinition } from './types'
 
 const debug = true
 const tileSize = 1

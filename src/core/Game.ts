@@ -18,13 +18,15 @@ import { PlayerAttackSystem } from '@/shared/systems/PlayerAttackSystem'
 import { DamageSystem } from '@/shared/systems/DamageSystem'
 import { HealthBarSystem } from '@/shared/systems/HealthBarSystem'
 import { HealthSystem } from '@/shared/systems/HealthSystem'
-import { spawnRoom } from '@/gameplay/level/rooms/spawnRoom'
-import { room1, room2, room3, room4 } from '@/gameplay/level/rooms/templates'
+
+import { room1, room2, room3, room4 } from '@/gameplay/level/templates/templates'
 import { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
 import { registerDebugHandler } from '@/shared/utils/DebugVisualRegistry'
 import { ComponentType } from '@/engine/ComponentType'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { World } from '@/engine'
+import { spawnRoom } from '@/gameplay/level/spawnRoom'
+import { generateRoom } from '@/gameplay/level/generateRoom'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -102,6 +104,11 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     // loadLevel(world, testLevel, scene)
     spawnRoom(world, room1)
+
+    //TODO: fix the gromDirection to be nullable for start
+    const testRoom = generateRoom(0, 0, 'bottom')
+
+    console.log(testRoom, 'generated  room')
     // spawnRoom(world, scene, room2)
     // spawnRoom(world, scene, room3)
     // spawnRoom(world, scene, room4)

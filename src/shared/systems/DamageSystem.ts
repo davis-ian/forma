@@ -48,6 +48,8 @@ export class DamageSystem extends System {
                 })
 
                 if (boxesIntersect(damageBox.min, damageBox.max, hurtboxBox.min, hurtboxBox.max)) {
+                    if (targetEntity.id === damage.sourceId) continue
+
                     const targetHealth = targetEntity.getComponent<HealthComponent>(
                         ComponentType.Health
                     )

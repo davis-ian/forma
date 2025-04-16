@@ -4,7 +4,7 @@ import type { InputComponent } from '../components/Input'
 import { spawnAttackHitbox } from '@/gameplay/actions'
 import { EntityTag } from '@/engine/EntityTag'
 
-const attackCooldown = 0.4
+const attackCooldown = 0.2
 const debug = true
 
 export class PlayerAttackSystem extends System {

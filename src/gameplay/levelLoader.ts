@@ -1,10 +1,8 @@
 import { BoxGeometry, Mesh, MeshStandardMaterial, Scene } from 'three'
-import { Entity, World } from '@/engine'
-import { ComponentType } from '@/engine/ComponentType'
+import { World } from '@/engine'
 import { createPlayer } from './prefab/createPlayer'
-import { TileType } from './level/TileType'
-import type { PositionComponent } from '@/shared/components/Position'
 import { createEnemy } from './prefab/createEnemy'
+import { TileType } from './level/types'
 
 // World is laid out with X (left/right), Z (forward/back), Y (up/down)
 // Tile (0,0) = top-left of map
@@ -66,12 +64,12 @@ function setTilePosition(mesh: Mesh, x: number, y: number, z: number) {
     mesh.position.set(x, y, z)
 }
 
-function setEntityPosition(entity: Entity, x: number, y: number, z: number) {
-    const pos = entity.getComponent<PositionComponent>(ComponentType.Position)
+// function setEntityPosition(entity: Entity, x: number, y: number, z: number) {
+//     const pos = entity.getComponent<PositionComponent>(ComponentType.Position)
 
-    if (!pos) return
+//     if (!pos) return
 
-    pos.x = x
-    pos.y = y
-    pos.z = z
-}
+//     pos.x = x
+//     pos.y = y
+//     pos.z = z
+// }
