@@ -25,8 +25,8 @@ import { registerDebugHandler } from '@/shared/utils/DebugVisualRegistry'
 import { ComponentType } from '@/engine/ComponentType'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { World } from '@/engine'
-import { spawnRoom } from '@/gameplay/level/spawnRoom'
-import { generateRoom } from '@/gameplay/level/generateRoom'
+import { generateRoomDefinition, spawnRoom } from '@/gameplay/level/spawnRoom'
+import { generateRoomGraph } from '@/gameplay/level/RoomGraph'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -45,7 +45,8 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     )
 
     //Set isometric camera
-    camera.position.set(0, 7, 5)
+    // camera.position.set(0, 7, 5)
+    camera.position.set(0, 100, 5)
     camera.lookAt(0, 0, 0)
 
     const ambient = new AmbientLight(0xffffff, 0.5)
@@ -103,12 +104,15 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
      */
 
     // loadLevel(world, testLevel, scene)
-    spawnRoom(world, room1)
+    // spawnRoom(world, room1)
 
-    //TODO: fix the gromDirection to be nullable for start
-    const testRoom = generateRoom(0, 0, 'bottom')
+    const roomGraph = generateRoomGraph(5)
+    for (const room of roomGraph.values()) {
+        console.log(room, ' room at game')
+        const def = generateRoomDefinition(room)
+        spawnRoom(world, def)
+    }
 
-    console.log(testRoom, 'generated  room')
     // spawnRoom(world, scene, room2)
     // spawnRoom(world, scene, room3)
     // spawnRoom(world, scene, room4)

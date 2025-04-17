@@ -25,6 +25,13 @@ export interface Room {
     width: number
     height: number
     exits: Direction[]
+    tags: string[]
+}
+
+export interface RoomNode {
+    x: number
+    y: number
+    from?: Direction
 }
 
 export type Direction = 'top' | 'bottom' | 'left' | 'right'
