@@ -41,7 +41,7 @@ const EXIT_COLOR = '#fc33ff'
 const START_BORDER_COLOR = '#00e676'
 const END_BORDER_COLOR = '#ff5252'
 
-const ROOM_SPACING = 25
+const ROOM_PADDING = 1.5
 
 function spawnTile(
     world: World,
@@ -157,10 +157,10 @@ export function generateRoomDefinition(room: Room): RoomDefinition {
         height: room.height,
         width: room.width,
         tiles,
-        // offsetX: room.x * room.width,
-        // offsetZ: room.y * room.height,
-        offsetX: room.x * ROOM_SPACING,
-        offsetZ: room.y * ROOM_SPACING,
+        offsetX: room.x * (room.width * ROOM_PADDING),
+        offsetZ: room.y * (room.height * ROOM_PADDING),
+        // offsetX: room.x * ROOM_SPACING,
+        // offsetZ: room.y * ROOM_SPACING,
         floorColor: '#444',
         wallColor: '#222',
         tags: room.tags,

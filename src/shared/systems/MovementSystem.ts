@@ -4,6 +4,7 @@ import type { PositionComponent } from '@/shared/components/Position'
 import type { VelocityComponent } from '@/shared/components/Velocity'
 import type { InputComponent } from '@/shared/components/Input'
 
+const SPEED = 4
 export class MovementSystem extends System {
     update(world: World, deltaTime: number): void {
         // Loop through entities
@@ -22,14 +23,16 @@ export class MovementSystem extends System {
 
                 if (entity.hasComponent(ComponentType.Input)) {
                     const input = entity.getComponent<InputComponent>(ComponentType.Input)!
-                    const speed = 2
 
-                    if (input.left) vel.x -= speed
-                    if (input.right) vel.x += speed
-                    if (input.up) vel.z -= speed
-                    if (input.down) vel.z += speed
+                    if (input.left) vel.x -= SPEED
+                    if (input.right) vel.x += SPEED
+                    if (input.up) vel.z -= SPEED
+                    if (input.down) vel.z += SPEED
                 }
 
+                // if (vel.x || vel.y || vel.z) {
+                //     console.log('MOVING')
+                // }
                 //apply velicity * deltaTime to position
                 pos.x += vel.x * deltaTime
                 pos.y += vel.y * deltaTime

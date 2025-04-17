@@ -19,14 +19,15 @@ import { DamageSystem } from '@/shared/systems/DamageSystem'
 import { HealthBarSystem } from '@/shared/systems/HealthBarSystem'
 import { HealthSystem } from '@/shared/systems/HealthSystem'
 
-import { room1, room2, room3, room4 } from '@/gameplay/level/templates/templates'
 import { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
 import { registerDebugHandler } from '@/shared/utils/DebugVisualRegistry'
 import { ComponentType } from '@/engine/ComponentType'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { World } from '@/engine'
-import { generateRoomDefinition, spawnRoom } from '@/gameplay/level/spawnRoom'
-import { generateRoomGraph } from '@/gameplay/level/RoomGraph'
+import { LevelGenerator } from '@/gameplay/level/LevelGenerator'
+import { MiniMap } from '@/gameplay/ui/Minimap'
+import { RoomExitDetectionSystem } from '@/shared/systems/RoomExitDetectionSystem'
+import { RoomManager } from '@/gameplay/level/RoomManager'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -46,7 +47,7 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     //Set isometric camera
     // camera.position.set(0, 7, 5)
-    camera.position.set(0, 100, 5)
+    camera.position.set(0, 10, 5)
     camera.lookAt(0, 0, 0)
 
     const ambient = new AmbientLight(0xffffff, 0.5)
@@ -86,6 +87,25 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     const world = new World()
     world.setScene(scene)
 
+    /**
+     * Create a cube mesh and attach to ECS entity
+     * The cube's transform will be driven by ECS data and systems
+     */
+
+    // loadLevel(world, testLevel, scene)
+    // spawnRoom(world, room1)
+
+    // spawnRoom(world, scene, room2)
+    // spawnRoom(world, scene, room3)
+    // spawnRoom(world, scene, room4)
+    const generator = new LevelGenerator()
+    const roomGraph = generator.init(world, 10)
+
+    const roomManager = new RoomManager(world, roomGraph)
+    roomManager.setActiveRoom('0,0')
+
+    const minimap = new MiniMap(roomGraph)
+
     world.addSystem(new RenderSystem())
     world.addSystem(new RotationSystem())
     world.addSystem(new MovementSystem())
@@ -97,25 +117,7 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new HealthSystem())
     world.addSystem(new CameraSystem(camera))
     world.addSystem(new DebugDrawSystem())
-
-    /**
-     * Create a cube mesh and attach to ECS entity
-     * The cube's transform will be driven by ECS data and systems
-     */
-
-    // loadLevel(world, testLevel, scene)
-    // spawnRoom(world, room1)
-
-    const roomGraph = generateRoomGraph(5)
-    for (const room of roomGraph.values()) {
-        console.log(room, ' room at game')
-        const def = generateRoomDefinition(room)
-        spawnRoom(world, def)
-    }
-
-    // spawnRoom(world, scene, room2)
-    // spawnRoom(world, scene, room3)
-    // spawnRoom(world, scene, room4)
+    world.addSystem(new RoomExitDetectionSystem(roomManager))
 
     /**
      * Animation loop
@@ -124,6 +126,7 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     function animate() {
         const delta = clock.getDelta()
         world.update(delta)
+        minimap.update(world)
 
         renderer.render(scene, camera)
         requestAnimationFrame(animate)

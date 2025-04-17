@@ -1,15 +1,26 @@
-/*
-
-Start with one room (e.g. spawnRoom)
-
-Randomly pick a direction and place a new room adjacent
-
-Repeat N times or until constraints are met (boss room at the end, key gate, etc.)
-
-Hint: Think of it like path carving — place a room, pick a direction, add another.
-
-*/
-
 import type { World } from '@/engine'
+import { generateRoomGraph } from './RoomGraph'
+import type { Room } from './types'
+import { generateRoomDefinition, spawnRoom } from './spawnRoom'
 
-export function init(world: World) {}
+export class LevelGenerator {
+    private graph: Map<string, Room> = new Map()
+    init(world: World, maxRooms: number) {
+        this.graph = generateRoomGraph(maxRooms)
+
+        const startRoom = Array.from(this.graph.values()).filter((r) => r.tags.includes('start'))[0]
+
+        if (!startRoom) {
+            throw new Error('Start room not found in this graph')
+        }
+
+        const def = generateRoomDefinition(startRoom)
+        spawnRoom(world, def)
+
+        return this.graph
+    }
+
+    getRoomGraph() {
+        return this.graph
+    }
+}
