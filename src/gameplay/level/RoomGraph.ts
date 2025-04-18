@@ -21,6 +21,7 @@ Calls generateRoom for each new placement
 import { createRoomMeta } from './roomFactory'
 import type { Direction, Room, RoomNode } from './types'
 
+const MAX_NEIGHBORS = 2
 // Define valid expansion directions and their corresponding (x, y) deltas
 const directions: Direction[] = ['top', 'bottom', 'left', 'right']
 const dirOffsets = {
@@ -49,6 +50,7 @@ function opposite(dir: Direction): Direction {
     }
 }
 
+//TODO: update so that farthest room from start room is end room
 /**
  * Generates a dungeon-like room  graph with directional links.
  * Each room is placed in grid space (x, y), and no two rooms overlap.
@@ -61,59 +63,56 @@ function opposite(dir: Direction): Direction {
 export function generateRoomGraph(maxRooms: number): Map<string, Room> {
     const roomMap = new Map<string, Room>()
     const visited = new Set<string>()
-    const stack: RoomNode[] = [{ x: 0, y: 0 }] // start at (0, 0)
 
-    while (stack.length && roomMap.size < maxRooms) {
-        const { x, y, from } = stack.pop()!
-        const id = posKey(x, y)
-        if (visited.has(id)) continue
+    // const stack: RoomNode[] = [{ x: 0, y: 0 }] // start at (0, 0)
+    const queue: Room[] = []
+    const startRoom = createRoomMeta(0, 0)
+    startRoom.tags.push('start')
 
-        const room = createRoomMeta(x, y, from)
-        if (roomMap.size === 0) {
-            room.tags.push('start')
-        }
+    roomMap.set('0,0', startRoom)
+    visited.add('0,0')
+    queue.push(startRoom)
 
-        visited.add(id)
-        roomMap.set(id, room)
+    while (queue.length && roomMap.size < maxRooms) {
+        const current = queue.shift()!
+        const { x, y } = current
+        const directions: Direction[] = shuffle(['top', 'bottom', 'left', 'right'])
 
-        const neighbors = getUnvisitedNeighbors(x, y, visited, maxRooms, roomMap.size)
+        for (const dir of directions) {
+            if (roomMap.size >= maxRooms) break
+            if (current.exits.length >= MAX_NEIGHBORS) break
 
-        for (const neighbor of neighbors) {
-            const { x: nx, y: ny, from: dirFrom } = neighbor
-            const neighborKey = posKey(nx, ny)
-
-            // Current room gets exit toward neighbor
-            room.exits.push(dirFrom ? opposite(dirFrom) : 'top')
-
-            // Ensure neighbor room is created
-            let neighborRoom = roomMap.get(neighborKey)
-            if (!neighborRoom) {
-                neighborRoom = createRoomMeta(nx, ny, dirFrom)
-                roomMap.set(neighborKey, neighborRoom)
-            }
-
-            // Neighbor room gets exit pointing back
-            neighborRoom.exits.push(dirFrom!)
-            stack.push(neighbor)
-        }
-    }
-
-    // Mark final room
-    const roomArr = Array.from(roomMap.values())
-    const lastRoom = roomArr[roomArr.length - 1]
-    if (lastRoom) {
-        lastRoom.tags ??= []
-        lastRoom.tags.push('end')
-    }
-
-    // 🔒 Final pruning: remove exits that lead nowhere or aren't reciprocated
-    for (const room of roomMap.values()) {
-        room.exits = room.exits.filter((dir) => {
             const [dx, dy] = directionDelta[dir]
-            const neighborKey = posKey(room.x + dx, room.y + dy)
-            const neighborRoom = roomMap.get(neighborKey)
-            return neighborRoom?.exits.includes(opposite(dir))
-        })
+            const nx = x + dx
+            const ny = y + dy
+
+            const neighborKey = `${nx},${ny}`
+
+            if (visited.has(neighborKey)) continue
+
+            const neighbor = createRoomMeta(nx, ny)
+            neighbor.exits.push(opposite(dir))
+            roomMap.set(neighborKey, neighbor)
+            visited.add(neighborKey)
+
+            current.exits.push(dir)
+
+            queue.push(neighbor)
+        }
+    }
+
+    //Mark last room as end room
+    const roomArray = Array.from(roomMap.values())
+
+    if (roomArray.length > 1) {
+        const lastRoom = roomArray[roomArray.length - 1]
+
+        if (!lastRoom.tags.includes('start')) {
+            lastRoom.tags.push('end')
+        } else {
+            const fallback = roomArray.find((r) => !r.tags.includes('start'))
+            if (fallback) fallback.tags.push('end')
+        }
     }
 
     return roomMap
@@ -151,4 +150,13 @@ const directionDelta: Record<Direction, [dx: number, dy: number]> = {
     bottom: [0, 1],
     left: [-1, 0],
     right: [1, 0],
+}
+
+function shuffle<T>(array: T[]): T[] {
+    const arr = [...array] // avoid mutating the original
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    }
+    return arr
 }
