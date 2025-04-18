@@ -2,25 +2,13 @@ import { World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/shared/components/Visual'
-import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
-import {
-    Mesh,
-    BoxGeometry,
-    MeshStandardMaterial,
-    Scene,
-    MeshBasicMaterial,
-    Object3D,
-    TextureLoader,
-    NearestFilter,
-} from 'three'
-import { createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
 
-const debug = true
-const player = {
-    width: 1,
-    height: 1,
-    depth: 1,
-}
+import { Mesh, BoxGeometry, MeshBasicMaterial, TextureLoader } from 'three'
+import { createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
+import { PLAYER_SIZE } from '../constants'
+import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
+
+const debug = false
 
 const hurtboxOffset = {
     x: 0,
@@ -61,9 +49,9 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     entity.addTag(EntityTag.Player)
 
     entity.addComponent(ComponentType.Hurtbox, {
-        width: player.width,
-        height: player.height,
-        depth: player.depth,
+        width: PLAYER_SIZE.width,
+        height: PLAYER_SIZE.height,
+        depth: PLAYER_SIZE.depth,
         offsetX: hurtboxOffset.x,
         offsetY: hurtboxOffset.y,
         offsetZ: hurtboxOffset.z,
@@ -87,7 +75,15 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     //     new MeshStandardMaterial({ color: 'blue' })
     //     // playerMaterial
     // )
-    const playerMesh = await createSpriteMeshAsync('/assets/Warrior_Red.png', 8, 8, 0, 0, 2)
+    const playerMesh = await createSpriteMeshAsync(
+        // '/assets/Warrior_Red.png',
+        '/assets/chef_sprite_grid2.png',
+        3,
+        3,
+        0,
+        0,
+        PLAYER_SIZE.width * 2
+    )
 
     entity.addComponent(ComponentType.Mesh, {
         mesh: playerMesh,
@@ -104,9 +100,9 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     entity.addComponent(ComponentType.Visual, visual)
     console.log('PLAYER CREATED SUCCESSFULLY')
 
-    // if (debug) {
-    //     addBoxDeugHelperForEntity(world, entity, { colorOverride: 0xfc33ff })
-    // }
+    if (debug) {
+        addBoxDeugHelperForEntity(world, entity, { colorOverride: 0xfc33ff })
+    }
 
     return entity
 }

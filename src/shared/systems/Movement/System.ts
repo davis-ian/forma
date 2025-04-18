@@ -4,12 +4,7 @@ import type { PositionComponent } from '../../components/Position'
 import type { VelocityComponent } from '../../components/Velocity'
 import { EntityTag } from '@/engine/EntityTag'
 import { boxesIntersect, getAABB } from '../../utils/collisionUtils'
-
-const PLAYER_SIZE = {
-    width: 1,
-    height: 1,
-    depth: 1,
-}
+import { PLAYER_SIZE } from '@/gameplay/constants'
 
 export class TransformSystem extends System {
     update(world: World, deltaTime: number): void {

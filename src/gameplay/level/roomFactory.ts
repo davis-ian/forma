@@ -7,6 +7,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
 import type { VisualComponent } from '@/shared/components/Visual'
 import { getRandomInt } from './utils/random'
+import { shuffle } from './RoomGraph'
 
 // Room size & visuals
 const ROOM_WIDTH = 30
@@ -86,15 +87,31 @@ export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
     }
 
     if (room.tags.includes('spawn') && !room.tags.includes('spawned')) {
-        const enemyCount = getRandomInt(2, 6)
+        const tiles = getRoomTiles(room)
+        const { offsetX, offsetZ } = getRoomOffset(room)
 
-        for (let i = 0; i < enemyCount; i++) {
-            const ex = offsetX + getRandomInt(2, room.width - 3)
-            const ez = offsetZ + getRandomInt(2, room.height - 3)
+        const floorPositions: { x: number; z: number }[] = []
 
-            const maxHealth = getRandomInt(1, 5)
-            createEnemy(world, ex, ENEMY_Y, ez, maxHealth)
+        for (let z = 0; z < tiles.length; z++) {
+            for (let x = 0; x < tiles[z].length; x++) {
+                if (tiles[z][x] === TileType.Floor) {
+                    floorPositions.push({
+                        x: offsetX + x,
+                        z: offsetZ + z,
+                    })
+                }
+            }
         }
+
+        const enemyCount = Math.min(getRandomInt(2, 6), floorPositions.length)
+        const spawnTiles = shuffle(floorPositions).slice(0, enemyCount)
+
+        for (const pos of spawnTiles) {
+            const maxHealth = getRandomInt(1, 5)
+            createEnemy(world, pos.x, ENEMY_Y, pos.z, maxHealth)
+        }
+
+        room.tags.push('spawned') // Prevent re-spawning
     }
 }
 

@@ -1,4 +1,11 @@
-import { NearestFilter, RepeatWrapping, Sprite, SpriteMaterial, TextureLoader } from 'three'
+import {
+    ClampToEdgeWrapping,
+    NearestFilter,
+    RepeatWrapping,
+    Sprite,
+    SpriteMaterial,
+    TextureLoader,
+} from 'three'
 
 export async function createSpriteMeshAsync(
     texturePath: string,
@@ -6,15 +13,17 @@ export async function createSpriteMeshAsync(
     rows = 1,
     columnIndex = 0,
     rowIndex = 0,
-    scale = 1
+    size = 1
 ): Promise<Sprite> {
     const loader = new TextureLoader()
     const texture = await loader.loadAsync(texturePath)
 
     texture.magFilter = NearestFilter
     texture.minFilter = NearestFilter
-    texture.wrapS = RepeatWrapping
-    texture.wrapT = RepeatWrapping
+    // texture.wrapS = RepeatWrapping
+    // texture.wrapT = RepeatWrapping
+    texture.wrapS = ClampToEdgeWrapping
+    texture.wrapT = ClampToEdgeWrapping
 
     // Frame size (used to keep aspect ratio correct)
     const frameWidth = texture.image.width / columns
@@ -34,7 +43,10 @@ export async function createSpriteMeshAsync(
 
     const sprite = new Sprite(material)
     // Maintain aspect ratio with scale
-    sprite.scale.set(scale * aspectRatio, scale, 1)
-    sprite.position.y += scale / 2
+    const width = size
+    const height = width / aspectRatio
+
+    sprite.scale.set(width, height, 1)
+    sprite.position.y += height / 2
     return sprite
 }

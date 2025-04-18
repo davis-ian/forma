@@ -6,6 +6,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import { boxesIntersect, getAABB } from '../utils/collisionUtils'
 import { opposite } from '@/gameplay/level/RoomGraph'
 import type { DirectionComponent } from '../components/DirectionComponent'
+import { PLAYER_SIZE } from '@/gameplay/constants'
 
 let logged = false
 export class RoomExitDetectionSystem extends System {
@@ -23,7 +24,7 @@ export class RoomExitDetectionSystem extends System {
         const pos = player.getComponent<PositionComponent>(ComponentType.Position)
         if (!pos) return
 
-        const playerBox = getAABB(pos, { width: 1, height: 1, depth: 1 })
+        const playerBox = getAABB(pos, PLAYER_SIZE)
 
         const exits = world.getEntitiesWithTag(EntityTag.ExitDoor)
 
@@ -37,7 +38,7 @@ export class RoomExitDetectionSystem extends System {
 
             // console.log(exitPos, 'exit')
 
-            const exitBox = getAABB(exitPos, { width: 1, height: 1, depth: 1 })
+            const exitBox = getAABB(exitPos, PLAYER_SIZE)
             const intersecting = boxesIntersect(
                 playerBox.min,
                 playerBox.max,

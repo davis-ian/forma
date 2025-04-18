@@ -158,7 +158,7 @@ const directionDelta: Record<Direction, [dx: number, dy: number]> = {
     right: [1, 0],
 }
 
-function shuffle<T>(array: T[]): T[] {
+export function shuffle<T>(array: T[]): T[] {
     const arr = [...array] // avoid mutating the original
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))

@@ -5,6 +5,7 @@ import type { VisualComponent } from '@/shared/components/Visual'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
+import { PLAYER_SIZE } from '../constants'
 
 const enemy = {
     width: 1,
@@ -39,7 +40,14 @@ export async function createEnemy(
     entity.addComponent(ComponentType.Velocity, { x: 0, y: 0, z: 0 })
 
     // const enemyMesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 'red' }))
-    const enemyMesh = await createSpriteMeshAsync('/assets/Torch_Purple.png', 8, 8, 0, 0, 2)
+    const enemyMesh = await createSpriteMeshAsync(
+        '/assets/Torch_Purple.png',
+        8,
+        8,
+        0,
+        0,
+        PLAYER_SIZE.width * 2
+    )
     entity.addComponent(ComponentType.Mesh, {
         mesh: enemyMesh,
     })
