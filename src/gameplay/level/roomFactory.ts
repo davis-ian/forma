@@ -6,6 +6,7 @@ import { TileType, type Direction, type Room, type RoomState } from './types'
 import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
 import type { VisualComponent } from '@/shared/components/Visual'
+import { getRandomInt } from './utils/random'
 
 // Room size & visuals
 const ROOM_WIDTH = 20
@@ -71,7 +72,6 @@ export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
 
             renderTile(
                 world,
-                scene,
                 tile,
                 worldX,
                 worldZ,
@@ -82,6 +82,18 @@ export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
                 offsetZ,
                 state
             )
+        }
+    }
+
+    if (room.tags.includes('spawn') && !room.tags.includes('spawned')) {
+        const enemyCount = getRandomInt(2, 6)
+
+        for (let i = 0; i < enemyCount; i++) {
+            const ex = offsetX + getRandomInt(2, room.width - 3)
+            const ez = offsetZ + getRandomInt(2, room.height - 3)
+
+            const maxHealth = getRandomInt(1, 5)
+            createEnemy(world, ex, ENEMY_Y, ez, maxHealth)
         }
     }
 }
@@ -147,15 +159,8 @@ export function getRoomOffset(room: Room): { offsetX: number; offsetZ: number } 
 // Private Helpers
 // -----------------------------
 
-function getRoomColors(tags: string[]): { floorColor: string; wallColor: string } {
-    if (tags.includes('start')) return { floorColor: '#444', wallColor: '#222' }
-    if (tags.includes('shop')) return { floorColor: '#222', wallColor: '#555' }
-    return { floorColor: '#333', wallColor: '#111' }
-}
-
 function renderTile(
     world: World,
-    scene: Scene,
     tile: TileType,
     x: number,
     z: number,
@@ -166,28 +171,16 @@ function renderTile(
     offsetZ: number,
     state?: RoomState
 ) {
-    const isBorder =
-        x === offsetX ||
-        x === offsetX + room.width - 1 ||
-        z === offsetZ ||
-        z === offsetZ + room.height - 1
-
-    const baseColor = isBorder ? getBorderColor(room.tags) : floorColor
-
     if (tile !== TileType.Wall) {
-        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, baseColor, x, FLOOR_Y, z)
+        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, floorColor, x, FLOOR_Y, z)
     }
 
     switch (tile) {
         case TileType.Floor:
-            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, baseColor, x, FLOOR_Y, z)
+            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, floorColor, x, FLOOR_Y, z)
             break
 
         case TileType.Exit:
-            // Calculate direction based on position
-            const roomCenterX = offsetX + Math.floor(room.width / 2)
-            const roomCenterZ = offsetZ + Math.floor(room.height / 2)
-
             let direction: 'top' | 'bottom' | 'left' | 'right' = 'top'
 
             if (z === offsetZ) direction = 'top'
@@ -225,52 +218,15 @@ function renderTile(
                 createPlayer(world, x, PLAYER_Y, z, DEBUG)
             }
             break
-        case TileType.Enemy:
-            if (DEBUG) console.log('✅ Enemy tile detected!')
-            createEnemy(world, x, ENEMY_Y, z, DEBUG)
-
-            break
     }
 }
 
-function getBorderColor(tags: string[]): string {
-    if (tags.includes('start')) return START_BORDER_COLOR
-    if (tags.includes('end')) return END_BORDER_COLOR
-    return DEFAULT_BORDER_COLOR
+function getRoomColors(tags: string[]): { floorColor: string; wallColor: string } {
+    if (tags.includes('start')) return { floorColor: '#555', wallColor: START_BORDER_COLOR }
+    if (tags.includes('end')) return { floorColor: '#555', wallColor: END_BORDER_COLOR }
+    if (tags.includes('shop')) return { floorColor: '#222', wallColor: '#555' }
+    return { floorColor: '#555', wallColor: '#111' }
 }
-
-// function createFloorTile(
-//     size: number,
-//     height: number,
-//     color: string,
-//     scene: Scene,
-//     x: number,
-//     y: number,
-//     z: number
-// ) {
-//     const tileMesh = new Mesh(
-//         new BoxGeometry(size, height, size),
-//         new MeshStandardMaterial({ color })
-//     )
-//     tileMesh.position.set(x, y, z)
-//     scene.add(tileMesh)
-// }
-
-// function createWallTile(
-//     size: number,
-//     color: string,
-//     scene: Scene,
-//     x: number,
-//     y: number,
-//     z: number
-// ) {
-//     const wallMesh = new Mesh(
-//         new BoxGeometry(size, size, size),
-//         new MeshStandardMaterial({ color })
-//     )
-//     wallMesh.position.set(x, y, z)
-//     scene.add(wallMesh)
-// }
 
 export function createTileEntity(
     world: World,
@@ -287,7 +243,7 @@ export function createTileEntity(
     world.scene?.add(mesh)
 
     const entity = world.createEntity()
-    // entity.addComponent(ComponentType.Mesh, { mesh })
+
     const visual: VisualComponent = {
         meshes: [{ mesh, ignoreRotation: false }],
     }

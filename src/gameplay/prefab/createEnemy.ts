@@ -17,7 +17,14 @@ const hurtboxOffset = {
     z: 0,
 }
 
-export function createEnemy(world: World, x: number, y: number, z: number, debug: boolean = false) {
+export function createEnemy(
+    world: World,
+    x: number,
+    y: number,
+    z: number,
+    maxHealth: number,
+    debug: boolean = false
+) {
     console.log('CREATING Enemy')
     const scene = world.scene
     if (!scene) {
@@ -44,7 +51,7 @@ export function createEnemy(world: World, x: number, y: number, z: number, debug
         offsetZ: hurtboxOffset.z,
     })
 
-    entity.addComponent(ComponentType.Health, { current: 5, max: 5 })
+    entity.addComponent(ComponentType.Health, { current: maxHealth, max: maxHealth })
 
     const bar = new Mesh(new BoxGeometry(1, 0.1, 0.1), new MeshBasicMaterial({ color: 'green' }))
     bar.geometry.translate(0, 0.8, 0)

@@ -50,7 +50,6 @@ export function opposite(dir: Direction): Direction {
     }
 }
 
-//TODO: update so that farthest room from start room is end room
 /**
  * Generates a dungeon-like room  graph with directional links.
  * Each room is placed in grid space (x, y), and no two rooms overlap.
@@ -63,55 +62,62 @@ export function opposite(dir: Direction): Direction {
 export function generateRoomGraph(maxRooms: number): Map<string, Room> {
     const roomMap = new Map<string, Room>()
     const visited = new Set<string>()
-
-    // const stack: RoomNode[] = [{ x: 0, y: 0 }] // start at (0, 0)
     const queue: Room[] = []
-    const startRoom = createRoomMeta(0, 0)
-    startRoom.tags.push('start')
 
-    roomMap.set('0,0', startRoom)
-    visited.add('0,0')
+    const startRoom = createRoomMeta(0, 0)
+    roomMap.set(posKey(0, 0), startRoom)
+    visited.add(posKey(0, 0))
     queue.push(startRoom)
 
+    // --- Room Expansion ---
     while (queue.length && roomMap.size < maxRooms) {
         const current = queue.shift()!
         const { x, y } = current
-        const directions: Direction[] = shuffle(['top', 'bottom', 'left', 'right'])
+        const shuffledDirs = shuffle(directions)
 
-        for (const dir of directions) {
+        for (const dir of shuffledDirs) {
             if (roomMap.size >= maxRooms) break
             if (current.exits.length >= MAX_NEIGHBORS) break
 
             const [dx, dy] = directionDelta[dir]
             const nx = x + dx
             const ny = y + dy
+            const key = posKey(nx, ny)
 
-            const neighborKey = `${nx},${ny}`
-
-            if (visited.has(neighborKey)) continue
+            if (visited.has(key)) continue
 
             const neighbor = createRoomMeta(nx, ny)
-            neighbor.exits.push(opposite(dir))
-            roomMap.set(neighborKey, neighbor)
-            visited.add(neighborKey)
+            neighbor.exits.push(opposite(dir)) // link back
+            roomMap.set(key, neighbor)
+            visited.add(key)
 
             current.exits.push(dir)
-
             queue.push(neighbor)
         }
     }
 
-    //Mark last room as end room
-    const roomArray = Array.from(roomMap.values())
+    // --- Find farthest room from startRoom (0,0) ---
+    let farthestRoom = startRoom
+    let maxDist = -1
+    const rooms = Array.from(roomMap.values())
 
-    if (roomArray.length > 1) {
-        const lastRoom = roomArray[roomArray.length - 1]
+    for (const room of rooms) {
+        const dist = Math.abs(room.x - 0) + Math.abs(room.y - 0)
+        if (dist > maxDist) {
+            maxDist = dist
+            farthestRoom = room
+        }
+    }
 
-        if (!lastRoom.tags.includes('start')) {
-            lastRoom.tags.push('end')
-        } else {
-            const fallback = roomArray.find((r) => !r.tags.includes('start'))
-            if (fallback) fallback.tags.push('end')
+    startRoom.tags.push('start')
+    if (!farthestRoom.tags.includes('start')) {
+        farthestRoom.tags.push('end')
+    }
+
+    // Tag rooms to spawn enemies (not start or end rooms)
+    for (const room of rooms) {
+        if (!room.tags.includes('start') && !room.tags.includes('end')) {
+            room.tags.push('spawn')
         }
     }
 

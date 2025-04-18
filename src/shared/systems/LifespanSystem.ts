@@ -11,7 +11,7 @@ export class LifespanSystem extends System {
             lifespan.timeLeft -= deltaTime
 
             if (lifespan.timeLeft <= 0) {
-                console.log('destroy call!')
+                // console.log('destroy call!')
                 world.destroyEntity(entity.id)
             }
         }

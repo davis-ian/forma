@@ -46,7 +46,7 @@ export function getExitDirection(x: number, z: number, room: Room) {
 }
 
 export function teleportPlayer(world: World, x: number, y: number, z: number) {
-    console.log('TELEPORTING PLAYER')
+    // console.log('TELEPORTING PLAYER')
     const player = world.getEntitiesWithTag(EntityTag.Player)[0]
     if (!player) return
 

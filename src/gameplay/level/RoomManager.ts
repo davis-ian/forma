@@ -25,8 +25,8 @@ export class RoomManager {
             animate?: boolean
         }
     ): void {
-        console.log('TRANSITION FROM', entranceFrom)
-        console.log('TRANSITION TO', roomId)
+        // console.log('TRANSITION FROM', entranceFrom)
+        // console.log('TRANSITION TO', roomId)
 
         const room = this.getRoom(roomId)
 

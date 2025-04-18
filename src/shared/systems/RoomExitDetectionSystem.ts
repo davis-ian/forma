@@ -46,7 +46,7 @@ export class RoomExitDetectionSystem extends System {
             )
 
             if (intersecting) {
-                console.log('INTERSECT WITH  EXIT')
+                // console.log('INTERSECT WITH  EXIT')
                 const dirComp = exit.getComponent<DirectionComponent>(ComponentType.Direction)
                 if (dirComp) {
                     const targetRoom = this.roomManager.getNeighborRoom(dirComp.direction)
