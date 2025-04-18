@@ -3,10 +3,11 @@ import { EntityTag } from '@/engine/EntityTag'
 import { RoomManager } from '@/gameplay/level/RoomManager'
 import type { PositionComponent } from '../components/Position'
 import { ComponentType } from '@/engine/ComponentType'
-import { getExitDirection, getTileAtWorldPosition } from '../utils/roomUtils'
-import { TileType } from '@/gameplay/level/types'
+import { boxesIntersect, getAABB } from '../utils/collisionUtils'
+import { opposite } from '@/gameplay/level/RoomGraph'
+import type { DirectionComponent } from '../components/DirectionComponent'
 
-var logged: boolean = false
+let logged = false
 export class RoomExitDetectionSystem extends System {
     constructor(private roomManager: RoomManager) {
         super()
@@ -20,26 +21,41 @@ export class RoomExitDetectionSystem extends System {
         if (!player) return
 
         const pos = player.getComponent<PositionComponent>(ComponentType.Position)
-        const currentRoom = this.roomManager.getCurrentRoom()
-        // console.log(currentRoom, 'current room')
-        if (!currentRoom || !pos) return
+        if (!pos) return
 
-        //TODO: we may want to improve this later
-        const tile = getTileAtWorldPosition(pos.x, pos.z, currentRoom)
-        if (tile === TileType.Exit) {
-            // console.log('🚪 Player is on an exit tile! Transitioning...')
-            const exitDirection = getExitDirection(pos.x, pos.z, currentRoom)
-            // console.log(exitDirection, 'exit direction')
+        const playerBox = getAABB(pos, { width: 1, height: 1, depth: 1 })
 
-            if (!exitDirection) return
-            const nextRoom = this.roomManager.getNeighborRoom(exitDirection)
+        const exits = world.getEntitiesWithTag(EntityTag.ExitDoor)
 
-            if (!nextRoom) return
-            this.roomManager.transitionTo(nextRoom?.id, exitDirection)
+        if (!logged) {
+            console.log(exits, 'exits')
+            logged = true
         }
-        // console.log(player, 'player @ EXIT DETECT')
+        for (const exit of exits) {
+            const exitPos = exit.getComponent<PositionComponent>(ComponentType.Position)
+            if (!exitPos) continue
 
-        // if player steps onto exit tile
-        //find room exit tile leads to
+            // console.log(exitPos, 'exit')
+
+            const exitBox = getAABB(exitPos, { width: 1, height: 1, depth: 1 })
+            const intersecting = boxesIntersect(
+                playerBox.min,
+                playerBox.max,
+                exitBox.min,
+                exitBox.max
+            )
+
+            if (intersecting) {
+                console.log('INTERSECT WITH  EXIT')
+                const dirComp = exit.getComponent<DirectionComponent>(ComponentType.Direction)
+                if (dirComp) {
+                    const targetRoom = this.roomManager.getNeighborRoom(dirComp.direction)
+
+                    if (targetRoom) {
+                        this.roomManager.transitionTo(targetRoom.id, dirComp.direction)
+                    }
+                }
+            }
+        }
     }
 }

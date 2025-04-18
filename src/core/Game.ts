@@ -10,7 +10,6 @@ import {
 // ECS imports
 import { RenderSystem } from '@/shared/systems/RenderSystem'
 import { RotationSystem } from '@/shared/systems/RotationSystem'
-import { MovementSystem } from '@/shared/systems/MovementSystem'
 import { InputSystem } from '@/shared/systems/InputSystem'
 import { CameraSystem } from '@/shared/systems/CameraSystem'
 import { LifespanSystem } from '@/shared/systems/LifespanSystem'
@@ -28,6 +27,8 @@ import { LevelGenerator } from '@/gameplay/level/LevelGenerator'
 import { MiniMap } from '@/gameplay/ui/Minimap'
 import { RoomExitDetectionSystem } from '@/shared/systems/RoomExitDetectionSystem'
 import { RoomManager } from '@/gameplay/level/RoomManager'
+import { TransformSystem } from '@/shared/systems/Movement/System'
+import { VelocitySystem } from '@/shared/systems/VelocitySystem'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -102,10 +103,12 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     const minimap = new MiniMap(roomManager)
 
+    world.addSystem(new InputSystem())
+    world.addSystem(new VelocitySystem())
+    world.addSystem(new TransformSystem())
+
     world.addSystem(new RenderSystem())
     world.addSystem(new RotationSystem())
-    world.addSystem(new MovementSystem())
-    world.addSystem(new InputSystem())
     world.addSystem(new LifespanSystem())
     world.addSystem(new PlayerAttackSystem())
     world.addSystem(new DamageSystem())

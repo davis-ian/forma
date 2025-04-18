@@ -11,4 +11,5 @@ export enum ComponentType {
     Lifespan = 'lifespan',
     HealthBar = 'healthbar',
     Visual = 'visual',
+    Direction = 'direction',
 }

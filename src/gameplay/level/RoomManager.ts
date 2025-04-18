@@ -61,10 +61,10 @@ export class RoomManager {
     }
 
     cleanUpCurrentRoom() {
-        console.log('cleaning up room!')
+        // console.log('cleaning up room!')
         const entities = this.world.getEntitiesWithTag(EntityTag.RoomInstance)
 
-        console.log(entities, 'entities to clean')
+        // console.log(entities, 'entities to clean')
         for (const entity of entities) {
             this.world.destroyEntity(entity.id)
         }

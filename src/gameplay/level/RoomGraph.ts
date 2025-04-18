@@ -37,7 +37,7 @@ function posKey(x: number, y: number): string {
 }
 
 // Return the opposite direction, used for linking rooms bidirectionally
-function opposite(dir: Direction): Direction {
+export function opposite(dir: Direction): Direction {
     switch (dir) {
         case 'top':
             return 'bottom'

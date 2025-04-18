@@ -4,4 +4,6 @@ export enum EntityTag {
     Enemy = 'enemy',
     UI = 'ui',
     RoomInstance = 'room-instance',
+    Solid = 'solid',
+    ExitDoor = 'exit-door',
 }

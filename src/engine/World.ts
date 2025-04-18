@@ -24,7 +24,7 @@ export class World {
     }
 
     destroyEntity(entityId: EntityId): Entity | null {
-        console.log('destroying enitity', entityId)
+        // console.log('destroying enitity', entityId)
         const entity = this.entities.get(entityId)
         if (!entity) return null
 
@@ -83,6 +83,16 @@ export class World {
 
     hasTag(entityId: EntityId, tag: string) {
         return this.tags.has(tag) && this.tags.get(tag)!.has(entityId)
+    }
+
+    getEntityTags(entityId: EntityId) {
+        const result: string[] = []
+        for (const [tag, entities] of this.tags.entries()) {
+            if (entities.has(entityId)) {
+                result.push(tag)
+            }
+        }
+        return result
     }
 
     getEntitiesWithTag(tag: string): Entity[] {

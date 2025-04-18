@@ -24,7 +24,7 @@ const EXIT_COLOR = '#fc33ff'
 const START_BORDER_COLOR = '#00e676'
 const END_BORDER_COLOR = '#ff5252'
 
-const DEBUG = true
+const DEBUG = false
 
 // -----------------------------
 // Public API
@@ -97,15 +97,13 @@ export function getRoomTiles(room: Room): TileType[][] {
         for (let x = 0; x < room.width; x++) {
             let tile: TileType = TileType.Floor
 
-            if (
-                x > 0 &&
-                x < room.width - 1 &&
-                z > 0 &&
-                z < room.height - 1 &&
-                room.tags.includes('start') &&
-                x === centerX &&
-                z === centerZ
-            ) {
+            // Add walls around the edges
+            if (x === 0 || x === room.width - 1 || z === 0 || z === room.height - 1) {
+                tile = TileType.Wall
+            }
+
+            // Start tile (center of room)
+            if (room.tags.includes('start') && x === centerX && z === centerZ) {
                 tile = TileType.PlayerStart
             }
 
@@ -115,11 +113,24 @@ export function getRoomTiles(room: Room): TileType[][] {
         tiles.push(row)
     }
 
+    // Replace walls with exits where exits exist
     for (const exit of room.exits) {
-        if (exit === 'top') tiles[0][centerX] = TileType.Exit
-        if (exit === 'bottom') tiles[room.height - 1][centerX] = TileType.Exit
-        if (exit === 'left') tiles[centerZ][0] = TileType.Exit
-        if (exit === 'right') tiles[centerZ][room.width - 1] = TileType.Exit
+        if (exit === 'top') {
+            tiles[0][centerX] = TileType.Exit
+            tiles[0][centerX + 1] = TileType.Exit
+        }
+        if (exit === 'bottom') {
+            tiles[room.height - 1][centerX] = TileType.Exit
+            tiles[room.height - 1][centerX + 1] = TileType.Exit
+        }
+        if (exit === 'left') {
+            tiles[centerZ][0] = TileType.Exit
+            tiles[centerZ + 1][0] = TileType.Exit
+        }
+        if (exit === 'right') {
+            tiles[centerZ][room.width - 1] = TileType.Exit
+            tiles[centerZ + 1][room.width - 1] = TileType.Exit
+        }
     }
 
     return tiles
@@ -163,19 +174,50 @@ function renderTile(
 
     const baseColor = isBorder ? getBorderColor(room.tags) : floorColor
 
-    let tileColor = baseColor
-
-    if (tile === TileType.Exit) {
-        tileColor = EXIT_COLOR
-    }
-
     if (tile !== TileType.Wall) {
-        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, tileColor, x, FLOOR_Y, z)
+        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, baseColor, x, FLOOR_Y, z)
     }
 
     switch (tile) {
+        case TileType.Floor:
+            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, baseColor, x, FLOOR_Y, z)
+            break
+
+        case TileType.Exit:
+            // Calculate direction based on position
+            const roomCenterX = offsetX + Math.floor(room.width / 2)
+            const roomCenterZ = offsetZ + Math.floor(room.height / 2)
+
+            let direction: 'top' | 'bottom' | 'left' | 'right' = 'top'
+
+            if (z === offsetZ) direction = 'top'
+            else if (z === offsetZ + room.height - 1) direction = 'bottom'
+            else if (x === offsetX) direction = 'left'
+            else if (x === offsetX + room.width - 1) direction = 'right'
+
+            // Draw floor under the door
+            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, EXIT_COLOR, x, FLOOR_Y, z)
+
+            // Add an invisible (or visible) door entity that triggers transitions
+            const door = createTileEntity(
+                world,
+                TILE_SIZE,
+                FLOOR_HEIGHT,
+                EXIT_COLOR,
+                x,
+                FLOOR_Y + 1,
+                z
+            )
+            door.addTag(EntityTag.ExitDoor)
+            door.addComponent(ComponentType.Direction, { direction })
+            break
+
         case TileType.Wall:
-            createTileEntity(world, TILE_SIZE, TILE_SIZE, wallColor, x, WALL_Y, z)
+            const wall = createTileEntity(world, TILE_SIZE, TILE_SIZE, wallColor, x, WALL_Y, z)
+            wall.addTag(EntityTag.Solid)
+            if (DEBUG) {
+                console.log('Tagged wall as solid', wall.id, wall.getTags())
+            }
             break
         case TileType.PlayerStart:
             if (DEBUG) console.log('✅ Player tile detected!')

@@ -5,6 +5,7 @@ import type { DamageComponent } from '../components/Damage'
 import type { HurtboxComponent } from '../components/Hurtbox'
 import type { HealthComponent } from '../components/Health'
 import type { HitboxComponent } from '../components/Hitbox'
+import { boxesIntersect, getAABB } from '../utils/collisionUtils'
 
 const debug = true
 
@@ -71,47 +72,4 @@ export class DamageSystem extends System {
             }
         }
     }
-}
-
-/**
- * Computes an axis-aligned bounding box (AABB) from an entity's position and size.
- * Offsets are optional, allowing hurtboxes or hitboxes to be positioned relative to center.
- */
-function getAABB(
-    pos: PositionComponent,
-    size: { width: number; height: number; depth: number },
-    offset = { x: 0, y: 0, z: 0 }
-) {
-    return {
-        min: {
-            x: pos.x - size.width / 2 + (offset.x || 0),
-            y: pos.y - size.height / 2 + (offset.y || 0),
-            z: pos.z - size.depth / 2 + (offset.z || 0),
-        },
-        max: {
-            x: pos.x + size.width / 2 + (offset.x || 0),
-            y: pos.y + size.height / 2 + (offset.y || 0),
-            z: pos.z + size.depth / 2 + (offset.z || 0),
-        },
-    }
-}
-
-/**
- * Returns true if two AABBs intersect in all three axes.
- * Assumes each box is defined by min and max vectors.
- */
-function boxesIntersect(
-    aMin: PositionComponent,
-    aMax: PositionComponent,
-    bMin: PositionComponent,
-    bMax: PositionComponent
-): boolean {
-    return (
-        aMin.x <= bMax.x &&
-        aMax.x >= bMin.x &&
-        aMin.y <= bMax.y &&
-        aMax.y >= bMin.y &&
-        aMin.z <= bMax.z &&
-        aMax.z >= bMin.z
-    )
 }

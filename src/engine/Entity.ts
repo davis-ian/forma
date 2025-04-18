@@ -41,4 +41,8 @@ export class Entity {
     hasTag(tag: string) {
         return this.world.hasTag(this.id, tag)
     }
+
+    getTags(): string[] {
+        return this.world.getEntityTags(this.id)
+    }
 }
