@@ -48,7 +48,7 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     //Set isometric camera
     // camera.position.set(0, 7, 5)
-    camera.position.set(0, 30, 5)
+    camera.position.set(0, 10, 5)
     camera.lookAt(0, 0, 0)
 
     const ambient = new AmbientLight(0xffffff, 0.5)

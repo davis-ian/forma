@@ -4,6 +4,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/shared/components/Visual'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
+import { createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
 
 const enemy = {
     width: 1,
@@ -17,7 +18,7 @@ const hurtboxOffset = {
     z: 0,
 }
 
-export function createEnemy(
+export async function createEnemy(
     world: World,
     x: number,
     y: number,
@@ -37,7 +38,8 @@ export function createEnemy(
     entity.addComponent(ComponentType.Rotation, { x: 0, y: 0, z: 0 })
     entity.addComponent(ComponentType.Velocity, { x: 0, y: 0, z: 0 })
 
-    const enemyMesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 'red' }))
+    // const enemyMesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 'red' }))
+    const enemyMesh = await createSpriteMeshAsync('/assets/Torch_Purple.png', 8, 8, 0, 0, 2)
     entity.addComponent(ComponentType.Mesh, {
         mesh: enemyMesh,
     })

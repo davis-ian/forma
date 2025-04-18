@@ -9,8 +9,8 @@ import type { VisualComponent } from '@/shared/components/Visual'
 import { getRandomInt } from './utils/random'
 
 // Room size & visuals
-const ROOM_WIDTH = 20
-const ROOM_HEIGHT = 10
+const ROOM_WIDTH = 30
+const ROOM_HEIGHT = 20
 // const ROOM_PADDING = 1.5
 const ROOM_PADDING = 1
 const TILE_SIZE = 1
@@ -215,7 +215,7 @@ function renderTile(
         case TileType.PlayerStart:
             if (DEBUG) console.log('✅ Player tile detected!')
             if (!world.getEntitiesWithTag(EntityTag.Player).length) {
-                createPlayer(world, x, PLAYER_Y, z, DEBUG)
+                createPlayer(world, x, PLAYER_Y, z)
             }
             break
     }
