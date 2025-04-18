@@ -6,17 +6,16 @@ export enum TileType {
     Exit = 'exit',
 }
 
-export interface RoomDefinition {
-    height: number
-    width: number
-    tiles: TileType[][]
-    offsetX: number
-    offsetZ: number
-    floorColor: string
-    wallColor: string
-    enemyWaves?: { x: number; z: number }[][]
-    tags?: string[] //eg ["start", "boss", "shop"]
-}
+// export interface RoomDefinition {
+//     height: number
+//     width: number
+//     tiles: TileType[][]
+//     offsetX: number
+//     offsetZ: number
+//     floorColor: string
+//     wallColor: string
+//     tags?: string[] //eg ["start", "boss", "shop"]
+// }
 
 export interface Room {
     id: string
@@ -26,8 +25,15 @@ export interface Room {
     height: number
     exits: Direction[]
     tags: string[]
+    state?: RoomState
 }
 
+export interface RoomState {
+    visited: boolean
+    cleared: boolean
+    defeatedEnemyIds: string[]
+    spawnedLootIds: string[]
+}
 export interface RoomNode {
     x: number
     y: number

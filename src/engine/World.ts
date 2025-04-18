@@ -24,6 +24,7 @@ export class World {
     }
 
     destroyEntity(entityId: EntityId): Entity | null {
+        console.log('destroying enitity', entityId)
         const entity = this.entities.get(entityId)
         if (!entity) return null
 

@@ -50,6 +50,7 @@ export function createEnemy(world: World, x: number, y: number, z: number, debug
     bar.geometry.translate(0, 0.8, 0)
 
     entity.addTag(EntityTag.Enemy)
+    entity.addTag(EntityTag.RoomInstance)
     scene.add(enemyMesh)
     scene.add(bar)
 

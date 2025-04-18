@@ -3,8 +3,8 @@ import { EntityTag } from '@/engine/EntityTag'
 import { RoomManager } from '@/gameplay/level/RoomManager'
 import type { PositionComponent } from '../components/Position'
 import { ComponentType } from '@/engine/ComponentType'
-import { isPlayerOnExitTile } from '../utils/helpers'
-import { generateRoomDefinition } from '@/gameplay/level/spawnRoom'
+import { getExitDirection, getTileAtWorldPosition } from '../utils/roomUtils'
+import { TileType } from '@/gameplay/level/types'
 
 var logged: boolean = false
 export class RoomExitDetectionSystem extends System {
@@ -22,35 +22,24 @@ export class RoomExitDetectionSystem extends System {
         const pos = player.getComponent<PositionComponent>(ComponentType.Position)
         const currentRoom = this.roomManager.getCurrentRoom()
         // console.log(currentRoom, 'current room')
-        if (!currentRoom) return
+        if (!currentRoom || !pos) return
 
-        const currentRoomDef = generateRoomDefinition(currentRoom!)
+        //TODO: we may want to improve this later
+        const tile = getTileAtWorldPosition(pos.x, pos.z, currentRoom)
+        if (tile === TileType.Exit) {
+            // console.log('🚪 Player is on an exit tile! Transitioning...')
+            const exitDirection = getExitDirection(pos.x, pos.z, currentRoom)
+            // console.log(exitDirection, 'exit direction')
 
-        if (pos && currentRoom && isPlayerOnExitTile(pos.x, pos.z, currentRoomDef)) {
-            console.log('🚪 Player is on an exit tile! Transitioning...')
-            // const exitDirection = getExitDirection(pos, currentRoomDef)
-            // this.roomManager.tranmsitionTo(exitDirection)
+            if (!exitDirection) return
+            const nextRoom = this.roomManager.getNeighborRoom(exitDirection)
+
+            if (!nextRoom) return
+            this.roomManager.transitionTo(nextRoom?.id, exitDirection)
         }
         // console.log(player, 'player @ EXIT DETECT')
 
         // if player steps onto exit tile
         //find room exit tile leads to
-
-        // const entities = world.getEntitiesWithComponent(ComponentType.Health)
-
-        // for (const entity of entities) {
-        //     const health = entity.getComponent<HealthComponent>(ComponentType.Health)!
-
-        //     //Clamp
-        //     health.current = Math.max(0, Math.min(health.current, health.max))
-
-        //     if (health.current <= 0) {
-        //         console.log(`💀 Entity ${entity.id} died`)
-
-        //         //TODO: add death animation, sound, etc
-
-        //         world.destroyEntity(entity.id)
-        //     }
-        // }
     }
 }

@@ -1,6 +1,10 @@
-import type { World } from '@/engine'
+import { Entity, type World } from '@/engine'
 import type { Direction, Room } from './types'
-import { generateRoomDefinition, spawnRoom } from './spawnRoom'
+import { getRoomOffset, renderRoomToScene } from './roomFactory'
+import { EntityTag } from '@/engine/EntityTag'
+import { ComponentType } from '@/engine/ComponentType'
+import type { PositionComponent } from '@/shared/components/Position'
+import { teleportPlayer } from '@/shared/utils/roomUtils'
 
 //Tracks which room is 'active'
 //spawns active room, removes previous
@@ -16,7 +20,7 @@ export class RoomManager {
 
     transitionTo(
         roomId: string,
-        entranceFrom?: Direction,
+        entranceFrom: Direction,
         options?: {
             animate?: boolean
         }
@@ -28,22 +32,55 @@ export class RoomManager {
 
         if (!room) {
             console.log('room not found in roomGraph')
+            return
         }
 
-        // 1. remove  old room entities
+        // Destroy current room visuals/entities
+        this.cleanUpCurrentRoom()
 
-        //2 spawn new room via spawnRoom()
-        const def = generateRoomDefinition(room!)
-        console.log(def, 'room def INTO')
-        spawnRoom(this.world, def)
+        // If room has been visited before, re-render it in its saved state
+        renderRoomToScene(this.world, room!, room?.state)
 
-        //3 move player to the entrance tile
+        // Move player to entrance position
+        const player = this.world.getEntitiesWithTag(EntityTag.Player)[0]
+        if (player && entranceFrom) {
+            const position = player.getComponent<PositionComponent>(ComponentType.Position)
+            const { x, z } = this.getEntranceTilePosition(room, entranceFrom)
 
+            if (position) {
+                teleportPlayer(this.world, x, position.y, z)
+            }
+        }
+
+        this.activeRoomId = room.id
         //4 play animation if needed
     }
 
     getCurrentRoom(): Room | null {
         return this.getRoom(this.activeRoomId)
+    }
+
+    cleanUpCurrentRoom() {
+        console.log('cleaning up room!')
+        const entities = this.world.getEntitiesWithTag(EntityTag.RoomInstance)
+
+        console.log(entities, 'entities to clean')
+        for (const entity of entities) {
+            this.world.destroyEntity(entity.id)
+        }
+    }
+
+    getNeighborRoom(direction: Direction): Room | null {
+        const currentRoom = this.getCurrentRoom()
+        if (!currentRoom) return null
+
+        const [dx, dy] = directionDelta[direction]
+        const neighborId = `${currentRoom.x + dx},${currentRoom.y + dy}`
+        return this.getRoom(neighborId)
+    }
+
+    getRoomGraph() {
+        return this.roomGraph
     }
 
     setActiveRoom(id: string) {
@@ -58,7 +95,31 @@ export class RoomManager {
         //cleanup if needed (eg before restarting level)
     }
 
+    getEntranceTilePosition(room: Room, from: Direction): { x: number; z: number } {
+        const { offsetX, offsetZ } = getRoomOffset(room)
+        const centerX = Math.floor(room.width / 2)
+        const centerZ = Math.floor(room.height / 2)
+
+        switch (from) {
+            case 'top':
+                return { x: offsetX + centerX, z: offsetZ + room.height - 2 }
+            case 'bottom':
+                return { x: offsetX + centerX, z: offsetZ + 1 }
+            case 'left':
+                return { x: offsetX + room.width - 2, z: offsetZ + centerZ }
+            case 'right':
+                return { x: offsetX + 1, z: offsetZ + centerZ }
+        }
+    }
+
     private getRoom(roomId: string | null) {
         return roomId ? (this.roomGraph.get(roomId) ?? null) : null
     }
+}
+
+const directionDelta: Record<Direction, [dx: number, dy: number]> = {
+    top: [0, -1],
+    bottom: [0, 1],
+    left: [-1, 0],
+    right: [1, 0],
 }

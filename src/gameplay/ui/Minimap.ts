@@ -1,7 +1,6 @@
 import type { World } from '@/engine'
 import type { Room } from '../level/types'
-import { ComponentType } from '@/engine/ComponentType'
-import type { PositionComponent } from '@/shared/components/Position'
+import { RoomManager } from '../level/RoomManager'
 
 export class MiniMap {
     private canvas: HTMLCanvasElement
@@ -10,8 +9,8 @@ export class MiniMap {
     private scale = 6 //scale  factor for tile size
     private tileSize = 1 //how big 1 unit is
 
-    constructor(roomMap: Map<string, Room>) {
-        this.roomMap = roomMap
+    constructor(private roomManager: RoomManager) {
+        this.roomMap = roomManager.getRoomGraph()
 
         this.canvas = document.createElement('canvas')
         this.canvas.width = 100
@@ -33,22 +32,35 @@ export class MiniMap {
         const ctx = this.ctx
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-        //Draw each room
+        const currentRoom = this.roomManager.getCurrentRoom()
+
         for (const room of this.roomMap.values()) {
-            const color = this.getRoomColor(room)
+            const isActive = room.id === currentRoom?.id
+
+            const color = isActive ? '#00ffff' : this.getRoomColor(room)
+
             this.drawRoom(room.x, room.y, color)
         }
 
-        const player = world.getEntitiesWithComponent(ComponentType.Input)[0]
-        if (player) {
-            const pos = player.getComponent<PositionComponent>(ComponentType.Position)
-            if (pos) {
-                const px = Math.floor(pos.x / 25)
-                const pz = Math.floor(pos.z / 25)
+        // const ctx = this.ctx
+        // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
-                this.drawPlayerMarker(px, pz)
-            }
-        }
+        // //Draw each room
+        // for (const room of this.roomMap.values()) {
+        //     const color = this.getRoomColor(room)
+        //     this.drawRoom(room.x, room.y, color)
+        // }
+
+        // const player = world.getEntitiesWithComponent(ComponentType.Input)[0]
+        // if (player) {
+        //     const pos = player.getComponent<PositionComponent>(ComponentType.Position)
+        //     if (pos) {
+        //         const px = Math.floor(pos.x / 25)
+        //         const pz = Math.floor(pos.z / 25)
+
+        //         this.drawPlayerMarker(px, pz)
+        //     }
+        // }
     }
 
     private drawRoom(x: number, z: number, color: string) {

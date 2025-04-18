@@ -47,7 +47,7 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     //Set isometric camera
     // camera.position.set(0, 7, 5)
-    camera.position.set(0, 10, 5)
+    camera.position.set(0, 30, 5)
     camera.lookAt(0, 0, 0)
 
     const ambient = new AmbientLight(0xffffff, 0.5)
@@ -93,18 +93,14 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
      */
 
     // loadLevel(world, testLevel, scene)
-    // spawnRoom(world, room1)
 
-    // spawnRoom(world, scene, room2)
-    // spawnRoom(world, scene, room3)
-    // spawnRoom(world, scene, room4)
     const generator = new LevelGenerator()
     const roomGraph = generator.init(world, 10)
 
     const roomManager = new RoomManager(world, roomGraph)
     roomManager.setActiveRoom('0,0')
 
-    const minimap = new MiniMap(roomGraph)
+    const minimap = new MiniMap(roomManager)
 
     world.addSystem(new RenderSystem())
     world.addSystem(new RotationSystem())

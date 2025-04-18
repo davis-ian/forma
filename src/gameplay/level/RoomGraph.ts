@@ -18,7 +18,7 @@ Calls generateRoom for each new placement
 
 */
 
-import { generateRoom } from './generateRoom'
+import { createRoomMeta } from './roomFactory'
 import type { Direction, Room, RoomNode } from './types'
 
 // Define valid expansion directions and their corresponding (x, y) deltas
@@ -59,43 +59,61 @@ function opposite(dir: Direction): Direction {
  * @returns
  */
 export function generateRoomGraph(maxRooms: number): Map<string, Room> {
-    // Stores placed rooms by grid key
     const roomMap = new Map<string, Room>()
-    //Tracks visited grid positions
     const visited = new Set<string>()
-
-    //start from seed position
-    const start: RoomNode = { x: 0, y: 0 }
-    const stack: RoomNode[] = [start]
+    const stack: RoomNode[] = [{ x: 0, y: 0 }] // start at (0, 0)
 
     while (stack.length && roomMap.size < maxRooms) {
         const { x, y, from } = stack.pop()!
         const id = posKey(x, y)
-
-        //Skip if this position is already occupied
         if (visited.has(id)) continue
 
-        // Generate room and mark as visited
-        const room = generateRoom(x, y, from)
+        const room = createRoomMeta(x, y, from)
         if (roomMap.size === 0) {
-            room.tags = ['start'] // mark first room
+            room.tags.push('start')
         }
 
         visited.add(id)
         roomMap.set(id, room)
 
         const neighbors = getUnvisitedNeighbors(x, y, visited, maxRooms, roomMap.size)
+
         for (const neighbor of neighbors) {
+            const { x: nx, y: ny, from: dirFrom } = neighbor
+            const neighborKey = posKey(nx, ny)
+
+            // Current room gets exit toward neighbor
+            room.exits.push(dirFrom ? opposite(dirFrom) : 'top')
+
+            // Ensure neighbor room is created
+            let neighborRoom = roomMap.get(neighborKey)
+            if (!neighborRoom) {
+                neighborRoom = createRoomMeta(nx, ny, dirFrom)
+                roomMap.set(neighborKey, neighborRoom)
+            }
+
+            // Neighbor room gets exit pointing back
+            neighborRoom.exits.push(dirFrom!)
             stack.push(neighbor)
-            room.exits.push(opposite(neighbor.from!))
         }
     }
 
+    // Mark final room
     const roomArr = Array.from(roomMap.values())
     const lastRoom = roomArr[roomArr.length - 1]
     if (lastRoom) {
         lastRoom.tags ??= []
         lastRoom.tags.push('end')
+    }
+
+    // 🔒 Final pruning: remove exits that lead nowhere or aren't reciprocated
+    for (const room of roomMap.values()) {
+        room.exits = room.exits.filter((dir) => {
+            const [dx, dy] = directionDelta[dir]
+            const neighborKey = posKey(room.x + dx, room.y + dy)
+            const neighborRoom = roomMap.get(neighborKey)
+            return neighborRoom?.exits.includes(opposite(dir))
+        })
     }
 
     return roomMap
@@ -126,4 +144,11 @@ export function getUnvisitedNeighbors(
     }
 
     return result
+}
+
+const directionDelta: Record<Direction, [dx: number, dy: number]> = {
+    top: [0, -1],
+    bottom: [0, 1],
+    left: [-1, 0],
+    right: [1, 0],
 }

@@ -1,7 +1,7 @@
 import type { World } from '@/engine'
 import { generateRoomGraph } from './RoomGraph'
 import type { Room } from './types'
-import { generateRoomDefinition, spawnRoom } from './spawnRoom'
+import { renderRoomToScene } from './roomFactory'
 
 export class LevelGenerator {
     private graph: Map<string, Room> = new Map()
@@ -14,8 +14,11 @@ export class LevelGenerator {
             throw new Error('Start room not found in this graph')
         }
 
-        const def = generateRoomDefinition(startRoom)
-        spawnRoom(world, def)
+        //Spawn all rooms for debugging
+        // for (const room of this.graph.values()) {
+        //     renderRoomToScene(world, room)
+        // }
+        renderRoomToScene(world, startRoom)
 
         return this.graph
     }
