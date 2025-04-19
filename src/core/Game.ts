@@ -5,6 +5,7 @@ import {
     WebGLRenderer,
     AmbientLight,
     DirectionalLight,
+    MathUtils,
 } from 'three'
 
 // ECS imports
@@ -31,6 +32,8 @@ import { VelocitySystem } from '@/shared/systems/VelocitySystem'
 import { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
 import { MovementSystem } from '@/shared/systems/MovementSystem'
 import { DamageFlashSystem } from '@/shared/systems/DamageFlashSystem'
+import { SpriteAnimationSystem } from '@/shared/systems/SpriteAnimationSystem'
+import { SpriteAnimationStateSystem } from '@/shared/systems/SpriteAnimationStateSystem'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -50,8 +53,15 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     //Set isometric camera
     // camera.position.set(0, 7, 5)
-    camera.position.set(0, 15, 5)
-    camera.lookAt(0, 0, 0)
+
+    const distance = 30.22
+    const angleRadians = MathUtils.degToRad(45)
+
+    const y = Math.sin(angleRadians) * distance
+    const z = Math.cos(angleRadians) * distance
+
+    camera.position.set(0, y, z)
+    camera.lookAt(0, -30, 0)
 
     const ambient = new AmbientLight(0xffffff, 0.5)
     scene.add(ambient)
@@ -122,6 +132,8 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new CameraSystem(camera))
     world.addSystem(new DebugDrawSystem())
     world.addSystem(new RoomExitDetectionSystem(roomManager))
+    world.addSystem(new SpriteAnimationSystem())
+    world.addSystem(new SpriteAnimationStateSystem())
 
     /**
      * Animation loop

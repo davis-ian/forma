@@ -4,7 +4,9 @@ import type { PositionComponent } from '@/shared/components/Position'
 import type { RotationComponent } from '@/shared/components/Rotation'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { AttackRegistry } from './AttackRegistry'
-import type { VelocityComponent } from '@/shared/components/Velocity'
+import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
+import { setAnimationState } from '@/shared/utils/animationUtils'
+import type { InputComponent } from '@/shared/components/Input'
 
 //TODO: Support different sized hitboxes, current implementation only works with cube hit boxes
 // revisit when weapons need different ranges
@@ -82,7 +84,7 @@ function spawnAttackHitbox(
     }
 }
 
-function applyLunge(world: World, entity: Entity, force: number = 5) {
+function applyLunge(world: World, entity: Entity, force: number = 3) {
     const rotation = entity.getComponent<RotationComponent>(ComponentType.Rotation)
 
     if (!rotation) return
@@ -100,10 +102,25 @@ export function performSweepingAttack(
     debug = false
 ) {
     const sweepAngles = [-1, -0.8, -0.6, -0.4, -0.2, 0.2, 0.4, 0.6, 0.8, 1] //sweeping left to right
-    const delay = 10 //ms between each hitbox
+    const delay = 5 //ms between each hitbox
     const attackId = crypto.randomUUID()
 
     applyLunge(world, attackerEntity)
+
+    const animation = attackerEntity.getComponent<SpriteAnimationComponent>(
+        ComponentType.SpriteAnimation
+    )
+    const input = attackerEntity.getComponent<InputComponent>(ComponentType.Input)
+    const preset = input?.up ? 'sweepUp' : input?.down ? 'sweepDown' : 'sweepSide' // left/right share same anim row
+
+    if (animation) {
+        setAnimationState(animation, preset, {
+            locked: true,
+            onComplete: () => {
+                setAnimationState(animation, 'idle')
+            },
+        })
+    }
 
     sweepAngles.forEach((offset, i) => {
         setTimeout(() => {

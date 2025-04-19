@@ -1,4 +1,4 @@
-import type { Mesh, Object3D } from 'three'
+import type { Object3D } from 'three'
 
 export interface VisualComponent {
     meshes: {

@@ -1,6 +1,9 @@
 import {
     ClampToEdgeWrapping,
+    Mesh,
+    MeshBasicMaterial,
     NearestFilter,
+    PlaneGeometry,
     RepeatWrapping,
     Sprite,
     SpriteMaterial,
@@ -49,4 +52,39 @@ export async function createSpriteMeshAsync(
     sprite.scale.set(width, height, 1)
     sprite.position.y += height / 2
     return sprite
+}
+
+export async function createPlaneMeshAsync(
+    texturePath: string,
+    columns = 1,
+    rows = 1,
+    columnIndex = 0,
+    rowIndex = 0,
+    size = 1
+): Promise<Mesh> {
+    const loader = new TextureLoader()
+    const texture = await loader.loadAsync(texturePath)
+
+    texture.magFilter = NearestFilter
+    texture.minFilter = NearestFilter
+    texture.wrapS = ClampToEdgeWrapping
+    texture.wrapT = ClampToEdgeWrapping
+    texture.flipY = true
+
+    // Set initial frame
+    texture.repeat.set(1 / columns, 1 / rows)
+    texture.offset.set(columnIndex / columns, 1 - (rowIndex + 1) / rows)
+
+    const material = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+    })
+
+    const geometry = new PlaneGeometry(size, size, 1, 1)
+    const mesh = new Mesh(geometry, material)
+
+    // Rotate the plane to face the camera (top-down)
+    mesh.rotation.x = -Math.PI / 2 // lay flat in XZ plane
+
+    return mesh
 }

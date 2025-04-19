@@ -1,7 +1,6 @@
 import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '@/shared/components/Input'
-
 export class InputSystem extends System {
     private keys = new Set<string>()
 

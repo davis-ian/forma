@@ -14,4 +14,5 @@ export enum ComponentType {
     Visual = 'visual',
     Direction = 'direction',
     Impulse = 'impulse',
+    SpriteAnimation = 'sprite-animation',
 }
