@@ -107,7 +107,8 @@ export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
         const spawnTiles = shuffle(floorPositions).slice(0, enemyCount)
 
         for (const pos of spawnTiles) {
-            const maxHealth = getRandomInt(1, 5)
+            // const maxHealth = getRandomInt(1, 5)
+            const maxHealth = 5
             createEnemy(world, pos.x, ENEMY_Y, pos.z, maxHealth)
         }
 

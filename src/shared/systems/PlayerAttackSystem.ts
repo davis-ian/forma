@@ -1,14 +1,19 @@
 import { System, type World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '../components/Input'
-import { spawnAttackHitbox } from '@/gameplay/actions'
+import { performSweepingAttack } from '@/gameplay/actions'
 import { EntityTag } from '@/engine/EntityTag'
+import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
 
 const attackCooldown = 0.2
 const debug = true
 
 export class PlayerAttackSystem extends System {
     private attackCooldown = 0
+
+    constructor(private attackRegistry: AttackRegistry) {
+        super()
+    }
 
     update(world: World, deltaTime: number) {
         this.attackCooldown -= deltaTime
@@ -23,7 +28,8 @@ export class PlayerAttackSystem extends System {
         if (!input) return
 
         if (input.attack && this.attackCooldown <= 0) {
-            spawnAttackHitbox(world, player, debug)
+            // spawnAttackHitbox(world, player, 0, debug)
+            performSweepingAttack(world, player, this.attackRegistry, debug)
             this.attackCooldown = attackCooldown
         }
     }

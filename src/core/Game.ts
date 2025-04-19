@@ -29,6 +29,7 @@ import { RoomExitDetectionSystem } from '@/shared/systems/RoomExitDetectionSyste
 import { RoomManager } from '@/gameplay/level/RoomManager'
 import { TransformSystem } from '@/shared/systems/Movement/System'
 import { VelocitySystem } from '@/shared/systems/VelocitySystem'
+import { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -109,9 +110,11 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     world.addSystem(new RenderSystem())
     world.addSystem(new RotationSystem())
-    world.addSystem(new LifespanSystem())
-    world.addSystem(new PlayerAttackSystem())
-    world.addSystem(new DamageSystem())
+    const attackRegistry = new AttackRegistry()
+
+    world.addSystem(new PlayerAttackSystem(attackRegistry))
+    world.addSystem(new LifespanSystem(attackRegistry))
+    world.addSystem(new DamageSystem(attackRegistry))
     world.addSystem(new HealthBarSystem())
     world.addSystem(new HealthSystem())
     world.addSystem(new CameraSystem(camera))

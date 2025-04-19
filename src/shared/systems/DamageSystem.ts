@@ -55,7 +55,16 @@ export class DamageSystem extends System {
                         ComponentType.Health
                     )
                     if (targetHealth) {
+                        if (!targetHealth.recentlyHitBy) {
+                            targetHealth.recentlyHitBy = new Set()
+                        }
+
+                        if (targetHealth.recentlyHitBy.has(damage.attackId)) {
+                            return //already hit by this attack
+                        }
+
                         targetHealth.current -= damage.amount
+                        targetHealth.recentlyHitBy.add(damage.attackId)
                         damage.damagedEntities.add(targetEntity.id)
                     }
 

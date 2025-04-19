@@ -3,7 +3,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/shared/components/Visual'
 
-import { Mesh, BoxGeometry, MeshBasicMaterial, TextureLoader } from 'three'
+import { Mesh, BoxGeometry, MeshBasicMaterial, TextureLoader, MeshStandardMaterial } from 'three'
 import { createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
 import { PLAYER_SIZE } from '../constants'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
@@ -70,20 +70,20 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     const loader = new TextureLoader()
     console.log(loader, 'new loader')
 
-    // const playerMesh = new Mesh(
-    //     new BoxGeometry(1, 1, 1),
-    //     new MeshStandardMaterial({ color: 'blue' })
-    //     // playerMaterial
-    // )
-    const playerMesh = await createSpriteMeshAsync(
-        // '/assets/Warrior_Red.png',
-        '/assets/chef_sprite_grid2.png',
-        3,
-        3,
-        0,
-        0,
-        PLAYER_SIZE.width * 2
+    const playerMesh = new Mesh(
+        new BoxGeometry(1, 1, 1),
+        new MeshStandardMaterial({ color: 'blue' })
+        // playerMaterial
     )
+    // const playerMesh = await createSpriteMeshAsync(
+    //     // '/assets/Warrior_Red.png',
+    //     '/assets/chef_sprite_grid2.png',
+    //     3,
+    //     3,
+    //     0,
+    //     0,
+    //     PLAYER_SIZE.width * 2
+    // )
 
     entity.addComponent(ComponentType.Mesh, {
         mesh: playerMesh,
