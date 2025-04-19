@@ -1,6 +1,13 @@
+import type { Direction } from '@/gameplay/level/types'
 import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
 
-type AnimationStateName = 'idle' | 'walk' | 'sweepSide' | 'sweepUp' | 'sweepDown'
+export type AnimationStateName =
+    | 'playerIdle'
+    | 'enemyIdle'
+    | 'walk'
+    | 'sweepSide'
+    | 'sweepUp'
+    | 'sweepDown'
 
 interface AnimationStateConfig {
     row: number
@@ -10,7 +17,8 @@ interface AnimationStateConfig {
 }
 
 const animationPresets: Record<AnimationStateName, AnimationStateConfig> = {
-    idle: { row: 0, frameCount: 4, frameDuration: 0.15, loop: true },
+    playerIdle: { row: 0, frameCount: 4, frameDuration: 0.15, loop: true },
+    enemyIdle: { row: 1, frameCount: 6, frameDuration: 0.15, loop: true },
     walk: { row: 1, frameCount: 6, frameDuration: 0.15, loop: true },
     sweepSide: { row: 2, frameCount: 6, frameDuration: 0.005, loop: false },
     sweepUp: { row: 6, frameCount: 6, frameDuration: 0.005, loop: false },

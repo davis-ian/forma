@@ -7,7 +7,6 @@ import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
 import { performSweepingAttack } from '@/gameplay/actions/combat/attackUtils'
 
 const attackCooldown = 0.25
-const debug = false
 
 export class PlayerAttackSystem extends System {
     private attackCooldown = 0
@@ -29,7 +28,7 @@ export class PlayerAttackSystem extends System {
         if (!input) return
 
         if (input.attack && this.attackCooldown <= 0) {
-            performSweepingAttack(world, player, this.attackRegistry, debug)
+            performSweepingAttack(world, player, this.attackRegistry)
 
             this.attackCooldown = attackCooldown
         }

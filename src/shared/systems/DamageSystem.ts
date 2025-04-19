@@ -65,6 +65,18 @@ export class DamageSystem extends System {
                             return //already hit by this attack
                         }
 
+                        const knockbackForce = 50
+                        const angle = Math.atan2(
+                            targetPos.z - damagePos.z,
+                            targetPos.x - damagePos.x
+                        )
+                        const knockbackX = Math.cos(angle) * knockbackForce
+                        const knockbackZ = Math.sin(angle) * knockbackForce
+                        targetEntity.addComponent(ComponentType.Impulse, {
+                            x: knockbackX,
+                            z: knockbackZ,
+                        })
+
                         targetHealth.current -= damage.amount
                         targetHealth.recentlyHitBy.add(damage.attackId)
                         damage.damagedEntities.add(targetEntity.id)

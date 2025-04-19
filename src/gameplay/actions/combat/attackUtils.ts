@@ -12,15 +12,16 @@ import type { InputComponent } from '@/shared/components/Input'
 // revisit when weapons need different ranges
 // Currently using static hitboxes, circle back to this, a dynamic or hybric approach may have better gameplay feel
 
+const DEBUG = false
 const hitbox = {
     width: 1,
     height: 1,
     // depth: 0.5,
-    depth: 1,
+    depth: 2,
     offsetZ: 0,
 }
 
-const SPAWN_DISTANCE = 1.5
+const SPAWN_DISTANCE = 1.05
 
 function spawnAttackHitbox(
     world: World,
@@ -98,8 +99,7 @@ function applyLunge(world: World, entity: Entity, force: number = 3) {
 export function performSweepingAttack(
     world: World,
     attackerEntity: Entity,
-    attackRegistry: AttackRegistry,
-    debug = false
+    attackRegistry: AttackRegistry
 ) {
     const sweepAngles = [-1, -0.8, -0.6, -0.4, -0.2, 0.2, 0.4, 0.6, 0.8, 1] //sweeping left to right
     const delay = 5 //ms between each hitbox
@@ -117,14 +117,14 @@ export function performSweepingAttack(
         setAnimationState(animation, preset, {
             locked: true,
             onComplete: () => {
-                setAnimationState(animation, 'idle')
+                setAnimationState(animation, 'playerIdle')
             },
         })
     }
 
     sweepAngles.forEach((offset, i) => {
         setTimeout(() => {
-            spawnAttackHitbox(world, attackerEntity, attackId, attackRegistry, offset, debug)
+            spawnAttackHitbox(world, attackerEntity, attackId, attackRegistry, offset, DEBUG)
         }, i * delay)
     })
 }

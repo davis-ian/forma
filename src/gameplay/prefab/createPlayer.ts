@@ -99,7 +99,7 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     } as SpriteAnimationComponent
 
     entity.addComponent(ComponentType.SpriteAnimation, animationState)
-    setAnimationState(animationState, 'idle')
+    setAnimationState(animationState, 'playerIdle')
 
     entity.addComponent(ComponentType.Mesh, {
         mesh: playerMesh,

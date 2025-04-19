@@ -6,6 +6,8 @@ import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
 import { PLAYER_SIZE } from '../constants'
+import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
+import { setAnimationState } from '@/shared/utils/animationUtils'
 
 const enemy = {
     width: 1,
@@ -42,12 +44,27 @@ export async function createEnemy(
     // const enemyMesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 'red' }))
     const enemyMesh = await createSpriteMeshAsync(
         '/assets/Torch_Purple.png',
-        8,
-        8,
+        7,
+        5,
         0,
         0,
-        PLAYER_SIZE.width * 2
+        PLAYER_SIZE.width * 4
     )
+
+    let animationState = {
+        currentFrame: 0,
+        frameCount: 0,
+        frameDuration: 0,
+        elapsedTime: 0,
+        row: 1,
+        columns: 7,
+        rows: 5,
+        loop: true,
+        playing: true,
+    } as SpriteAnimationComponent
+
+    entity.addComponent(ComponentType.SpriteAnimation, animationState)
+    setAnimationState(animationState, 'enemyIdle')
     entity.addComponent(ComponentType.Mesh, {
         mesh: enemyMesh,
     })

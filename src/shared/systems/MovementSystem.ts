@@ -49,6 +49,11 @@ export class MovementSystem extends System {
                     pos.z = originalZ
                     vel.z = 0
                 }
+
+                if (!entity.hasComponent(ComponentType.Input)) {
+                    vel.x = 0
+                    vel.z = 0
+                }
             }
         }
     }

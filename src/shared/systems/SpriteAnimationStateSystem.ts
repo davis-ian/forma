@@ -30,7 +30,7 @@ export class SpriteAnimationStateSystem extends System {
                 if (hasDirectionInput) {
                     setAnimationState(anim, 'walk')
                 } else {
-                    setAnimationState(anim, 'idle')
+                    setAnimationState(anim, 'playerIdle')
                 }
             }
 
