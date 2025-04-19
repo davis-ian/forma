@@ -22,6 +22,12 @@ export class Entity {
         this.components.set(type, data)
     }
 
+    removeComponent(type: ComponentType) {
+        if (this.components.has(type)) {
+            this.components.delete(type)
+        }
+    }
+
     getComponent<T>(type: ComponentType): T | undefined {
         return this.components.get(type)
     }

@@ -6,6 +6,7 @@ import type { HurtboxComponent } from '../components/Hurtbox'
 import type { HealthComponent } from '../components/Health'
 import type { HitboxComponent } from '../components/Hitbox'
 import { boxesIntersect, getAABB } from '../utils/collisionUtils'
+import type { DamageFlashComponent } from '../components/DamageFlash'
 
 const debug = true
 
@@ -54,6 +55,7 @@ export class DamageSystem extends System {
                     const targetHealth = targetEntity.getComponent<HealthComponent>(
                         ComponentType.Health
                     )
+
                     if (targetHealth) {
                         if (!targetHealth.recentlyHitBy) {
                             targetHealth.recentlyHitBy = new Set()
@@ -66,6 +68,19 @@ export class DamageSystem extends System {
                         targetHealth.current -= damage.amount
                         targetHealth.recentlyHitBy.add(damage.attackId)
                         damage.damagedEntities.add(targetEntity.id)
+
+                        if (!targetEntity.hasComponent(ComponentType.DamageFlash)) {
+                            targetEntity.addComponent<DamageFlashComponent>(
+                                ComponentType.DamageFlash,
+                                {
+                                    flashTime: 0.1,
+                                    elapsed: 0,
+                                }
+                            )
+                            console.log('Flash  component  added to ', targetEntity.id)
+                        } else {
+                            console.log('FLASH already exitsts')
+                        }
                     }
 
                     if (debug) {

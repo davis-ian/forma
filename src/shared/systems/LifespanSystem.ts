@@ -21,9 +21,9 @@ export class LifespanSystem extends System {
                 const damage = entity.getComponent<DamageComponent>(ComponentType.Damage)
                 if (damage?.attackId) {
                     const fullyRemoved = this.attackRegistry.unregister(damage.attackId, entity.id)
-                    if (fullyRemoved) {
-                        console.log(`[Attack Registry] Attack ${damage.attackId} fully removed`)
-                    }
+                    // if (fullyRemoved) {
+                    //     console.log(`[Attack Registry] Attack ${damage.attackId} fully removed`)
+                    // }
                 }
                 world.destroyEntity(entity.id)
             }

@@ -27,9 +27,10 @@ import { LevelGenerator } from '@/gameplay/level/LevelGenerator'
 import { MiniMap } from '@/gameplay/ui/Minimap'
 import { RoomExitDetectionSystem } from '@/shared/systems/RoomExitDetectionSystem'
 import { RoomManager } from '@/gameplay/level/RoomManager'
-import { TransformSystem } from '@/shared/systems/Movement/System'
 import { VelocitySystem } from '@/shared/systems/VelocitySystem'
 import { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
+import { MovementSystem } from '@/shared/systems/MovementSystem'
+import { DamageFlashSystem } from '@/shared/systems/DamageFlashSystem'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -106,7 +107,7 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     world.addSystem(new InputSystem())
     world.addSystem(new VelocitySystem())
-    world.addSystem(new TransformSystem())
+    world.addSystem(new MovementSystem())
 
     world.addSystem(new RenderSystem())
     world.addSystem(new RotationSystem())
@@ -114,7 +115,8 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     world.addSystem(new PlayerAttackSystem(attackRegistry))
     world.addSystem(new LifespanSystem(attackRegistry))
-    world.addSystem(new DamageSystem(attackRegistry))
+    world.addSystem(new DamageSystem())
+    world.addSystem(new DamageFlashSystem())
     world.addSystem(new HealthBarSystem())
     world.addSystem(new HealthSystem())
     world.addSystem(new CameraSystem(camera))

@@ -76,7 +76,7 @@ export async function createEnemy(
     const visual: VisualComponent = {
         meshes: [
             { mesh: enemyMesh, ignoreRotation: false },
-            { mesh: bar, ignoreRotation: true },
+            { mesh: bar, ignoreRotation: true, ignoreDamageFlash: true },
         ],
     }
 

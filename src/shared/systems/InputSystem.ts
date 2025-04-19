@@ -1,7 +1,6 @@
 import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '@/shared/components/Input'
-import type { RotationComponent } from '../components/Rotation'
 
 export class InputSystem extends System {
     private keys = new Set<string>()
@@ -21,7 +20,13 @@ export class InputSystem extends System {
                 input.down = this.keys.has('KeyS') || this.keys.has('ArrowDown')
                 input.left = this.keys.has('KeyA') || this.keys.has('ArrowLeft')
                 input.right = this.keys.has('KeyD') || this.keys.has('ArrowRight')
-                input.attack = this.keys.has('Space')
+                const attackKeyDown = this.keys.has('Space')
+
+                //Only  trigger new attack if its just been pressed, not looping attack for holding attack btn
+                input.attack = attackKeyDown && !input.attackPressedLastFrame
+
+                // store current key state to detect new frame
+                input.attackPressedLastFrame = attackKeyDown
             }
         }
     }

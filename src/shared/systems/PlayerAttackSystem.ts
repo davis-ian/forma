@@ -1,11 +1,12 @@
 import { System, type World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '../components/Input'
-import { performSweepingAttack } from '@/gameplay/actions'
+
 import { EntityTag } from '@/engine/EntityTag'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
+import { performSweepingAttack } from '@/gameplay/actions/combat/attackUtils'
 
-const attackCooldown = 0.2
+const attackCooldown = 0.25
 const debug = true
 
 export class PlayerAttackSystem extends System {

@@ -4,6 +4,7 @@ import type { PositionComponent } from '@/shared/components/Position'
 import type { RotationComponent } from '@/shared/components/Rotation'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { AttackRegistry } from './AttackRegistry'
+import type { VelocityComponent } from '@/shared/components/Velocity'
 
 //TODO: Support different sized hitboxes, current implementation only works with cube hit boxes
 // revisit when weapons need different ranges
@@ -17,7 +18,9 @@ const hitbox = {
     offsetZ: 0,
 }
 
-export function spawnAttackHitbox(
+const SPAWN_DISTANCE = 1.5
+
+function spawnAttackHitbox(
     world: World,
     attackerEntity: Entity,
     attackId: string,
@@ -33,9 +36,8 @@ export function spawnAttackHitbox(
     const forwardX = Math.sin(angle)
     const forwardZ = Math.cos(angle)
 
-    const spawnDistance = 1.05
-    const spawnX = pos.x + forwardX * spawnDistance
-    const spawnZ = pos.z + forwardZ * spawnDistance
+    const spawnX = pos.x + forwardX * SPAWN_DISTANCE
+    const spawnZ = pos.z + forwardZ * SPAWN_DISTANCE
     const spawnY = pos.y
 
     const hitboxEntity = world.createEntity()
@@ -80,15 +82,28 @@ export function spawnAttackHitbox(
     }
 }
 
+function applyLunge(world: World, entity: Entity, force: number = 5) {
+    const rotation = entity.getComponent<RotationComponent>(ComponentType.Rotation)
+
+    if (!rotation) return
+
+    entity.addComponent(ComponentType.Impulse, {
+        x: Math.sin(rotation.y) * (force * 10),
+        z: Math.cos(rotation.y) * (force * 10),
+    })
+}
+
 export function performSweepingAttack(
     world: World,
     attackerEntity: Entity,
     attackRegistry: AttackRegistry,
     debug = false
 ) {
-    const sweepAngles = [-0.8, -0.6, -0.4, -0.2, 0.2, 0.4, 0.6, 0.8] //sweeping left to right
-    const delay = 30 //30 ms between each hitbox
+    const sweepAngles = [-1, -0.8, -0.6, -0.4, -0.2, 0.2, 0.4, 0.6, 0.8, 1] //sweeping left to right
+    const delay = 10 //ms between each hitbox
     const attackId = crypto.randomUUID()
+
+    applyLunge(world, attackerEntity)
 
     sweepAngles.forEach((offset, i) => {
         setTimeout(() => {

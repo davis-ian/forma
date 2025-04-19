@@ -6,10 +6,12 @@ export enum ComponentType {
     Input = 'input',
     Health = 'health',
     Damage = 'damage',
+    DamageFlash = 'damage-flash',
     Hurtbox = 'hurtbox',
     Hitbox = 'hitbox',
     Lifespan = 'lifespan',
     HealthBar = 'healthbar',
     Visual = 'visual',
     Direction = 'direction',
+    Impulse = 'impulse',
 }
