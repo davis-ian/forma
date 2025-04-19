@@ -1,5 +1,13 @@
 import type { World } from '@/engine'
-import { BoxGeometry, Mesh, MeshStandardMaterial, type Scene } from 'three'
+import {
+    BoxGeometry,
+    Mesh,
+    MeshStandardMaterial,
+    NearestFilter,
+    RepeatWrapping,
+    TextureLoader,
+    type Scene,
+} from 'three'
 import { createPlayer } from '@/gameplay/prefab/createPlayer'
 import { createEnemy } from '@/gameplay/prefab/createEnemy'
 import { TileType, type Direction, type Room, type RoomState } from './types'
@@ -189,13 +197,15 @@ function renderTile(
     offsetZ: number,
     state?: RoomState
 ) {
+    const grassTileMat = createTileFromAtlas(1, 1, 10, 4, 1)
+    const bridgeTileMat = createTileFromAtlas(1, 1, 3, 4, 2)
     if (tile !== TileType.Wall) {
-        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, floorColor, x, FLOOR_Y, z)
+        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, grassTileMat, x, FLOOR_Y, z)
     }
 
     switch (tile) {
         case TileType.Floor:
-            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, floorColor, x, FLOOR_Y, z)
+            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, grassTileMat, x, FLOOR_Y, z)
             break
 
         case TileType.Exit:
@@ -207,14 +217,14 @@ function renderTile(
             else if (x === offsetX + room.width - 1) direction = 'right'
 
             // Draw floor under the door
-            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, EXIT_COLOR, x, FLOOR_Y, z)
+            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, grassTileMat, x, FLOOR_Y, z)
 
             // Add an invisible (or visible) door entity that triggers transitions
             const door = createTileEntity(
                 world,
                 TILE_SIZE,
                 FLOOR_HEIGHT,
-                EXIT_COLOR,
+                grassTileMat,
                 x,
                 FLOOR_Y + 1,
                 z
@@ -224,7 +234,7 @@ function renderTile(
             break
 
         case TileType.Wall:
-            const wall = createTileEntity(world, TILE_SIZE, TILE_SIZE, wallColor, x, WALL_Y, z)
+            const wall = createTileEntity(world, TILE_SIZE, TILE_SIZE, bridgeTileMat, x, WALL_Y, z)
             wall.addTag(EntityTag.Solid)
             if (DEBUG) {
                 console.log('Tagged wall as solid', wall.id, wall.getTags())
@@ -250,12 +260,12 @@ export function createTileEntity(
     world: World,
     size: number,
     height: number,
-    color: string,
+    material: MeshStandardMaterial,
     x: number,
     y: number,
     z: number
 ) {
-    const mesh = new Mesh(new BoxGeometry(size, height, size), new MeshStandardMaterial({ color }))
+    const mesh = new Mesh(new BoxGeometry(size, height, size), material)
     mesh.position.set(x, y, z)
 
     world.scene?.add(mesh)
@@ -270,4 +280,41 @@ export function createTileEntity(
     entity.addTag(EntityTag.RoomInstance)
 
     return entity
+}
+
+const loader = new TextureLoader()
+const tileAtlas1 = loader.load('/assets/Tilemap_Flat.png')
+const tileAtlas2 = loader.load('/assets/Bridge_All.png')
+
+tileAtlas1.magFilter = NearestFilter // for pixel-perfect sharpness
+tileAtlas1.minFilter = NearestFilter
+tileAtlas1.wrapS = RepeatWrapping
+tileAtlas1.wrapT = RepeatWrapping
+
+tileAtlas2.magFilter = NearestFilter // for pixel-perfect sharpness
+tileAtlas2.minFilter = NearestFilter
+tileAtlas2.wrapS = RepeatWrapping
+tileAtlas2.wrapT = RepeatWrapping
+
+function createTileFromAtlas(
+    tileIndexX: number,
+    tileIndexY: number,
+    tilesPerRow: number,
+    tilesPerCol: number,
+    atlas: number
+) {
+    const tex = atlas == 1 ? tileAtlas1.clone() : tileAtlas2.clone()
+    tex.repeat.set(1 / tilesPerRow, 1 / tilesPerCol)
+    tex.offset.set(tileIndexX / tilesPerRow, 1 - (tileIndexY + 1) / tilesPerCol)
+
+    return new MeshStandardMaterial({
+        map: tex,
+        transparent: true,
+    })
+}
+
+const TileIndexMap = {
+    grass: { x: 0, y: 0 },
+    sand: { x: 1, y: 0 },
+    borderTop: { x: 0, y: 1 },
 }

@@ -18,7 +18,7 @@ interface AnimationStateConfig {
 
 const animationPresets: Record<AnimationStateName, AnimationStateConfig> = {
     playerIdle: { row: 0, frameCount: 4, frameDuration: 0.15, loop: true },
-    enemyIdle: { row: 1, frameCount: 6, frameDuration: 0.15, loop: true },
+    enemyIdle: { row: 2, frameCount: 6, frameDuration: 0.15, loop: true },
     walk: { row: 1, frameCount: 6, frameDuration: 0.15, loop: true },
     sweepSide: { row: 2, frameCount: 6, frameDuration: 0.005, loop: false },
     sweepUp: { row: 6, frameCount: 6, frameDuration: 0.005, loop: false },
@@ -31,7 +31,13 @@ export function setAnimationState(
     options: { onComplete?: () => void; locked?: boolean } = {}
 ) {
     const preset = animationPresets[state]
+
+    if (state === 'enemyIdle') {
+        console.log('setting enemy animation state', preset)
+    }
     // Prevent resetting the same state
+
+    // console.log('setting animation state!', preset)
     if (
         anim.row === preset.row &&
         anim.frameCount === preset.frameCount &&

@@ -4,7 +4,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/shared/components/Visual'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
-import { createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
+import { createPlaneMeshAsync, createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
 import { PLAYER_SIZE } from '../constants'
 import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
 import { setAnimationState } from '@/shared/utils/animationUtils'
@@ -42,10 +42,10 @@ export async function createEnemy(
     entity.addComponent(ComponentType.Velocity, { x: 0, y: 0, z: 0 })
 
     // const enemyMesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 'red' }))
-    const enemyMesh = await createSpriteMeshAsync(
-        '/assets/Torch_Purple.png',
-        7,
-        5,
+    const enemyMesh = await createPlaneMeshAsync(
+        '/assets/Warrior_Blue.png',
+        6,
+        8,
         0,
         0,
         PLAYER_SIZE.width * 4
@@ -56,15 +56,16 @@ export async function createEnemy(
         frameCount: 0,
         frameDuration: 0,
         elapsedTime: 0,
-        row: 1,
-        columns: 7,
-        rows: 5,
+        row: 2,
+        columns: 6,
+        rows: 8,
         loop: true,
         playing: true,
     } as SpriteAnimationComponent
 
     entity.addComponent(ComponentType.SpriteAnimation, animationState)
-    setAnimationState(animationState, 'enemyIdle')
+    setAnimationState(animationState, 'playerIdle')
+
     entity.addComponent(ComponentType.Mesh, {
         mesh: enemyMesh,
     })
@@ -92,7 +93,7 @@ export async function createEnemy(
 
     const visual: VisualComponent = {
         meshes: [
-            { mesh: enemyMesh, ignoreRotation: false },
+            { mesh: enemyMesh, ignoreRotation: true },
             { mesh: bar, ignoreRotation: true, ignoreDamageFlash: true },
         ],
     }

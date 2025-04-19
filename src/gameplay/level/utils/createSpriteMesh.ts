@@ -42,6 +42,7 @@ export async function createSpriteMeshAsync(
     const material = new SpriteMaterial({
         map: texture,
         transparent: true,
+        depthWrite: false,
     })
 
     const sprite = new Sprite(material)
@@ -51,6 +52,7 @@ export async function createSpriteMeshAsync(
 
     sprite.scale.set(width, height, 1)
     sprite.position.y += height / 2
+
     return sprite
 }
 
@@ -78,6 +80,7 @@ export async function createPlaneMeshAsync(
     const material = new MeshBasicMaterial({
         map: texture,
         transparent: true,
+        depthWrite: false,
     })
 
     const geometry = new PlaneGeometry(size, size, 1, 1)
