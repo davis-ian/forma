@@ -8,6 +8,8 @@ import { createPlaneMeshAsync, createSpriteMeshAsync } from '../level/utils/crea
 import { PLAYER_SIZE } from '../constants'
 import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
 import { setAnimationState } from '@/shared/utils/animationUtils'
+import { updateEnemyCount } from '@/shared/utils/roomUtils'
+import { createAiComponent } from '@/shared/components/AI'
 
 const enemy = {
     width: 1,
@@ -99,10 +101,12 @@ export async function createEnemy(
     }
 
     entity.addComponent(ComponentType.Visual, visual)
-
+    entity.addComponent(ComponentType.AI, createAiComponent())
+    entity.addTag(EntityTag.Obstacle)
     if (debug) {
         addBoxDeugHelperForEntity(world, entity, { colorOverride: 0x33c9ff })
     }
 
+    updateEnemyCount(world)
     return entity
 }

@@ -9,7 +9,7 @@ import { PLAYER_SIZE } from '../constants'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { setAnimationState } from '@/shared/utils/animationUtils'
 import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
-import { playerHealth } from '@/core/PlayerState'
+import { playerHealth } from '@/core/GameState'
 
 const debug = false
 

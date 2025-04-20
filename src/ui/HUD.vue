@@ -16,11 +16,15 @@
                 :style="{ width: `${(playerHealth.current / playerHealth.max) * 100}%` }"
             ></div>
         </div>
+
+        <div class="absolute top-14 left-3 rounded bg-black/70 px-2 py-1 text-sm text-white">
+            👹 Enemies Left: {{ remainingEnemies }}
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { playerHealth } from '@/core/PlayerState'
+import { playerHealth, remainingEnemies } from '@/core/GameState'
 import { computed } from 'vue'
 
 const barColor = computed(() => {

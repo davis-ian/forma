@@ -25,6 +25,8 @@ export interface Room {
     height: number
     exits: Direction[]
     tags: string[]
+    visited?: boolean
+    cleared?: boolean
     state?: RoomState
 }
 

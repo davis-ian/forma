@@ -110,6 +110,7 @@ export function generateRoomGraph(maxRooms: number): Map<string, Room> {
     }
 
     startRoom.tags.push('start')
+    startRoom.cleared = true
     if (!farthestRoom.tags.includes('start')) {
         farthestRoom.tags.push('end')
     }

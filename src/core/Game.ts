@@ -34,7 +34,8 @@ import { MovementSystem } from '@/shared/systems/MovementSystem'
 import { DamageFlashSystem } from '@/shared/systems/DamageFlashSystem'
 import { SpriteAnimationSystem } from '@/shared/systems/SpriteAnimationSystem'
 import { SpriteAnimationStateSystem } from '@/shared/systems/SpriteAnimationStateSystem'
-import { gameState, startGame } from './GameController'
+import { startGame } from './GameController'
+import { EnemyAISystem } from '@/shared/systems/EnemyAISystem'
 
 export function initGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -114,10 +115,10 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     const roomManager = new RoomManager(world, roomGraph)
     roomManager.setActiveRoom('0,0')
     const minimap = new MiniMap(roomManager)
-
     world.addSystem(new InputSystem())
     world.addSystem(new VelocitySystem())
     world.addSystem(new MovementSystem())
+    world.addSystem(new EnemyAISystem())
 
     world.addSystem(new RenderSystem())
     world.addSystem(new RotationSystem())
@@ -128,7 +129,7 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new DamageSystem())
     world.addSystem(new DamageFlashSystem())
     world.addSystem(new HealthBarSystem())
-    world.addSystem(new HealthSystem())
+    world.addSystem(new HealthSystem(roomManager))
     world.addSystem(new CameraSystem(camera))
     world.addSystem(new DebugDrawSystem())
     world.addSystem(new RoomExitDetectionSystem(roomManager))

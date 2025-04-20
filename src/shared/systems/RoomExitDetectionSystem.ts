@@ -7,6 +7,7 @@ import { boxesIntersect, getAABB } from '../utils/collisionUtils'
 import type { DirectionComponent } from '../components/DirectionComponent'
 import { PLAYER_SIZE } from '@/gameplay/constants'
 import { isTransitioning, runRoomTransition } from '@/core/GameController'
+import { remainingEnemies } from '@/core/GameState'
 
 let logged = false
 export class RoomExitDetectionSystem extends System {
@@ -17,6 +18,8 @@ export class RoomExitDetectionSystem extends System {
 
     update(world: World) {
         if (isTransitioning.value) return
+
+        // if (remainingEnemies.value > 0) return
         // console.log('active room')
         //TODO: Support multiple players here
         const player = world.getEntitiesWithTag(EntityTag.Player)[0]

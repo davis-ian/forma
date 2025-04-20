@@ -1,14 +1,5 @@
 import type { World } from '@/engine'
-import {
-    BoxGeometry,
-    Mesh,
-    MeshStandardMaterial,
-    NearestFilter,
-    RepeatWrapping,
-    Texture,
-    TextureLoader,
-    type Scene,
-} from 'three'
+import { BoxGeometry, DoubleSide, Mesh, MeshStandardMaterial } from 'three'
 import { createPlayer } from '@/gameplay/prefab/createPlayer'
 import { createEnemy } from '@/gameplay/prefab/createEnemy'
 import { TileType, type Direction, type Room, type RoomState } from './types'
@@ -31,8 +22,6 @@ const FLOOR_Y = 0
 const PLAYER_Y = FLOOR_HEIGHT / 2 + 1
 const ENEMY_Y = WALL_Y
 
-const DEFAULT_BORDER_COLOR = '#5500aa'
-const EXIT_COLOR = '#fc33ff'
 const START_BORDER_COLOR = '#00e676'
 const END_BORDER_COLOR = '#ff5252'
 
@@ -241,6 +230,42 @@ function renderTile(
             )
             door.addTag(EntityTag.ExitDoor)
             door.addComponent(ComponentType.Direction, { direction })
+
+            // Add a separate collider blocker if the room is not cleared
+            const isBlocked = !room.cleared
+            if (isBlocked) {
+                // Determine geometry size based on direction
+                const isHorizontal = direction === 'top' || direction === 'bottom'
+                const width = isHorizontal ? TILE_SIZE : 0.1
+                const depth = isHorizontal ? 0.1 : TILE_SIZE
+
+                const geometry = new BoxGeometry(width, TILE_SIZE, depth)
+                const blockerMesh = new Mesh(geometry, ExitBlockedMaterial)
+                blockerMesh.position.set(x, TILE_SIZE / 2, z)
+
+                const offsetAmount = 0.45
+
+                // Offset slightly depending on exit direction
+                if (direction === 'top') blockerMesh.position.z += offsetAmount
+                else if (direction === 'bottom') blockerMesh.position.z -= offsetAmount
+                else if (direction === 'left') blockerMesh.position.x += offsetAmount
+                else if (direction === 'right') blockerMesh.position.x -= offsetAmount
+
+                world.scene?.add(blockerMesh)
+
+                const blocker = world.createEntity()
+                blocker.addComponent(ComponentType.Position, {
+                    x: blockerMesh.position.x,
+                    y: blockerMesh.position.y,
+                    z: blockerMesh.position.z,
+                })
+                blocker.addComponent(ComponentType.Visual, {
+                    meshes: [{ mesh: blockerMesh, ignoreRotation: false }],
+                })
+                blocker.addTag(EntityTag.Solid)
+                blocker.addTag(EntityTag.ExitBlocker)
+            }
+
             break
 
         case TileType.Wall:
@@ -362,4 +387,14 @@ export const TransparentMaterial = new MeshStandardMaterial({
     opacity: 0,
     transparent: true,
     depthWrite: false, // prevents weird z-buffer issues
+})
+
+export const ExitBlockedMaterial = new MeshStandardMaterial({
+    color: '#ff3333',
+    opacity: 0.4,
+    transparent: true,
+    emissive: '#ff3333',
+    emissiveIntensity: 1.5,
+    side: DoubleSide,
+    depthWrite: false,
 })

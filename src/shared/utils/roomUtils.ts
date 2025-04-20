@@ -5,6 +5,7 @@ import type { PositionComponent } from '../components/Position'
 import type { VelocityComponent } from '../components/Velocity'
 import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
+import { remainingEnemies } from '@/core/GameState'
 
 export function getTileAtWorldPosition(x: number, z: number, room: Room): TileType | null {
     const tiles = getRoomTiles(room)
@@ -64,4 +65,8 @@ export function teleportPlayer(world: World, x: number, y: number, z: number) {
         vel.y = 0
         vel.z = 0
     }
+}
+
+export function updateEnemyCount(world: World) {
+    remainingEnemies.value = world.getEntitiesWithTag(EntityTag.Enemy).length
 }

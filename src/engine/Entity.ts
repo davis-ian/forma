@@ -2,6 +2,7 @@
 // Responsible for holding a unique ID and a map of components.
 // In ECS, an Entity is just an ID that has components attached to it.
 
+import type { PositionComponent } from '@/shared/components/Position'
 import type { ComponentType } from './ComponentType'
 import type { World } from './World'
 
@@ -10,6 +11,11 @@ export type EntityId = number
 export class Entity {
     id: EntityId
     components: Map<ComponentType, any> = new Map()
+    nextPosition = {
+        x: 0,
+        y: 0,
+        z: 0,
+    } as PositionComponent
 
     constructor(
         id: EntityId,
@@ -50,5 +56,13 @@ export class Entity {
 
     getTags(): string[] {
         return this.world.getEntityTags(this.id)
+    }
+
+    setNextPosition(position: PositionComponent) {
+        this.nextPosition = position
+    }
+
+    getNextPosition() {
+        return this.nextPosition
     }
 }

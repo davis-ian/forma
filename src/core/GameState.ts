@@ -4,3 +4,5 @@ export const playerHealth = ref({
     current: 0,
     max: 0,
 })
+
+export const remainingEnemies = ref(0)

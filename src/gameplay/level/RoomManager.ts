@@ -4,7 +4,7 @@ import { getRoomOffset, renderRoomToScene } from './roomFactory'
 import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
 import type { PositionComponent } from '@/shared/components/Position'
-import { teleportPlayer } from '@/shared/utils/roomUtils'
+import { teleportPlayer, updateEnemyCount } from '@/shared/utils/roomUtils'
 
 //Tracks which room is 'active'
 //spawns active room, removes previous
@@ -33,6 +33,9 @@ export class RoomManager {
             console.log('room not found in roomGraph')
             return
         }
+
+        // Mark visited room for FOW
+        room.visited = true
 
         // Destroy current room visuals/entities
         this.cleanUpCurrentRoom()
@@ -83,10 +86,12 @@ export class RoomManager {
     }
 
     setActiveRoom(id: string) {
-        if (!this.roomGraph.has(id)) {
+        const room = this.getRoom(id)
+        if (!room) {
             throw new Error(`Room ${id} does not exist in graph`)
         }
 
+        room.visited = true
         this.activeRoomId = id
     }
 
@@ -101,13 +106,13 @@ export class RoomManager {
 
         switch (from) {
             case 'top':
-                return { x: offsetX + centerX, z: offsetZ + room.height - 2 }
+                return { x: offsetX + centerX, z: offsetZ + room.height - 3 }
             case 'bottom':
-                return { x: offsetX + centerX, z: offsetZ + 1 }
+                return { x: offsetX + centerX, z: offsetZ + 2 }
             case 'left':
-                return { x: offsetX + room.width - 2, z: offsetZ + centerZ }
+                return { x: offsetX + room.width - 3, z: offsetZ + centerZ }
             case 'right':
-                return { x: offsetX + 1, z: offsetZ + centerZ }
+                return { x: offsetX + 2, z: offsetZ + centerZ }
         }
     }
 
