@@ -15,7 +15,6 @@ export class RoomManager {
         private world: World,
         private roomGraph: Map<string, Room>
     ) {}
-
     activeRoomId: string | null = null
 
     transitionTo(

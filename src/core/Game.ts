@@ -34,6 +34,7 @@ import { MovementSystem } from '@/shared/systems/MovementSystem'
 import { DamageFlashSystem } from '@/shared/systems/DamageFlashSystem'
 import { SpriteAnimationSystem } from '@/shared/systems/SpriteAnimationSystem'
 import { SpriteAnimationStateSystem } from '@/shared/systems/SpriteAnimationStateSystem'
+import { TranstitionOverlaySystem } from '@/shared/systems/TransitionOverlaySystem'
 
 export function startGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -113,6 +114,8 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     const roomManager = new RoomManager(world, roomGraph)
     roomManager.setActiveRoom('0,0')
 
+    const transitionOverlaySystem = new TranstitionOverlaySystem(world.scene)
+    world.addSystem(transitionOverlaySystem)
     const minimap = new MiniMap(roomManager)
 
     world.addSystem(new InputSystem())

@@ -5,6 +5,7 @@ import {
     MeshStandardMaterial,
     NearestFilter,
     RepeatWrapping,
+    Texture,
     TextureLoader,
     type Scene,
 } from 'three'
@@ -16,6 +17,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import type { VisualComponent } from '@/shared/components/Visual'
 import { getRandomInt } from './utils/random'
 import { shuffle } from './RoomGraph'
+import { TILE_ATLAS_CONFIG } from './utils/TileAtlas'
 
 // Room size & visuals
 const ROOM_WIDTH = 30
@@ -115,9 +117,7 @@ export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
         const spawnTiles = shuffle(floorPositions).slice(0, enemyCount)
 
         for (const pos of spawnTiles) {
-            // const maxHealth = getRandomInt(1, 5)
-            const maxHealth = 5
-            createEnemy(world, pos.x, ENEMY_Y, pos.z, maxHealth)
+            createEnemy(world, pos.x, ENEMY_Y, pos.z, 3)
         }
 
         room.tags.push('spawned') // Prevent re-spawning
@@ -197,15 +197,25 @@ function renderTile(
     offsetZ: number,
     state?: RoomState
 ) {
-    const grassTileMat = createTileFromAtlas(1, 1, 10, 4, 1)
-    const bridgeTileMat = createTileFromAtlas(1, 1, 3, 4, 2)
+    // const dirtTileMat = createTileFromAtlas(1, 1, {
+    //     tileSize: 48,
+    //     padding: 0,
+    //     atlas: tdAtlas,
+    //     atlasWidth: 576, // 12 cols * 48,
+    //     atlasHeight: 528, //11 rows * 48,
+    // })
+
+    const dirtTileMat = getNamedTileMaterial('dirtPath')
+    const wallMat = getNamedTileMaterial('wall')
+    // const exitMat = getNamedTileMaterial('exitFloor')
+
     if (tile !== TileType.Wall) {
-        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, grassTileMat, x, FLOOR_Y, z)
+        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, dirtTileMat, x, FLOOR_Y, z)
     }
 
     switch (tile) {
         case TileType.Floor:
-            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, grassTileMat, x, FLOOR_Y, z)
+            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, dirtTileMat, x, FLOOR_Y, z)
             break
 
         case TileType.Exit:
@@ -217,14 +227,14 @@ function renderTile(
             else if (x === offsetX + room.width - 1) direction = 'right'
 
             // Draw floor under the door
-            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, grassTileMat, x, FLOOR_Y, z)
+            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, dirtTileMat, x, FLOOR_Y, z)
 
             // Add an invisible (or visible) door entity that triggers transitions
             const door = createTileEntity(
                 world,
                 TILE_SIZE,
                 FLOOR_HEIGHT,
-                grassTileMat,
+                TransparentMaterial,
                 x,
                 FLOOR_Y + 1,
                 z
@@ -234,7 +244,7 @@ function renderTile(
             break
 
         case TileType.Wall:
-            const wall = createTileEntity(world, TILE_SIZE, TILE_SIZE, bridgeTileMat, x, WALL_Y, z)
+            const wall = createTileEntity(world, TILE_SIZE, TILE_SIZE, wallMat, x, WALL_Y, z)
             wall.addTag(EntityTag.Solid)
             if (DEBUG) {
                 console.log('Tagged wall as solid', wall.id, wall.getTags())
@@ -282,30 +292,34 @@ export function createTileEntity(
     return entity
 }
 
-const loader = new TextureLoader()
-const tileAtlas1 = loader.load('/assets/Tilemap_Flat.png')
-const tileAtlas2 = loader.load('/assets/Bridge_All.png')
-
-tileAtlas1.magFilter = NearestFilter // for pixel-perfect sharpness
-tileAtlas1.minFilter = NearestFilter
-tileAtlas1.wrapS = RepeatWrapping
-tileAtlas1.wrapT = RepeatWrapping
-
-tileAtlas2.magFilter = NearestFilter // for pixel-perfect sharpness
-tileAtlas2.minFilter = NearestFilter
-tileAtlas2.wrapS = RepeatWrapping
-tileAtlas2.wrapT = RepeatWrapping
-
-function createTileFromAtlas(
+export function createTileFromAtlas(
     tileIndexX: number,
     tileIndexY: number,
-    tilesPerRow: number,
-    tilesPerCol: number,
-    atlas: number
-) {
-    const tex = atlas == 1 ? tileAtlas1.clone() : tileAtlas2.clone()
-    tex.repeat.set(1 / tilesPerRow, 1 / tilesPerCol)
-    tex.offset.set(tileIndexX / tilesPerRow, 1 - (tileIndexY + 1) / tilesPerCol)
+    config: {
+        tileSize: number
+        padding: number
+        atlas: Texture
+        atlasWidth: number
+        atlasHeight: number
+    }
+): MeshStandardMaterial {
+    const { tileSize, padding, atlas, atlasWidth, atlasHeight } = config
+
+    const paddedSize = tileSize + padding * 2
+
+    const tex = atlas.clone()
+    tex.needsUpdate = true
+
+    // How much of the texture to show (repeat)
+    const uSize = tileSize / atlasWidth
+    const vSize = tileSize / atlasHeight
+
+    // Where to start sampling (offset), accounting for padding
+    const u = (tileIndexX * paddedSize + padding) / atlasWidth
+    const v = (tileIndexY * paddedSize + padding) / atlasHeight
+
+    tex.repeat.set(uSize, vSize)
+    tex.offset.set(u, 1 - vSize - v) // Flip vertically
 
     return new MeshStandardMaterial({
         map: tex,
@@ -314,7 +328,38 @@ function createTileFromAtlas(
 }
 
 const TileIndexMap = {
-    grass: { x: 0, y: 0 },
-    sand: { x: 1, y: 0 },
-    borderTop: { x: 0, y: 1 },
+    dirtPath: { x: 1, y: 1 },
+    sandPath: { x: 4, y: 5 },
+    wall: { x: 7, y: 3 },
+    // borderTop: { x: 0, y: 1 },
 }
+
+export function getTileMaterial(x: number, y: number): MeshStandardMaterial {
+    const { tileSize, padding, atlas, atlasWidth, atlasHeight } = TILE_ATLAS_CONFIG
+    const paddedSize = tileSize + padding * 2
+
+    const tex = atlas.clone()
+    tex.needsUpdate = true
+
+    const uSize = tileSize / atlasWidth
+    const vSize = tileSize / atlasHeight
+
+    const u = (x * paddedSize + padding) / atlasWidth
+    const v = (y * paddedSize + padding) / atlasHeight
+
+    tex.repeat.set(uSize, vSize)
+    tex.offset.set(u, 1 - vSize - v)
+
+    return new MeshStandardMaterial({ map: tex, transparent: true })
+}
+
+export function getNamedTileMaterial(tileName: keyof typeof TileIndexMap) {
+    const coords = TileIndexMap[tileName]
+    return getTileMaterial(coords.x, coords.y)
+}
+
+export const TransparentMaterial = new MeshStandardMaterial({
+    opacity: 0,
+    transparent: true,
+    depthWrite: false, // prevents weird z-buffer issues
+})

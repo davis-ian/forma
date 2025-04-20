@@ -85,7 +85,7 @@ export class DamageSystem extends System {
                             targetEntity.addComponent<DamageFlashComponent>(
                                 ComponentType.DamageFlash,
                                 {
-                                    flashTime: 0.1,
+                                    flashTime: 0.15,
                                     elapsed: 0,
                                 }
                             )
