@@ -6,4 +6,5 @@ export interface InputComponent {
     attack: boolean
 
     attackPressedLastFrame?: boolean
+    pausePressedLastFrame?: boolean
 }

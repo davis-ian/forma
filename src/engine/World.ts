@@ -8,6 +8,8 @@ import { ComponentType } from './ComponentType'
 // import type { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
 import type { VisualComponent } from '@/shared/components/Visual'
 import type { Scene } from 'three'
+import { currentGameState, gameState } from '@/core/GameController'
+import { InputSystem } from '@/shared/systems/InputSystem'
 
 export class World {
     private nextEntityId = 0
@@ -46,6 +48,9 @@ export class World {
 
     update(deltaTime: number) {
         for (const system of this.systems) {
+            if (currentGameState() !== 'playing' && !(system instanceof InputSystem)) {
+                continue
+            }
             system.update(this, deltaTime)
         }
     }

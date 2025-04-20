@@ -1,6 +1,8 @@
 import { System, type World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { HealthComponent } from '../components/Health'
+import { EntityTag } from '@/engine/EntityTag'
+import { playerHealth } from '@/core/PlayerState'
 
 export class HealthSystem extends System {
     update(world: World) {
@@ -9,15 +11,28 @@ export class HealthSystem extends System {
         for (const entity of entities) {
             const health = entity.getComponent<HealthComponent>(ComponentType.Health)!
 
-            //Clamp
-            health.current = Math.max(0, Math.min(health.current, health.max))
+            if (health.pendingDamage && health.pendingDamage > 0) {
+                health.current -= health.pendingDamage
+                health.pendingDamage = 0
 
-            if (health.current <= 0) {
-                console.log(`💀 Entity ${entity.id} died`)
+                //Clamp
+                health.current = Math.max(0, Math.min(health.current, health.max))
 
-                //TODO: add death animation, sound, etc
+                //Sync Player state
+                if (entity.hasTag(EntityTag.Player)) {
+                    playerHealth.value = {
+                        current: health.current,
+                        max: health.max,
+                    }
+                }
 
-                world.destroyEntity(entity.id)
+                if (health.current <= 0) {
+                    console.log(`💀 Entity ${entity.id} died`)
+
+                    //TODO: add death animation, sound, etc
+
+                    world.destroyEntity(entity.id)
+                }
             }
         }
     }

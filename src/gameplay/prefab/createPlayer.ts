@@ -3,12 +3,13 @@ import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/shared/components/Visual'
 
-import { Mesh, BoxGeometry, MeshBasicMaterial, TextureLoader } from 'three'
+import { TextureLoader } from 'three'
 import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
 import { PLAYER_SIZE } from '../constants'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { setAnimationState } from '@/shared/utils/animationUtils'
 import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
+import { playerHealth } from '@/core/PlayerState'
 
 const debug = false
 
@@ -31,15 +32,6 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     entity.addComponent(ComponentType.Rotation, { x: 0, y: 0, z: 0 })
     entity.addComponent(ComponentType.Velocity, { x: 0, y: 0, z: 0 })
 
-    // const spriteSheet = loadTexture('@/assets/sprites.png')
-    // const texture = spriteSheet.clone()
-    // texture.repeat.set(1 / 4, 1)
-    // texture.offset.set(0 / 4, 0)
-    // const playerMaterial = new MeshBasicMaterial({
-    //     map: texture,
-    //     transparent: true,
-    // })
-
     entity.addComponent(ComponentType.Input, {
         up: false,
         downn: false,
@@ -59,15 +51,19 @@ export async function createPlayer(world: World, x: number, y: number, z: number
         offsetZ: hurtboxOffset.z,
     })
 
-    entity.addComponent(ComponentType.Health, { current: 5, max: 5 })
+    const maxHealth = 5
+    const currentHealth = 5
+    entity.addComponent(ComponentType.Health, { current: currentHealth, max: maxHealth })
+    playerHealth.value = {
+        current: currentHealth,
+        max: maxHealth,
+    }
 
-    const bar = new Mesh(new BoxGeometry(1, 0.1, 0.1), new MeshBasicMaterial({ color: 'green' }))
-    bar.geometry.translate(0, 0.8, 0)
+    // const bar = new Mesh(new BoxGeometry(1, 0.1, 0.1), new MeshBasicMaterial({ color: 'green' }))
+    // bar.geometry.translate(0, 0.8, 0)
+    // scene.add(bar)
 
-    console.log('current scene in player', scene.uuid)
-    scene.add(bar)
-
-    entity.addComponent(ComponentType.HealthBar, { mesh: bar })
+    // entity.addComponent(ComponentType.HealthBar, { mesh: bar })
 
     const loader = new TextureLoader()
     console.log(loader, 'new loader')
@@ -109,7 +105,7 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     const visual: VisualComponent = {
         meshes: [
             { mesh: playerMesh, ignoreRotation: true },
-            { mesh: bar, ignoreRotation: true },
+            // { mesh: bar, ignoreRotation: true },
         ],
     }
 

@@ -1,3 +1,4 @@
+import { currentGameState, pauseGame, resumeGame } from '@/core/GameController'
 import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '@/shared/components/Input'
@@ -14,6 +15,18 @@ export class InputSystem extends System {
         for (const entity of world.entities.values()) {
             if (entity.hasComponent(ComponentType.Input)) {
                 const input = entity.getComponent<InputComponent>(ComponentType.Input)!
+
+                const escapeDown = this.keys.has('Escape')
+
+                if (escapeDown && !input.pausePressedLastFrame) {
+                    if (currentGameState() === 'playing') {
+                        pauseGame()
+                    } else {
+                        resumeGame()
+                    }
+                }
+
+                input.pausePressedLastFrame = escapeDown
 
                 input.up = this.keys.has('KeyW') || this.keys.has('ArrowUp')
                 input.down = this.keys.has('KeyS') || this.keys.has('ArrowDown')

@@ -77,7 +77,9 @@ export class DamageSystem extends System {
                             z: knockbackZ,
                         })
 
-                        targetHealth.current -= damage.amount
+                        // targetHealth.current -= damage.amount
+                        if (!targetHealth.pendingDamage) targetHealth.pendingDamage = 0
+                        targetHealth.pendingDamage += damage.amount
                         targetHealth.recentlyHitBy.add(damage.attackId)
                         damage.damagedEntities.add(targetEntity.id)
 

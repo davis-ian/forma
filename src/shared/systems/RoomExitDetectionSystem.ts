@@ -4,9 +4,9 @@ import { RoomManager } from '@/gameplay/level/RoomManager'
 import type { PositionComponent } from '../components/Position'
 import { ComponentType } from '@/engine/ComponentType'
 import { boxesIntersect, getAABB } from '../utils/collisionUtils'
-import { opposite } from '@/gameplay/level/RoomGraph'
 import type { DirectionComponent } from '../components/DirectionComponent'
 import { PLAYER_SIZE } from '@/gameplay/constants'
+import { isTransitioning, runRoomTransition } from '@/core/GameController'
 
 let logged = false
 export class RoomExitDetectionSystem extends System {
@@ -16,6 +16,7 @@ export class RoomExitDetectionSystem extends System {
     }
 
     update(world: World) {
+        if (isTransitioning.value) return
         // console.log('active room')
         //TODO: Support multiple players here
         const player = world.getEntitiesWithTag(EntityTag.Player)[0]
@@ -53,9 +54,13 @@ export class RoomExitDetectionSystem extends System {
                     const targetRoom = this.roomManager.getNeighborRoom(dirComp.direction)
 
                     if (targetRoom) {
-                        this.roomManager.transitionTo(targetRoom.id, dirComp.direction)
+                        runRoomTransition(() => {
+                            this.roomManager.transitionTo(targetRoom.id, dirComp.direction)
+                        })
                     }
                 }
+
+                break
             }
         }
     }

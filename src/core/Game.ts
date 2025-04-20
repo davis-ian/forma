@@ -34,9 +34,9 @@ import { MovementSystem } from '@/shared/systems/MovementSystem'
 import { DamageFlashSystem } from '@/shared/systems/DamageFlashSystem'
 import { SpriteAnimationSystem } from '@/shared/systems/SpriteAnimationSystem'
 import { SpriteAnimationStateSystem } from '@/shared/systems/SpriteAnimationStateSystem'
-import { TranstitionOverlaySystem } from '@/shared/systems/TransitionOverlaySystem'
+import { gameState, startGame } from './GameController'
 
-export function startGame(container: HTMLElement, debug: boolean = false) {
+export function initGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
         console.log('game start initiated')
     }
@@ -113,9 +113,6 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
 
     const roomManager = new RoomManager(world, roomGraph)
     roomManager.setActiveRoom('0,0')
-
-    const transitionOverlaySystem = new TranstitionOverlaySystem(world.scene)
-    world.addSystem(transitionOverlaySystem)
     const minimap = new MiniMap(roomManager)
 
     world.addSystem(new InputSystem())
@@ -138,12 +135,14 @@ export function startGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new SpriteAnimationSystem())
     world.addSystem(new SpriteAnimationStateSystem())
 
+    startGame()
     /**
      * Animation loop
      * Runs the ECS world update and renders the scene
      */
     function animate() {
         const delta = clock.getDelta()
+
         world.update(delta)
         minimap.update(world)
 
