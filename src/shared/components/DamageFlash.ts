@@ -4,4 +4,5 @@ export interface DamageFlashComponent {
     flashTime: number
     elapsed: number
     originalColor?: Color
+    persitstWhileInvulnerable?: boolean
 }

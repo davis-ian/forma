@@ -5,23 +5,11 @@ import type { VisualComponent } from '@/shared/components/Visual'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { createPlaneMeshAsync, createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
-import { PLAYER_SIZE } from '../constants'
+import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
 import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
 import { setAnimationState } from '@/shared/utils/animationUtils'
 import { updateEnemyCount } from '@/shared/utils/roomUtils'
 import { createAiComponent } from '@/shared/components/AI'
-
-const enemy = {
-    width: 1,
-    height: 1,
-    depth: 1,
-}
-
-const hurtboxOffset = {
-    x: 0,
-    y: 0.5,
-    z: 0,
-}
 
 export async function createEnemy(
     world: World,
@@ -73,12 +61,12 @@ export async function createEnemy(
     })
 
     entity.addComponent(ComponentType.Hurtbox, {
-        width: enemy.width,
-        height: enemy.height,
-        depth: enemy.depth,
-        offsetX: hurtboxOffset.x,
-        offsetY: hurtboxOffset.y,
-        offsetZ: hurtboxOffset.z,
+        width: PLAYER_SIZE.width,
+        height: PLAYER_SIZE.height,
+        depth: PLAYER_SIZE.depth,
+        offsetX: HURTBOX_OFFSET.x,
+        offsetY: HURTBOX_OFFSET.y,
+        offsetZ: HURTBOX_OFFSET.z,
     })
 
     entity.addComponent(ComponentType.Health, { current: maxHealth, max: maxHealth })
@@ -101,7 +89,7 @@ export async function createEnemy(
     }
 
     entity.addComponent(ComponentType.Visual, visual)
-    entity.addComponent(ComponentType.AI, createAiComponent())
+    entity.addComponent(ComponentType.AI, createAiComponent('Skeleton'))
     entity.addTag(EntityTag.Obstacle)
     if (debug) {
         addBoxDeugHelperForEntity(world, entity, { colorOverride: 0x33c9ff })

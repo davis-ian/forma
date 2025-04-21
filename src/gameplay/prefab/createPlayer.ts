@@ -5,19 +5,13 @@ import type { VisualComponent } from '@/shared/components/Visual'
 
 import { TextureLoader } from 'three'
 import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
-import { PLAYER_SIZE } from '../constants'
+import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
 import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
 import { setAnimationState } from '@/shared/utils/animationUtils'
 import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
 import { playerHealth } from '@/core/GameState'
 
 const debug = false
-
-const hurtboxOffset = {
-    x: 0,
-    y: 0.5,
-    z: 0,
-}
 
 export async function createPlayer(world: World, x: number, y: number, z: number) {
     console.log('CREATING PLAYER')
@@ -46,14 +40,20 @@ export async function createPlayer(world: World, x: number, y: number, z: number
         width: PLAYER_SIZE.width,
         height: PLAYER_SIZE.height,
         depth: PLAYER_SIZE.depth,
-        offsetX: hurtboxOffset.x,
-        offsetY: hurtboxOffset.y,
-        offsetZ: hurtboxOffset.z,
+        offsetX: HURTBOX_OFFSET.x,
+        offsetY: HURTBOX_OFFSET.y,
+        offsetZ: HURTBOX_OFFSET.z,
     })
 
     const maxHealth = 5
     const currentHealth = 5
-    entity.addComponent(ComponentType.Health, { current: currentHealth, max: maxHealth })
+    const playerHealthCooldown = 2
+    entity.addComponent(ComponentType.Health, {
+        current: currentHealth,
+        max: maxHealth,
+        invulnerableCooldown: playerHealthCooldown,
+        invulnerableRemaining: 0,
+    })
     playerHealth.value = {
         current: currentHealth,
         max: maxHealth,

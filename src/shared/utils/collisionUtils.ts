@@ -17,16 +17,20 @@ export interface Offset {
  */
 
 export function getAABB(pos: PositionComponent, size: AABB, offset: Offset = {}) {
+    const cx = pos.x + (offset.x || 0)
+    const cy = pos.y + (offset.y || 0)
+    const cz = pos.z + (offset.z || 0)
+
     return {
         min: {
-            x: pos.x - size.width / 2 + (offset.x || 0),
-            y: pos.y - size.height / 2 + (offset.y || 0),
-            z: pos.z - size.depth / 2 + (offset.z || 0),
+            x: cx - size.width / 2,
+            y: cy - size.height / 2,
+            z: cz - size.depth / 2,
         },
         max: {
-            x: pos.x + size.width / 2 + (offset.x || 0),
-            y: pos.y + size.height / 2 + (offset.y || 0),
-            z: pos.z + size.depth / 2 + (offset.z || 0),
+            x: cx + size.width / 2,
+            y: cy + size.height / 2,
+            z: cz + size.depth / 2,
         },
     }
 }

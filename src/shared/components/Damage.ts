@@ -7,4 +7,5 @@ export interface DamageComponent {
     sourceId?: EntityId
     statusEffects?: string[]
     damagedEntities?: Set<EntityId>
+    onlyHit: 'Player' | 'Enemy' | 'All'
 }

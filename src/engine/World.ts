@@ -113,4 +113,12 @@ export class World {
 
         console.log(scene, 'SCENE SET')
     }
+
+    clear() {
+        for (const entity of this.entities.values()) {
+            this.destroyEntity(entity.id)
+        }
+        this.entities.clear()
+        this.systems = []
+    }
 }

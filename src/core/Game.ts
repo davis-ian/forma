@@ -34,8 +34,9 @@ import { MovementSystem } from '@/shared/systems/MovementSystem'
 import { DamageFlashSystem } from '@/shared/systems/DamageFlashSystem'
 import { SpriteAnimationSystem } from '@/shared/systems/SpriteAnimationSystem'
 import { SpriteAnimationStateSystem } from '@/shared/systems/SpriteAnimationStateSystem'
-import { startGame } from './GameController'
+import { gameState } from './GameController'
 import { EnemyAISystem } from '@/shared/systems/EnemyAISystem'
+import { updateEnemyCount } from '@/shared/utils/roomUtils'
 
 export function initGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -111,6 +112,7 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
 
     const generator = new LevelGenerator()
     const roomGraph = generator.init(world, 10)
+    const attackRegistry = new AttackRegistry()
 
     const roomManager = new RoomManager(world, roomGraph)
     roomManager.setActiveRoom('0,0')
@@ -118,11 +120,10 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new InputSystem())
     world.addSystem(new VelocitySystem())
     world.addSystem(new MovementSystem())
-    world.addSystem(new EnemyAISystem())
+    world.addSystem(new EnemyAISystem(attackRegistry))
 
     world.addSystem(new RenderSystem())
     world.addSystem(new RotationSystem())
-    const attackRegistry = new AttackRegistry()
 
     world.addSystem(new PlayerAttackSystem(attackRegistry))
     world.addSystem(new LifespanSystem(attackRegistry))
@@ -136,7 +137,7 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new SpriteAnimationSystem())
     world.addSystem(new SpriteAnimationStateSystem())
 
-    startGame()
+    let animationFrameId: number
     /**
      * Animation loop
      * Runs the ECS world update and renders the scene
@@ -148,16 +149,54 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
         minimap.update(world)
 
         renderer.render(scene, camera)
-        requestAnimationFrame(animate)
+        animationFrameId = requestAnimationFrame(animate)
     }
 
-    window.addEventListener('resize', () => {
+    const onResize = () => {
         const width = container.clientWidth
         const height = container.clientHeight
         camera.aspect = width / height
         camera.updateProjectionMatrix()
         renderer.setSize(width, height)
-    })
-
+    }
+    window.addEventListener('resize', () => onResize)
+    gameState.value = 'playing'
     animate()
+
+    //Cleanup
+    return () => {
+        cancelAnimationFrame(animationFrameId)
+        window.removeEventListener('resize', onResize)
+
+        // Dispose renderer and remove canvas
+        renderer.dispose?.()
+        if (renderer.domElement && container.contains(renderer.domElement)) {
+            container.removeChild(renderer.domElement)
+        }
+
+        // Clear all meshes from the scene
+        scene.traverse((object) => {
+            if ((object as any).geometry) {
+                ;(object as any).geometry.dispose?.()
+            }
+            if ((object as any).material) {
+                const material = (object as any).material
+                if (Array.isArray(material)) {
+                    material.forEach((m) => m.dispose?.())
+                } else {
+                    material.dispose?.()
+                }
+            }
+        })
+
+        while (scene.children.length > 0) {
+            scene.remove(scene.children[0])
+        }
+
+        world.clear()
+        updateEnemyCount(world)
+        minimap.dispose()
+
+        console.log(roomManager, 'roomManager after reset')
+    }
 }

@@ -4,7 +4,7 @@ import type { InputComponent } from '../components/Input'
 
 import { EntityTag } from '@/engine/EntityTag'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
-import { performSweepingAttack } from '@/gameplay/actions/combat/attackUtils'
+import { performPlayerSweepAttack } from '@/gameplay/actions/combat/player/performPlayerSweepAttack'
 
 const attackCooldown = 0.25
 
@@ -28,7 +28,7 @@ export class PlayerAttackSystem extends System {
         if (!input) return
 
         if (input.attack && this.attackCooldown <= 0) {
-            performSweepingAttack(world, player, this.attackRegistry)
+            performPlayerSweepAttack(world, player, this.attackRegistry)
 
             this.attackCooldown = attackCooldown
         }

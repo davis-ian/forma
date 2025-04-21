@@ -2,10 +2,16 @@ import { System, type World } from '@/engine'
 import { EntityTag } from '@/engine/EntityTag'
 import type { PositionComponent } from '../components/Position'
 import { ComponentType } from '@/engine/ComponentType'
-import type { AIComponent } from '../components/AI'
+import { AttackPerformers, type AIComponent } from '../components/AI'
 import type { VelocityComponent } from '../components/Velocity'
+import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
+
+const MELEE_ATTACK_RANGE = 1.5
 
 export class EnemyAISystem extends System {
+    constructor(private attackRegistry: AttackRegistry) {
+        super()
+    }
     update(world: World, deltaTime: number): void {
         const player = world.getEntitiesWithTag(EntityTag.Player)[0]
         if (!player) return
@@ -20,6 +26,8 @@ export class EnemyAISystem extends System {
 
             if (!ai || !pos || !vel) continue
 
+            ai.cooldownRemaining = Math.max(ai.cooldownRemaining - deltaTime, 0)
+
             if (ai.behavior === 'chase') {
                 //  Compute direction vector from enemy to palyer
                 const dx = playerPos.x - pos.x
@@ -30,12 +38,26 @@ export class EnemyAISystem extends System {
                 const speed = 2.5
 
                 // If enemy is far enough away, move toward the player
-                if (dist > 1) {
+                if (dist > MELEE_ATTACK_RANGE) {
                     vel.x = (dx / dist) * speed
                     vel.z = (dz / dist) * speed
                 } else {
                     vel.x = 0
                     vel.z = 0
+
+                    if (ai.cooldownRemaining <= 0) {
+                        const attackType = ai.currentAttack ?? ai.attacks[0] ?? 'sweep'
+                        // performEnemyAttack(world, enemy, this.attackRegistry, playerPos)
+                        const attackFn = AttackPerformers[attackType]
+
+                        attackFn({
+                            world,
+                            entity: enemy,
+                            registry: this.attackRegistry,
+                            target: playerPos,
+                        })
+                        ai.cooldownRemaining = ai.attackCooldown
+                    }
                 }
             }
         }

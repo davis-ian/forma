@@ -3,3 +3,9 @@ export const PLAYER_SIZE = {
     height: 1,
     depth: 1,
 }
+
+export const HURTBOX_OFFSET = {
+    x: 0,
+    y: 0.5,
+    z: 0,
+}

@@ -5,6 +5,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import { playerHealth, remainingEnemies } from '@/core/GameState'
 import type { RoomManager } from '@/gameplay/level/RoomManager'
 import { updateEnemyCount } from '../utils/roomUtils'
+import { endGame } from '@/core/GameController'
 
 export class HealthSystem extends System {
     constructor(private roomManager: RoomManager) {
@@ -12,11 +13,19 @@ export class HealthSystem extends System {
         this.roomManager = roomManager
     }
 
-    update(world: World) {
+    update(world: World, deltaTime: number) {
         const entities = world.getEntitiesWithComponent(ComponentType.Health)
 
         for (const entity of entities) {
             const health = entity.getComponent<HealthComponent>(ComponentType.Health)!
+
+            if (health?.invulnerableRemaining && health.invulnerableRemaining > 0) {
+                health.invulnerableRemaining -= deltaTime
+
+                if (health.invulnerableRemaining <= 0) {
+                    health.invulnerableRemaining = 0
+                }
+            }
 
             if (health.pendingDamage && health.pendingDamage > 0) {
                 health.current -= health.pendingDamage
@@ -30,6 +39,13 @@ export class HealthSystem extends System {
                     playerHealth.value = {
                         current: health.current,
                         max: health.max,
+                    }
+
+                    health.invulnerableRemaining = health.invulnerableCooldown ?? 0
+
+                    if (playerHealth.value.current <= 0) {
+                        console.log('ENDING GAME')
+                        endGame()
                     }
                 }
 

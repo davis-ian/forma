@@ -3,6 +3,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import type { VisualComponent } from '../components/Visual'
 import type { DamageFlashComponent } from '../components/DamageFlash'
 import { Mesh, Sprite, type MeshBasicMaterial } from 'three'
+import type { HealthComponent } from '../components/Health'
 
 export class DamageFlashSystem extends System {
     update(world: World, deltaTime: number): void {
@@ -13,6 +14,7 @@ export class DamageFlashSystem extends System {
             ) {
                 const visual = entity.getComponent<VisualComponent>(ComponentType.Visual)!
                 const flash = entity.getComponent<DamageFlashComponent>(ComponentType.DamageFlash)!
+                const health = entity.getComponent<HealthComponent>(ComponentType.Health)
 
                 flash.elapsed += deltaTime
 
@@ -22,8 +24,18 @@ export class DamageFlashSystem extends System {
 
                     const material = mesh.material as MeshBasicMaterial
 
-                    if (flash.elapsed < flash.flashTime) {
+                    const isInvulnerable =
+                        health?.invulnerableRemaining && health.invulnerableRemaining > 0
+                    const initialFlash = flash.elapsed < flash.flashTime
+
+                    if (initialFlash) {
                         material.color.set(0xff0000)
+                    } else if (flash.persitstWhileInvulnerable && isInvulnerable) {
+                        // const strobe = Math.sin(flash.elapsed * 20) > 0 ? 0x00ff00 : 0xffffff
+                        // material.color.set(strobe)
+                        material.color.set(0xffffff)
+                        material.transparent = true
+                        material.opacity = Math.sin(flash.elapsed * 20) > 0 ? 1 : 0.2
                     } else {
                         material.color.set(0xffffff)
                         entity.removeComponent(ComponentType.DamageFlash)

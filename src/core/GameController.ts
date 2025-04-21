@@ -1,11 +1,10 @@
 import { ref } from 'vue'
+import { initGame } from './Game'
 
-export const gameState = ref<'menu' | 'playing' | 'paused'>('menu')
+export const gameState = ref<'menu' | 'playing' | 'paused' | 'gameover'>('menu')
 export const isTransitioning = ref(false)
 
-export function startGame() {
-    gameState.value = 'playing'
-}
+let cleanupFn: (() => void) | undefined
 
 export function pauseGame() {
     console.log('PAUSING')
@@ -19,6 +18,24 @@ export function resumeGame() {
 
 export function currentGameState() {
     return gameState.value
+}
+
+export function endGame() {
+    gameState.value = 'gameover'
+}
+
+export function cleanupGame() {
+    if (cleanupFn) {
+        console.log('CLEANING UP')
+        cleanupFn()
+        cleanupFn = undefined
+    }
+}
+
+export function startGame(container: HTMLElement, debug = false) {
+    console.log('STARTING  GAME')
+    cleanupGame()
+    cleanupFn = initGame(container, debug)
 }
 
 export async function runRoomTransition(callback: () => void) {

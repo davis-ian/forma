@@ -7,6 +7,8 @@ import type { HealthComponent } from '../components/Health'
 import type { HitboxComponent } from '../components/Hitbox'
 import { boxesIntersect, getAABB } from '../utils/collisionUtils'
 import type { DamageFlashComponent } from '../components/DamageFlash'
+import { EntityTag } from '@/engine/EntityTag'
+import { getAngle } from '@/gameplay/actions/combat/utils/movementUtils'
 
 const debug = true
 
@@ -32,11 +34,17 @@ export class DamageSystem extends System {
             const damageBox = getAABB(damagePos, damageHitbox)
 
             for (const targetEntity of entities) {
+                const targetIsPlayer = targetEntity.hasTag(EntityTag.Player)
+                const targetIsEnemy = targetEntity.hasTag(EntityTag.Enemy)
+
                 if (!targetEntity.hasComponent(ComponentType.Hurtbox)) continue
 
                 if (damage.damagedEntities.has(targetEntity.id)) {
                     continue
                 }
+
+                if (damage.onlyHit === 'Enemy' && !targetEntity.hasTag(EntityTag.Enemy)) continue
+                if (damage.onlyHit === 'Player' && !targetEntity.hasTag(EntityTag.Player)) continue
 
                 const hurtbox = targetEntity.getComponent<HurtboxComponent>(ComponentType.Hurtbox)!
                 const targetPos = targetEntity.getComponent<PositionComponent>(
@@ -44,12 +52,30 @@ export class DamageSystem extends System {
                 )!
 
                 const hurtboxBox = getAABB(targetPos, hurtbox, {
-                    x: hurtbox.offsetX ?? 0,
-                    y: hurtbox.offsetY ?? 0,
-                    z: hurtbox.offsetZ ?? 0,
+                    x: hurtbox.offsetX,
+                    y: hurtbox.offsetY,
+                    z: hurtbox.offsetZ,
                 })
 
-                if (boxesIntersect(damageBox.min, damageBox.max, hurtboxBox.min, hurtboxBox.max)) {
+                const targetHit = boxesIntersect(
+                    damageBox.min,
+                    damageBox.max,
+                    hurtboxBox.min,
+                    hurtboxBox.max
+                )
+
+                if (targetIsPlayer) {
+                    console.log(damageBox, 'damage box')
+                    console.log(hurtboxBox, 'hurtbox box')
+                    console.log(targetHit, 'Player: was hit')
+                }
+                if (targetIsEnemy) {
+                    console.log(targetHit, 'Enemy: was hit')
+                }
+                // console.log(targetHit, 'target was hit')
+                if (targetHit) {
+                    console.log(targetIsPlayer, 'target is player and was hit')
+                    // console.log(targetIsPlayer, 'player was hit')
                     if (targetEntity.id === damage.sourceId) continue
 
                     const targetHealth = targetEntity.getComponent<HealthComponent>(
@@ -65,11 +91,16 @@ export class DamageSystem extends System {
                             return //already hit by this attack
                         }
 
+                        if (
+                            targetHealth?.invulnerableRemaining &&
+                            targetHealth?.invulnerableRemaining > 0
+                        ) {
+                            return
+                        }
+
                         const knockbackForce = 50
-                        const angle = Math.atan2(
-                            targetPos.z - damagePos.z,
-                            targetPos.x - damagePos.x
-                        )
+                        const angle = getAngle(targetPos, damagePos)
+
                         const knockbackX = Math.cos(angle) * knockbackForce
                         const knockbackZ = Math.sin(angle) * knockbackForce
                         targetEntity.addComponent(ComponentType.Impulse, {
@@ -89,6 +120,7 @@ export class DamageSystem extends System {
                                 {
                                     flashTime: 0.15,
                                     elapsed: 0,
+                                    persitstWhileInvulnerable: targetIsPlayer,
                                 }
                             )
                             console.log('Flash  component  added to ', targetEntity.id)

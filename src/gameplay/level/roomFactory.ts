@@ -1,5 +1,5 @@
 import type { World } from '@/engine'
-import { BoxGeometry, DoubleSide, Mesh, MeshStandardMaterial } from 'three'
+import { BoxGeometry, DoubleSide, Mesh, MeshStandardMaterial, Texture } from 'three'
 import { createPlayer } from '@/gameplay/prefab/createPlayer'
 import { createEnemy } from '@/gameplay/prefab/createEnemy'
 import { TileType, type Direction, type Room, type RoomState } from './types'

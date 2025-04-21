@@ -67,6 +67,12 @@ export class MiniMap {
         }
     }
 
+    dispose() {
+        this.canvas.remove()
+        this.ctx = null as any
+        this.canvas = null as any
+    }
+
     /**
      * Draw a room relative to the active room (centered)
      */

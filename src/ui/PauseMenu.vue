@@ -6,7 +6,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 .pause-menu {
     position: absolute;
     top: 0;
@@ -16,7 +16,7 @@
     margin: auto;
     z-index: 1000;
 
-    background-color: black;
+    background-color: rgba(0, 0, 0, 0.6);
     opacity: 0.6;
     /* border: 2px solid white; */
     display: flex;

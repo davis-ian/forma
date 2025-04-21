@@ -5,7 +5,8 @@ export interface HealthComponent {
     max: number
     pendingDamage: number
     recentlyHitBy?: Set<string> //attackId strings
-    invulnerable?: boolean
+    invulnerableCooldown?: number
+    invulnerableRemaining?: number
     onDeath?: () => void
 }
 

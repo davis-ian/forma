@@ -5,6 +5,10 @@
         <!-- <div class="absolute top-4 left-4 z-10 text-white">🍳 Kitchen Nightmares</div> -->
 
         <PauseMenu v-if="currentGameState() === 'paused'"></PauseMenu>
+        <GameOverMenu
+            @restart="initRestart"
+            v-if="currentGameState() === 'gameover'"
+        ></GameOverMenu>
 
         <HUD />
         <!-- TRANSITION  OVERLAY: START -->
@@ -24,19 +28,25 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { currentGameState, isTransitioning } from '@/core/GameController'
-import { initGame } from '@/core/Game'
+import { currentGameState, isTransitioning, startGame } from '@/core/GameController'
 import PauseMenu from './PauseMenu.vue'
+import GameOverMenu from './GameOverMenu.vue'
 import HUD from './HUD.vue'
 
 const canvasContainer = ref<HTMLDivElement | null>(null)
 
+function initRestart() {
+    if (!canvasContainer.value) return
+
+    console.log('restarting game..')
+    startGame(canvasContainer.value)
+}
+
 onMounted(() => {
     console.log('game screen mounted')
-    if (canvasContainer.value) {
-        console.log('starting game..')
-        initGame(canvasContainer.value, true)
-    }
+    if (!canvasContainer.value) return
+    console.log('starting game..')
+    startGame(canvasContainer.value, true)
 })
 </script>
 
