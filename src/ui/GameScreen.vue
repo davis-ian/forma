@@ -11,6 +11,12 @@
         ></GameOverMenu>
 
         <HUD />
+
+        <!-- PLAYER DAMAGE OVERLAY: START -->
+
+        <div id="damage-overlay"></div>
+        <!-- PLAYER DAMAGE OVERLAY: END -->
+
         <!-- TRANSITION  OVERLAY: START -->
         <transition name="fade">
             <div
@@ -64,5 +70,18 @@ onMounted(() => {
 .fade-enter-to,
 .fade-leave-from {
     opacity: 1;
+}
+
+#damage-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 0, 0, 0.35); /* red with transparency */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    z-index: 9999;
 }
 </style>

@@ -11,6 +11,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import { getAngle } from '@/gameplay/actions/combat/utils/movementUtils'
 import { shakeCamera } from '@/core/CameraService'
 import { hitPauseService } from '@/core/HitPauseService'
+import { DamageOverlayService } from '@/core/DamageOverlayService'
 
 const debug = true
 
@@ -113,6 +114,10 @@ export class DamageSystem extends System {
                         shakeCamera(0.1, 0.5)
                         if (targetIsEnemy) {
                             hitPauseService.start(0.04)
+                        }
+                        if (targetIsPlayer) {
+                            const damageOverlayService = new DamageOverlayService()
+                            damageOverlayService.flash()
                         }
 
                         // targetHealth.current -= damage.amount
