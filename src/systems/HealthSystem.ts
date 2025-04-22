@@ -7,6 +7,8 @@ import type { RoomManager } from '@/gameplay/level/RoomManager'
 import { endGame } from '@/core/GameController'
 import { updateEnemyCount } from '@/utils/roomUtils'
 
+const DEBUG = false
+
 export class HealthSystem extends System {
     constructor(private roomManager: RoomManager) {
         super()
@@ -44,13 +46,17 @@ export class HealthSystem extends System {
                     health.invulnerableRemaining = health.invulnerableCooldown ?? 0
 
                     if (playerHealth.value.current <= 0) {
-                        console.log('ENDING GAME')
+                        if (DEBUG) {
+                            console.log('ENDING GAME')
+                        }
                         endGame()
                     }
                 }
 
                 if (health.current <= 0) {
-                    console.log(`💀 Entity ${entity.id} died`)
+                    if (DEBUG) {
+                        console.log(`💀 Entity ${entity.id} died`)
+                    }
 
                     //TODO: add death animation, sound, etc
 
@@ -63,7 +69,9 @@ export class HealthSystem extends System {
                         updateEnemyCount(world)
 
                         if (remainingEnemies.value === 0) {
-                            console.log(' ROOM CLEARED')
+                            if (DEBUG) {
+                                console.log(' ROOM CLEARED')
+                            }
                             currentRoom.cleared = true
 
                             const exitBlockers = world.getEntitiesWithTag(EntityTag.ExitBlocker)

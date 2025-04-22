@@ -1,4 +1,4 @@
-import { Entity, type World } from '@/engine'
+import { type World } from '@/engine'
 import type { Direction, Room } from './types'
 import { getRoomOffset, renderRoomToScene } from './roomFactory'
 import { EntityTag } from '@/engine/EntityTag'

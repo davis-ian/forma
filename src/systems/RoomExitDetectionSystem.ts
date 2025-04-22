@@ -8,6 +8,7 @@ import { PLAYER_SIZE } from '@/gameplay/constants'
 import { isTransitioning, runRoomTransition } from '@/core/GameController'
 import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
 
+const DEBUG = false
 let logged = false
 export class RoomExitDetectionSystem extends System {
     constructor(private roomManager: RoomManager) {
@@ -32,14 +33,18 @@ export class RoomExitDetectionSystem extends System {
         const exits = world.getEntitiesWithTag(EntityTag.ExitDoor)
 
         if (!logged) {
-            console.log(exits, 'exits')
+            if (DEBUG) {
+                console.log(exits, 'exits')
+            }
             logged = true
         }
         for (const exit of exits) {
             const exitPos = exit.getComponent<PositionComponent>(ComponentType.Position)
             if (!exitPos) continue
 
-            // console.log(exitPos, 'exit')
+            // if (DEBUG) {
+            //     // console.log(exitPos, 'exit')
+            // }
 
             const exitBox = getAABB(exitPos, PLAYER_SIZE)
             const intersecting = boxesIntersect(

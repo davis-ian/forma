@@ -1,8 +1,9 @@
-import { Entity, System, World } from '@/engine'
+import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { HealthBarComponent, HealthComponent } from '../components/Health'
 import type { PositionComponent } from '../components/Position'
 
+const DEBUG = false
 const showHealthBars = true
 
 export class HealthBarSystem extends System {

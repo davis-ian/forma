@@ -6,17 +6,6 @@ export enum TileType {
     Exit = 'exit',
 }
 
-// export interface RoomDefinition {
-//     height: number
-//     width: number
-//     tiles: TileType[][]
-//     offsetX: number
-//     offsetZ: number
-//     floorColor: string
-//     wallColor: string
-//     tags?: string[] //eg ["start", "boss", "shop"]
-// }
-
 export interface Room {
     id: string
     x: number

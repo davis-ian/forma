@@ -13,7 +13,7 @@ import { hitPauseService } from '@/core/services/HitPauseService'
 import { DamageOverlayService } from '@/core/services/DamageOverlayService'
 import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
 
-const debug = true
+const DEBUG = true
 
 export class DamageSystem extends System {
     update(world: World) {
@@ -67,18 +67,21 @@ export class DamageSystem extends System {
                     hurtboxBox.max
                 )
 
-                if (targetIsPlayer) {
+                if (DEBUG && targetIsPlayer) {
                     console.log(damageBox, 'damage box')
                     console.log(hurtboxBox, 'hurtbox box')
                     console.log(targetHit, 'Player: was hit')
                 }
-                if (targetIsEnemy) {
+
+                if (DEBUG && targetIsEnemy) {
                     console.log(targetHit, 'Enemy: was hit')
                 }
                 // console.log(targetHit, 'target was hit')
                 if (targetHit) {
-                    console.log(targetIsPlayer, 'target is player and was hit')
-                    // console.log(targetIsPlayer, 'player was hit')
+                    if (DEBUG) {
+                        console.log(targetIsPlayer, 'target is player and was hit')
+                        // console.log(targetIsPlayer, 'player was hit')
+                    }
                     if (targetEntity.id === damage.sourceId) continue
 
                     const targetHealth = targetEntity.getComponent<HealthComponent>(
@@ -135,13 +138,17 @@ export class DamageSystem extends System {
                                     persitstWhileInvulnerable: targetIsPlayer,
                                 }
                             )
-                            console.log('Flash  component  added to ', targetEntity.id)
+                            if (DEBUG) {
+                                console.log('Flash  component  added to ', targetEntity.id)
+                            }
                         } else {
-                            console.log('FLASH already exitsts')
+                            if (DEBUG) {
+                                console.log('FLASH already exitsts')
+                            }
                         }
                     }
 
-                    if (debug) {
+                    if (DEBUG) {
                         console.log('--- HIT DETECTED ---')
                         console.log('Hitbox AABB min:', damageBox.min)
                         console.log('Hitbox AABB max:', damageBox.max)

@@ -7,7 +7,7 @@ import { System } from '@/engine'
 import { ComponentType } from './ComponentType'
 import type { VisualComponent } from '@/components/Visual'
 import type { Scene } from 'three'
-import { currentGameState, gameState } from '@/core/GameController'
+import { currentGameState } from '@/core/GameController'
 import { InputSystem } from '@/systems/InputSystem'
 
 export class World {

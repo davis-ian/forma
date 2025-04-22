@@ -7,6 +7,7 @@ import type { RotationComponent } from '@/components/Rotation'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '../components/Input'
 
+const DEBUG = false
 export class RotationSystem extends System {
     update(world: World, deltaTime: number): void {
         for (const entity of world.entities.values()) {

@@ -6,6 +6,7 @@ import { Mesh, Sprite, type MeshBasicMaterial } from 'three'
 import type { HealthComponent } from '../components/Health'
 import type { WindupDebugComponent } from '../components/AI'
 
+const DEBUG = false
 export class DamageFlashSystem extends System {
     update(world: World, deltaTime: number): void {
         for (const entity of world.entities.values()) {
@@ -36,7 +37,10 @@ export class DamageFlashSystem extends System {
                     if (initialFlash) {
                         material.color.set(0xff0000)
                     } else if (flashingFromWindup) {
-                        console.log('flashing from windup')
+                        //TODO: move to windup animation
+                        if (DEBUG) {
+                            console.log('flashing from windup')
+                        }
                         material.color.set('limegreen')
                         if (windup.elapsed >= windup.duration) {
                             entity.removeComponent(ComponentType.WindupDebug)

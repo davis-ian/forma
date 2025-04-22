@@ -6,6 +6,8 @@ import type { MeshComponent } from '../components/Mesh'
 import type { SpriteAnimationComponent } from '../components/SpriteAnimation'
 import { setAnimationState } from '@/utils/animationUtils'
 
+const DEBUG = false
+
 export class SpriteAnimationStateSystem extends System {
     update(world: World): void {
         const players = world.getEntitiesWithTag(EntityTag.Player)

@@ -4,7 +4,6 @@ import {
     MeshBasicMaterial,
     NearestFilter,
     PlaneGeometry,
-    RepeatWrapping,
     Sprite,
     SpriteMaterial,
     SRGBColorSpace,

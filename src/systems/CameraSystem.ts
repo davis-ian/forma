@@ -4,6 +4,7 @@ import { Vector3, type PerspectiveCamera } from 'three'
 import type { PositionComponent } from '../components/Position'
 import { EntityTag } from '@/engine/EntityTag'
 
+const DEBUG = false
 export class CameraSystem extends System {
     private camera: PerspectiveCamera
     private shakeOffset = new Vector3()
@@ -17,7 +18,9 @@ export class CameraSystem extends System {
     }
 
     startShake(duration: number, intensity: number) {
-        console.log('start shake triggered')
+        if (DEBUG) {
+            console.log('start shake triggered')
+        }
         this.shakeTimer = duration
         this.shakeDuration = duration
         this.shakeIntensity = intensity
@@ -55,16 +58,5 @@ export class CameraSystem extends System {
         const baseTarget = new Vector3(pos.x, this.camera.position.y, pos.z + playerOffset)
         const targetWithShake = baseTarget.add(this.shakeOffset)
         this.camera.position.lerp(targetWithShake, alpha)
-
-        // this.camera.position.lerp(
-        //     new Vector3(pos.x, this.camera.position.y, pos.z + playerOffset), //Maintain cameras Y height
-        //     alpha
-        // )
     }
 }
-
-// On hit:
-// shakeCamera(0.1, 0.04)
-
-// On critical:
-// shakeCamera(0.2, 0.08)

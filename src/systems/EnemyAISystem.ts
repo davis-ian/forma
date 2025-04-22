@@ -6,6 +6,7 @@ import { AttackPerformers, type AIComponent } from '../components/AI'
 import type { VelocityComponent } from '../components/Velocity'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
 
+const DEBUG = false
 const MELEE_ATTACK_RANGE = 1.5
 
 export class EnemyAISystem extends System {
@@ -39,7 +40,9 @@ export class EnemyAISystem extends System {
                         vel.x = (dx / dist) * speed
                         vel.z = (dz / dist) * speed
                     } else if (ai.cooldownRemaining <= 0) {
-                        console.log('beginning windup')
+                        if (DEBUG) {
+                            console.log('beginning windup')
+                        }
                         // Stop moving, begin windup
                         vel.x = 0
                         vel.z = 0
@@ -50,7 +53,9 @@ export class EnemyAISystem extends System {
                             elapsed: 0,
                             duration: ai.windupDuration,
                         })
-                        console.log('windup component added')
+                        if (DEBUG) {
+                            console.log('windup component added')
+                        }
                     } else {
                         vel.x = 0
                         vel.z = 0
@@ -62,7 +67,9 @@ export class EnemyAISystem extends System {
                     if (ai.windupRemaining <= 0) {
                         ai.behavior = 'attack'
                         enemy.removeComponent(ComponentType.WindupDebug)
-                        console.log('ending windup')
+                        if (DEBUG) {
+                            console.log('ending windup')
+                        }
                     }
                     break
 
