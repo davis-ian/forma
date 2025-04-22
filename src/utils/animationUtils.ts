@@ -1,5 +1,5 @@
 import type { Direction } from '@/gameplay/level/types'
-import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
+import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
 
 export type AnimationStateName =
     | 'playerIdle'

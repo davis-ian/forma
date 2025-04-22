@@ -3,8 +3,8 @@ import { ComponentType } from '@/engine/ComponentType'
 import type { PositionComponent } from '../components/Position'
 import type { VelocityComponent } from '../components/Velocity'
 import { EntityTag } from '@/engine/EntityTag'
-import { boxesIntersect, getAABB } from '../utils/collisionUtils'
 import { PLAYER_SIZE } from '@/gameplay/constants'
+import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
 
 export class MovementSystem extends System {
     update(world: World, deltaTime: number): void {

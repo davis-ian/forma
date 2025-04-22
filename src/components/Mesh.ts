@@ -1,5 +1,3 @@
-// shared/components/Mesh.ts
-
 import type { Mesh } from 'three'
 
 export interface MeshComponent {

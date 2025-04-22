@@ -2,9 +2,9 @@ import type { Entity, World } from '@/engine'
 import type { AttackRegistry } from '../AttackRegistry'
 import { applyLunge, spawnAttackHitbox } from '../utils/attackUtils'
 import { ComponentType } from '@/engine/ComponentType'
-import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
-import type { InputComponent } from '@/shared/components/Input'
-import { setAnimationState } from '@/shared/utils/animationUtils'
+import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
+import type { InputComponent } from '@/components/Input'
+import { setAnimationState } from '@/utils/animationUtils'
 
 export function performPlayerSweepAttack(
     world: World,

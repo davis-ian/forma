@@ -3,10 +3,10 @@ import { EntityTag } from '@/engine/EntityTag'
 import { RoomManager } from '@/gameplay/level/RoomManager'
 import type { PositionComponent } from '../components/Position'
 import { ComponentType } from '@/engine/ComponentType'
-import { boxesIntersect, getAABB } from '../utils/collisionUtils'
 import type { DirectionComponent } from '../components/DirectionComponent'
 import { PLAYER_SIZE } from '@/gameplay/constants'
 import { isTransitioning, runRoomTransition } from '@/core/GameController'
+import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
 
 let logged = false
 export class RoomExitDetectionSystem extends System {

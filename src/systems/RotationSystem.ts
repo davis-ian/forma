@@ -3,7 +3,7 @@
 
 import { System } from '@/engine'
 import type { World } from '@/engine'
-import type { RotationComponent } from '@/shared/components/Rotation'
+import type { RotationComponent } from '@/components/Rotation'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '../components/Input'
 

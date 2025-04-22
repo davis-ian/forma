@@ -3,8 +3,8 @@ import type { Direction, Room } from './types'
 import { getRoomOffset, renderRoomToScene } from './roomFactory'
 import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
-import type { PositionComponent } from '@/shared/components/Position'
-import { teleportPlayer, updateEnemyCount } from '@/shared/utils/roomUtils'
+import type { PositionComponent } from '@/components/Position'
+import { teleportPlayer } from '@/utils/roomUtils'
 
 //Tracks which room is 'active'
 //spawns active room, removes previous

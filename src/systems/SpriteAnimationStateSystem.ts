@@ -4,7 +4,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import type { InputComponent } from '../components/Input'
 import type { MeshComponent } from '../components/Mesh'
 import type { SpriteAnimationComponent } from '../components/SpriteAnimation'
-import { setAnimationState } from '../utils/animationUtils'
+import { setAnimationState } from '@/utils/animationUtils'
 
 export class SpriteAnimationStateSystem extends System {
     update(world: World): void {

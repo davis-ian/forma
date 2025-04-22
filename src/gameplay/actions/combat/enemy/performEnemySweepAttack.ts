@@ -1,8 +1,8 @@
 import type { Entity, World } from '@/engine'
 import type { AttackRegistry } from '../AttackRegistry'
-import type { PositionComponent } from '@/shared/components/Position'
+import type { PositionComponent } from '@/components/Position'
 import { ComponentType } from '@/engine/ComponentType'
-import type { RotationComponent } from '@/shared/components/Rotation'
+import type { RotationComponent } from '@/components/Rotation'
 import { applyLunge, spawnAttackHitbox } from '../utils/attackUtils'
 import { getAngle } from '../utils/movementUtils'
 

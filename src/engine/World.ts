@@ -5,11 +5,10 @@ import { Entity } from '@/engine'
 import type { EntityId } from '@/engine'
 import { System } from '@/engine'
 import { ComponentType } from './ComponentType'
-// import type { DebugDrawSystem } from '@/shared/systems/DebugDrawSystem'
-import type { VisualComponent } from '@/shared/components/Visual'
+import type { VisualComponent } from '@/components/Visual'
 import type { Scene } from 'three'
 import { currentGameState, gameState } from '@/core/GameController'
-import { InputSystem } from '@/shared/systems/InputSystem'
+import { InputSystem } from '@/systems/InputSystem'
 
 export class World {
     private nextEntityId = 0

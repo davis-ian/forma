@@ -1,4 +1,4 @@
-import type { CameraSystem } from '@/shared/systems/CameraSystem'
+import type { CameraSystem } from '@/systems/CameraSystem'
 
 let cameraSystem: CameraSystem | null = null
 

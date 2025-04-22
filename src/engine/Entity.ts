@@ -2,7 +2,7 @@
 // Responsible for holding a unique ID and a map of components.
 // In ECS, an Entity is just an ID that has components attached to it.
 
-import type { PositionComponent } from '@/shared/components/Position'
+import type { PositionComponent } from '@/components/Position'
 import type { ComponentType } from './ComponentType'
 import type { World } from './World'
 

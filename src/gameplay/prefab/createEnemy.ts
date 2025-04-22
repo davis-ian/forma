@@ -1,15 +1,17 @@
 import type { World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
-import type { VisualComponent } from '@/shared/components/Visual'
-import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
-import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
-import { createPlaneMeshAsync, createSpriteMeshAsync } from '../level/utils/createSpriteMesh'
+import type { VisualComponent } from '@/components/Visual'
+
+import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
 import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
-import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
-import { setAnimationState } from '@/shared/utils/animationUtils'
-import { updateEnemyCount } from '@/shared/utils/roomUtils'
-import { createAiComponent } from '@/shared/components/AI'
+import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
+
+import { createAiComponent } from '@/components/AI'
+import { setAnimationState } from '@/utils/animationUtils'
+import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
+import { updateEnemyCount } from '@/utils/roomUtils'
 
 export async function createEnemy(
     world: World,

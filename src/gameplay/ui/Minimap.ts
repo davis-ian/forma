@@ -3,7 +3,7 @@ import type { Room } from '../level/types'
 import { RoomManager } from '../level/RoomManager'
 import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
-import type { PositionComponent } from '@/shared/components/Position'
+import type { PositionComponent } from '@/components/Position'
 
 export class MiniMap {
     private canvas: HTMLCanvasElement

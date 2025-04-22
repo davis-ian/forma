@@ -4,8 +4,8 @@ import type { HealthComponent } from '../components/Health'
 import { EntityTag } from '@/engine/EntityTag'
 import { playerHealth, remainingEnemies } from '@/core/GameState'
 import type { RoomManager } from '@/gameplay/level/RoomManager'
-import { updateEnemyCount } from '../utils/roomUtils'
 import { endGame } from '@/core/GameController'
+import { updateEnemyCount } from '@/utils/roomUtils'
 
 export class HealthSystem extends System {
     constructor(private roomManager: RoomManager) {

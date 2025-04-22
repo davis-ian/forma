@@ -1,11 +1,11 @@
 import type { Entity, World } from '@/engine'
-import type { PositionComponent } from '../components/Position'
+import type { PositionComponent } from '../../components/Position'
 import { ComponentType } from '@/engine/ComponentType'
-import type { RotationComponent } from '../components/Rotation'
+import type { RotationComponent } from '../../components/Rotation'
 import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
-import type { VisualComponent } from '../components/Visual'
-import type { HitboxComponent } from '../components/Hitbox'
-import type { HurtboxComponent } from '../components/Hurtbox'
+import type { VisualComponent } from '../../components/Visual'
+import type { HitboxComponent } from '../../components/Hitbox'
+import type { HurtboxComponent } from '../../components/Hurtbox'
 
 export interface Options {
     colorOverride?: number

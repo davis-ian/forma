@@ -1,4 +1,4 @@
-import type { PositionComponent } from '../components/Position'
+import type { PositionComponent } from '../../components/Position'
 
 export interface AABB {
     width: number

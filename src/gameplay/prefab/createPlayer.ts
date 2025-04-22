@@ -1,15 +1,15 @@
 import { World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
-import type { VisualComponent } from '@/shared/components/Visual'
+import type { VisualComponent } from '@/components/Visual'
 
 import { TextureLoader } from 'three'
 import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
 import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
-import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
-import { setAnimationState } from '@/shared/utils/animationUtils'
-import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
+import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
 import { playerHealth } from '@/core/GameState'
+import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
+import { setAnimationState } from '@/utils/animationUtils'
 
 const debug = false
 

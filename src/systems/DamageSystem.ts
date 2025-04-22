@@ -5,13 +5,13 @@ import type { DamageComponent } from '../components/Damage'
 import type { HurtboxComponent } from '../components/Hurtbox'
 import type { HealthComponent } from '../components/Health'
 import type { HitboxComponent } from '../components/Hitbox'
-import { boxesIntersect, getAABB } from '../utils/collisionUtils'
 import type { DamageFlashComponent } from '../components/DamageFlash'
 import { EntityTag } from '@/engine/EntityTag'
 import { getAngle } from '@/gameplay/actions/combat/utils/movementUtils'
-import { shakeCamera } from '@/core/CameraService'
-import { hitPauseService } from '@/core/HitPauseService'
-import { DamageOverlayService } from '@/core/DamageOverlayService'
+import { shakeCamera } from '@/core/services/CameraService'
+import { hitPauseService } from '@/core/services/HitPauseService'
+import { DamageOverlayService } from '@/core/services/DamageOverlayService'
+import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
 
 const debug = true
 

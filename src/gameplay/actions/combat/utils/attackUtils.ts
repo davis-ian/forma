@@ -1,14 +1,10 @@
 import type { Entity, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
-import type { PositionComponent } from '@/shared/components/Position'
-import type { RotationComponent } from '@/shared/components/Rotation'
-import { addBoxDeugHelperForEntity } from '@/shared/utils/createBoxDebugHelper'
+import type { PositionComponent } from '@/components/Position'
+import type { RotationComponent } from '@/components/Rotation'
 import { AttackRegistry } from '../AttackRegistry'
-import type { SpriteAnimationComponent } from '@/shared/components/SpriteAnimation'
-import { setAnimationState } from '@/shared/utils/animationUtils'
-import type { InputComponent } from '@/shared/components/Input'
-import { HURTBOX_OFFSET } from '@/gameplay/constants'
-import type { HurtboxComponent } from '@/shared/components/Hurtbox'
+import type { HurtboxComponent } from '@/components/Hurtbox'
+import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 
 //TODO: Support different sized hitboxes, current implementation only works with cube hit boxes
 // revisit when weapons need different ranges

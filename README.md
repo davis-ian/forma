@@ -32,9 +32,6 @@
 │   │   ├── System.ts
 │   │   ├── World.ts
 │   │   └── index.ts
-│   ├── shared/                  # Cross-game reusable logic
-│   │   ├── components/          # Data-only, universal: Position, Velocity, Health
-│   │   └── systems/             # General Purpose Logic: MovementSystem, RenderSystem
 │   ├── components/              # Game-specific (cooking, boss flags)
 │   ├── systems/                 # Game-specific systems (attack AI, fire breath)
 │   ├── core/                    # Runtime-specific setup (game loop, scene)
@@ -84,15 +81,6 @@
 - Thoughtful use of animation, transitions, and screen flow
 
 ---
-
-# Shared Folder Guidelines
-
-This folder contains components and systems that are reusable across games.
-
-✅ Should be data-driven
-✅ Must not rely on game-specific themes (no "Cooking", "FireSword", "FearComponent")
-✅ Must have clean interfaces and clear dependencies
-✅ Prefer composable patterns (e.g. "Health" + "Poisoned" instead of "BurningStatusEffect")
 
 ## 📖 Additional Docs
 

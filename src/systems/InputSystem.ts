@@ -1,7 +1,7 @@
 import { currentGameState, pauseGame, resumeGame } from '@/core/GameController'
 import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
-import type { InputComponent } from '@/shared/components/Input'
+import type { InputComponent } from '@/components/Input'
 import type { DashComponent } from '../components/Dash'
 export class InputSystem extends System {
     private keys = new Set<string>()

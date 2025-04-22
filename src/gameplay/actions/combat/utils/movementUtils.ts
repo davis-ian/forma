@@ -1,4 +1,4 @@
-import type { PositionComponent } from '@/shared/components/Position'
+import type { PositionComponent } from '@/components/Position'
 
 export function getAngle(from: PositionComponent, to: PositionComponent) {
     // Face the player: calculate angle from enemy to player
