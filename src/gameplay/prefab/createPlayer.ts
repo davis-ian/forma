@@ -11,10 +11,12 @@ import { playerHealth } from '@/core/GameState'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { setAnimationState } from '@/utils/animationUtils'
 
-const debug = false
+const DEBUG = false
 
 export async function createPlayer(world: World, x: number, y: number, z: number) {
-    console.log('CREATING PLAYER')
+    if (DEBUG) {
+        console.log('CREATING PLAYER')
+    }
     const scene = world.scene
     if (!scene) {
         console.error('Player create called but no scene  exists!')
@@ -122,7 +124,7 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     entity.addComponent(ComponentType.Visual, visual)
     console.log('PLAYER CREATED SUCCESSFULLY')
 
-    if (debug) {
+    if (DEBUG) {
         addBoxDeugHelperForEntity(world, entity, { colorOverride: 0xfc33ff })
     }
 

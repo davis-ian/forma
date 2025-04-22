@@ -6,13 +6,17 @@ import type { RotationComponent } from '@/components/Rotation'
 import { applyLunge, spawnAttackHitbox } from '../utils/attackUtils'
 import { getAngle } from '../utils/movementUtils'
 
+const DEBUG = false
+
 export function performEnemySweepAttack(
     world: World,
     enemyEntity: Entity,
     attackRegistry: AttackRegistry,
     targetPosition: PositionComponent
 ) {
-    console.log('PERFOMING ENEMY ATTACK')
+    if (DEBUG) {
+        console.log('PERFOMING ENEMY ATTACK')
+    }
     const attackId = crypto.randomUUID()
 
     const enemyPos = enemyEntity.getComponent<PositionComponent>(ComponentType.Position)

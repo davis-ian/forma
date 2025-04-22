@@ -13,15 +13,18 @@ import { setAnimationState } from '@/utils/animationUtils'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { updateEnemyCount } from '@/utils/roomUtils'
 
+const DEBUG = false
+
 export async function createEnemy(
     world: World,
     x: number,
     y: number,
     z: number,
-    maxHealth: number,
-    debug: boolean = false
+    maxHealth: number
 ) {
-    console.log('CREATING Enemy')
+    if (DEBUG) {
+        console.log('CREATING Enemy')
+    }
     const scene = world.scene
     if (!scene) {
         console.error('Player create called but no scene  exists!')
@@ -93,7 +96,7 @@ export async function createEnemy(
     entity.addComponent(ComponentType.Visual, visual)
     entity.addComponent(ComponentType.AI, createAiComponent('Skeleton'))
     entity.addTag(EntityTag.Obstacle)
-    if (debug) {
+    if (DEBUG) {
         addBoxDeugHelperForEntity(world, entity, { colorOverride: 0x33c9ff })
     }
 

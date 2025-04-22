@@ -10,6 +10,8 @@ import { teleportPlayer } from '@/utils/roomUtils'
 //spawns active room, removes previous
 //handles transition animation
 
+const DEBUG = false
+
 export class RoomManager {
     constructor(
         private world: World,
@@ -24,13 +26,15 @@ export class RoomManager {
             animate?: boolean
         }
     ): void {
-        // console.log('TRANSITION FROM', entranceFrom)
-        // console.log('TRANSITION TO', roomId)
+        if (DEBUG) {
+            console.log('TRANSITION FROM', entranceFrom)
+            console.log('TRANSITION TO', roomId)
+        }
 
         const room = this.getRoom(roomId)
 
         if (!room) {
-            console.log('room not found in roomGraph')
+            console.warn('room not found in roomGraph')
             return
         }
 
@@ -63,10 +67,14 @@ export class RoomManager {
     }
 
     cleanUpCurrentRoom() {
-        // console.log('cleaning up room!')
+        if (DEBUG) {
+            console.log('cleaning up room!')
+        }
         const entities = this.world.getEntitiesWithTag(EntityTag.RoomInstance)
 
-        // console.log(entities, 'entities to clean')
+        if (DEBUG) {
+            console.log(entities, 'entities to clean')
+        }
         for (const entity of entities) {
             this.world.destroyEntity(entity.id)
         }
@@ -93,10 +101,6 @@ export class RoomManager {
 
         room.visited = true
         this.activeRoomId = id
-    }
-
-    destroy(): void {
-        //cleanup if needed (eg before restarting level)
     }
 
     getEntranceTilePosition(room: Room, from: Direction): { x: number; z: number } {

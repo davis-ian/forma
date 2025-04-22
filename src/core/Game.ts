@@ -41,8 +41,10 @@ import { registerDebugHandler } from '@/utils/DebugVisualRegistry'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { updateEnemyCount } from '@/utils/roomUtils'
 
-export function initGame(container: HTMLElement, debug: boolean = false) {
-    if (debug) {
+const DEBUG = false
+
+export function initGame(container: HTMLElement) {
+    if (DEBUG) {
         console.log('game start initiated')
     }
     /**
@@ -76,7 +78,7 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     directional.position.set(5, 5, 5)
     scene.add(directional)
 
-    if (debug) {
+    if (DEBUG) {
         console.log('camera z', camera.position.z)
     }
 
@@ -84,7 +86,7 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     renderer.setSize(container.clientWidth, container.clientHeight)
     container.appendChild(renderer.domElement)
 
-    if (debug) {
+    if (DEBUG) {
         console.log('Canvas size:', renderer.domElement.width, renderer.domElement.height)
     }
     registerDebugHandler((world, entity) => {
@@ -208,6 +210,8 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
         updateEnemyCount(world)
         minimap.dispose()
 
-        console.log(roomManager, 'roomManager after reset')
+        if (DEBUG) {
+            console.log(roomManager, 'roomManager after reset')
+        }
     }
 }
