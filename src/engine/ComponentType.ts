@@ -16,4 +16,5 @@ export enum ComponentType {
     Impulse = 'impulse',
     SpriteAnimation = 'sprite-animation',
     AI = 'ai',
+    WindupDebug = 'windup-debug',
 }

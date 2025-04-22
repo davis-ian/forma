@@ -7,6 +7,7 @@ import {
     RepeatWrapping,
     Sprite,
     SpriteMaterial,
+    SRGBColorSpace,
     TextureLoader,
 } from 'three'
 
@@ -72,6 +73,7 @@ export async function createPlaneMeshAsync(
     texture.wrapS = ClampToEdgeWrapping
     texture.wrapT = ClampToEdgeWrapping
     texture.flipY = true
+    texture.colorSpace = SRGBColorSpace
 
     // Set initial frame
     texture.repeat.set(1 / columns, 1 / rows)

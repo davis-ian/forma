@@ -5,14 +5,24 @@ import { performEnemySweepAttack } from '@/gameplay/actions/combat/enemy/perform
 
 export type EnemyType = 'Skeleton' | 'Boss'
 export type EnemyAttackType = 'sweep'
+export type EnemyState = 'chase' | 'windup' | 'attack' | 'cooldown' | 'idle'
+
+const WINDUP_DURATIONS = {
+    jab: 0.3,
+    melee: 0.5,
+    heavySlam: 1,
+    boss: 1.5,
+}
 
 export type AIComponent = {
     type: EnemyType
-    behavior: 'chase' | 'idle'
+    behavior: EnemyState
     attackCooldown: number
     cooldownRemaining: number
     attacks: EnemyAttackType[]
     currentAttack?: EnemyAttackType
+    windupDuration: number
+    windupRemaining: number
 }
 
 export const createAiComponent = (enemyType: EnemyType): AIComponent => ({
@@ -21,6 +31,8 @@ export const createAiComponent = (enemyType: EnemyType): AIComponent => ({
     attackCooldown: 2,
     cooldownRemaining: 2,
     attacks: [],
+    windupDuration: WINDUP_DURATIONS.melee,
+    windupRemaining: WINDUP_DURATIONS.melee,
 })
 
 type AttackArgs = {
@@ -35,4 +47,10 @@ export const AttackPerformers: Record<EnemyAttackType, (args: AttackArgs) => voi
         performEnemySweepAttack(world, entity, registry, target),
     // heavySmash: ({ world, entity, registry, target }) => performHeavySmash(world, entity, target),
     // ranged: ({ world, entity, registry, target }) => performRangedAttack(world, entity, target),
+}
+
+export interface WindupDebugComponent {
+    isActive: boolean
+    elapsed: number
+    duration: number
 }

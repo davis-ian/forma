@@ -28,37 +28,62 @@ export class EnemyAISystem extends System {
 
             ai.cooldownRemaining = Math.max(ai.cooldownRemaining - deltaTime, 0)
 
-            if (ai.behavior === 'chase') {
-                //  Compute direction vector from enemy to palyer
-                const dx = playerPos.x - pos.x
-                const dz = playerPos.z - pos.z
+            const dx = playerPos.x - pos.x
+            const dz = playerPos.z - pos.z
+            const dist = Math.hypot(dx, dz)
 
-                //get normalized diurection
-                const dist = Math.hypot(dx, dz)
-                const speed = 2.5
-
-                // If enemy is far enough away, move toward the player
-                if (dist > MELEE_ATTACK_RANGE) {
-                    vel.x = (dx / dist) * speed
-                    vel.z = (dz / dist) * speed
-                } else {
-                    vel.x = 0
-                    vel.z = 0
-
-                    if (ai.cooldownRemaining <= 0) {
-                        const attackType = ai.currentAttack ?? ai.attacks[0] ?? 'sweep'
-                        // performEnemyAttack(world, enemy, this.attackRegistry, playerPos)
-                        const attackFn = AttackPerformers[attackType]
-
-                        attackFn({
-                            world,
-                            entity: enemy,
-                            registry: this.attackRegistry,
-                            target: playerPos,
+            switch (ai.behavior) {
+                case 'chase':
+                    if (dist > MELEE_ATTACK_RANGE) {
+                        const speed = 2.5
+                        vel.x = (dx / dist) * speed
+                        vel.z = (dz / dist) * speed
+                    } else if (ai.cooldownRemaining <= 0) {
+                        console.log('beginning windup')
+                        // Stop moving, begin windup
+                        vel.x = 0
+                        vel.z = 0
+                        ai.windupRemaining = ai.windupDuration
+                        ai.behavior = 'windup'
+                        enemy.addComponent(ComponentType.WindupDebug, {
+                            isActive: true,
+                            elapsed: 0,
+                            duration: ai.windupDuration,
                         })
-                        ai.cooldownRemaining = ai.attackCooldown
+                        console.log('windup component added')
+                    } else {
+                        vel.x = 0
+                        vel.z = 0
                     }
-                }
+                    break
+
+                case 'windup':
+                    ai.windupRemaining -= deltaTime
+                    if (ai.windupRemaining <= 0) {
+                        ai.behavior = 'attack'
+                        enemy.removeComponent(ComponentType.WindupDebug)
+                        console.log('ending windup')
+                    }
+                    break
+
+                case 'attack':
+                    const attackType = ai.currentAttack ?? ai.attacks[0] ?? 'sweep'
+                    const attackFn = AttackPerformers[attackType]
+                    attackFn({
+                        world,
+                        entity: enemy,
+                        registry: this.attackRegistry,
+                        target: playerPos,
+                    })
+                    ai.cooldownRemaining = ai.attackCooldown
+                    ai.behavior = 'cooldown'
+                    break
+
+                case 'cooldown':
+                    if (ai.cooldownRemaining <= 0) {
+                        ai.behavior = 'chase'
+                    }
+                    break
             }
         }
     }

@@ -4,7 +4,9 @@ export interface InputComponent {
     left: boolean
     right: boolean
     attack: boolean
+    dash: boolean
 
     attackPressedLastFrame?: boolean
     pausePressedLastFrame?: boolean
+    dashPressedLastFrame?: boolean
 }
