@@ -6,10 +6,20 @@ import { EntityTag } from '@/engine/EntityTag'
 
 export class CameraSystem extends System {
     private camera: PerspectiveCamera
+    private shakeOffset = new Vector3()
+    private shakeTimer = 0
+    private shakeDuration = 0
+    private shakeIntensity = 0
 
     constructor(camera: PerspectiveCamera) {
         super()
         this.camera = camera
+    }
+
+    startShake(duration: number, intensity: number) {
+        this.shakeTimer = duration
+        this.shakeDuration = duration
+        this.shakeIntensity = intensity
     }
 
     update(world: World, deltaTime: number) {
@@ -21,6 +31,21 @@ export class CameraSystem extends System {
 
         const pos = target.getComponent<PositionComponent>(ComponentType.Position)
         if (!pos) return
+
+        // Shake logic
+        if (this.shakeTimer > 0) {
+            this.shakeTimer -= deltaTime
+            const t = 1 - this.shakeTimer / this.shakeDuration // 0–1
+            const falloff = 1 - t // decay over time
+
+            const randX = (Math.random() * 2 - 1) * this.shakeIntensity * falloff
+            const randY = (Math.random() * 2 - 1) * this.shakeIntensity * falloff
+            const randZ = (Math.random() * 2 - 1) * this.shakeIntensity * falloff
+
+            this.shakeOffset.set(randX, randY, randZ)
+        } else {
+            this.shakeOffset.set(0, 0, 0)
+        }
 
         const playerOffset = 4
         const smoothing = 5
