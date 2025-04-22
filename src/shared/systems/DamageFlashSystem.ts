@@ -50,6 +50,8 @@ export class DamageFlashSystem extends System {
                         material.opacity = Math.sin(flash.elapsed * 20) > 0 ? 1 : 0.2
                     } else {
                         material.color.set(0xffffff)
+                        material.transparent = false
+                        material.opacity = 1
                         entity.removeComponent(ComponentType.DamageFlash)
                     }
                 }
