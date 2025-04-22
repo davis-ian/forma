@@ -119,6 +119,7 @@ export class DamageSystem extends System {
                             hitPauseService.start(0.04)
                         }
                         if (targetIsPlayer) {
+                            hitPauseService.start(0.15)
                             const damageOverlayService = new DamageOverlayService()
                             damageOverlayService.flash()
                         }
