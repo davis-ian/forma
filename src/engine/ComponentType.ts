@@ -17,4 +17,5 @@ export enum ComponentType {
     SpriteAnimation = 'sprite-animation',
     AI = 'ai',
     WindupDebug = 'windup-debug',
+    Dash = 'dash',
 }

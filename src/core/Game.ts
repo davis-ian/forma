@@ -37,6 +37,7 @@ import { SpriteAnimationStateSystem } from '@/shared/systems/SpriteAnimationStat
 import { gameState } from './GameController'
 import { EnemyAISystem } from '@/shared/systems/EnemyAISystem'
 import { updateEnemyCount } from '@/shared/utils/roomUtils'
+import { DashSystem } from '@/shared/systems/DashSystem'
 
 export function initGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -119,7 +120,9 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     const minimap = new MiniMap(roomManager)
     world.addSystem(new InputSystem())
     world.addSystem(new VelocitySystem())
+    world.addSystem(new DashSystem())
     world.addSystem(new MovementSystem())
+
     world.addSystem(new EnemyAISystem(attackRegistry))
 
     world.addSystem(new RenderSystem())

@@ -68,6 +68,16 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     const loader = new TextureLoader()
     console.log(loader, 'new loader')
 
+    entity.addComponent(ComponentType.Dash, {
+        isDashing: false,
+        dashDuration: 0.2,
+        dashTimer: 0,
+        cooldown: 1.0,
+        cooldownRemaining: 0,
+        dashSpeed: 30,
+        direction: { x: 0, z: 0 },
+    })
+
     // const playerMesh = new Mesh(
     //     new BoxGeometry(1, 1, 1),
     //     new MeshStandardMaterial({ color: 'blue' })

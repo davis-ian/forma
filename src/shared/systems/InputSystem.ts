@@ -2,6 +2,7 @@ import { currentGameState, pauseGame, resumeGame } from '@/core/GameController'
 import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '@/shared/components/Input'
+import type { DashComponent } from '../components/Dash'
 export class InputSystem extends System {
     private keys = new Set<string>()
 
@@ -25,6 +26,12 @@ export class InputSystem extends System {
                         resumeGame()
                     }
                 }
+
+                const dashKeyDown = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight')
+
+                // Dash only triggers on new press (just like attack)
+                input.dash = dashKeyDown && !input.dashPressedLastFrame
+                input.dashPressedLastFrame = dashKeyDown
 
                 input.pausePressedLastFrame = escapeDown
 
