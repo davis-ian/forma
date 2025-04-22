@@ -9,6 +9,8 @@ import { boxesIntersect, getAABB } from '../utils/collisionUtils'
 import type { DamageFlashComponent } from '../components/DamageFlash'
 import { EntityTag } from '@/engine/EntityTag'
 import { getAngle } from '@/gameplay/actions/combat/utils/movementUtils'
+import { shakeCamera } from '@/core/CameraService'
+import { hitPauseService } from '@/core/HitPauseService'
 
 const debug = true
 
@@ -107,6 +109,11 @@ export class DamageSystem extends System {
                             x: knockbackX,
                             z: knockbackZ,
                         })
+
+                        shakeCamera(0.1, 0.5)
+                        if (targetIsEnemy) {
+                            hitPauseService.start(0.04)
+                        }
 
                         // targetHealth.current -= damage.amount
                         if (!targetHealth.pendingDamage) targetHealth.pendingDamage = 0

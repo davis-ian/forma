@@ -38,6 +38,8 @@ import { gameState } from './GameController'
 import { EnemyAISystem } from '@/shared/systems/EnemyAISystem'
 import { updateEnemyCount } from '@/shared/utils/roomUtils'
 import { DashSystem } from '@/shared/systems/DashSystem'
+import { setCameraSystem } from './CameraService'
+import { hitPauseService } from './HitPauseService'
 
 export function initGame(container: HTMLElement, debug: boolean = false) {
     if (debug) {
@@ -97,12 +99,18 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     })
 
     const clock = new Clock()
-
+    const cameraSystem = new CameraSystem(camera)
     /**
      * Initialize ECS world and register systems
      */
     const world = new World()
     world.setScene(scene)
+
+    const generator = new LevelGenerator()
+    const roomGraph = generator.init(world, 10)
+    const attackRegistry = new AttackRegistry()
+    const roomManager = new RoomManager(world, roomGraph)
+    const minimap = new MiniMap(roomManager)
 
     /**
      * Create a cube mesh and attach to ECS entity
@@ -111,13 +119,7 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
 
     // loadLevel(world, testLevel, scene)
 
-    const generator = new LevelGenerator()
-    const roomGraph = generator.init(world, 10)
-    const attackRegistry = new AttackRegistry()
-
-    const roomManager = new RoomManager(world, roomGraph)
     roomManager.setActiveRoom('0,0')
-    const minimap = new MiniMap(roomManager)
     world.addSystem(new InputSystem())
     world.addSystem(new VelocitySystem())
     world.addSystem(new DashSystem())
@@ -134,7 +136,10 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
     world.addSystem(new DamageFlashSystem())
     world.addSystem(new HealthBarSystem())
     world.addSystem(new HealthSystem(roomManager))
-    world.addSystem(new CameraSystem(camera))
+    world.addSystem(cameraSystem)
+
+    //register camera service
+    setCameraSystem(cameraSystem)
     world.addSystem(new DebugDrawSystem())
     world.addSystem(new RoomExitDetectionSystem(roomManager))
     world.addSystem(new SpriteAnimationSystem())
@@ -146,10 +151,13 @@ export function initGame(container: HTMLElement, debug: boolean = false) {
      * Runs the ECS world update and renders the scene
      */
     function animate() {
-        const delta = clock.getDelta()
+        const rawDelta = clock.getDelta()
+        const delta = hitPauseService.update(rawDelta)
 
-        world.update(delta)
-        minimap.update(world)
+        if (delta > 0) {
+            world.update(delta)
+            minimap.update(world)
+        }
 
         renderer.render(scene, camera)
         animationFrameId = requestAnimationFrame(animate)
