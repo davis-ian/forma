@@ -17,6 +17,7 @@ export interface Room {
     visited?: boolean
     cleared?: boolean
     state?: RoomState
+    theme: 'diner' | 'freezer' | 'pantry' | 'oven'
 }
 
 export interface RoomState {

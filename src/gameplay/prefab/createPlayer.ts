@@ -10,6 +10,7 @@ import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
 import { playerHealth } from '@/core/GameState'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { setAnimationState } from '@/utils/animationUtils'
+import { SpriteAtlasRegistry, type SpriteName } from '@/core/registry/SpriteAtlasRegistry'
 
 const DEBUG = false
 
@@ -84,30 +85,35 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     //     new BoxGeometry(1, 1, 1),
     //     new MeshStandardMaterial({ color: 'blue' })
     //     // playerMaterial
+
     // )
+    const spriteName: SpriteName = 'burger'
+    const atlas = SpriteAtlasRegistry[spriteName]
+    const { src, columns, rows, animations, scale } = atlas
     const playerMesh = await createPlaneMeshAsync(
-        '/assets/Warrior_Red.png',
-        6,
-        8,
+        src,
+        columns,
+        rows,
         0,
         0,
-        PLAYER_SIZE.width * 4
+        PLAYER_SIZE.width * scale
     )
 
     let animationState = {
+        spriteName: spriteName,
         currentFrame: 0,
         frameCount: 0,
         frameDuration: 0,
         elapsedTime: 0,
         row: 0,
-        columns: 6,
-        rows: 8,
+        columns: columns,
+        rows: rows,
         loop: true,
         playing: true,
     } as SpriteAnimationComponent
 
     entity.addComponent(ComponentType.SpriteAnimation, animationState)
-    setAnimationState(animationState, 'playerIdle')
+    setAnimationState(animationState, 'idle')
 
     entity.addComponent(ComponentType.Mesh, {
         mesh: playerMesh,

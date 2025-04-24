@@ -94,9 +94,9 @@
 
 - [x] Home screen + theming
 - [x] Custom ECS setup
-- [ ] Player controller & dash combat
+- [x] Player controller & dash combat
 - [ ] Cooking mechanics
-- [ ] Procedural dungeon generator
+- [x] Procedural dungeon generator
 - [ ] Meta progression system
 - [ ] Boss fights
 

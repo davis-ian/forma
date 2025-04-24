@@ -103,10 +103,10 @@ combatSystem.update()
 
 ### MVP
 
-- [ ] ECS Movement System w/ player controller
-- [ ] Collision detection & enemy knockback
+- [x] ECS Movement System w/ player controller
+- [x] Collision detection & enemy knockback
 - [ ] Cooking mechanic MVP
-- [ ] Room transitions and fade animations
+- [x] Room transitions and fade animations
 
 ### Nice-to-Haves
 

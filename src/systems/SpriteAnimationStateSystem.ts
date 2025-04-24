@@ -5,6 +5,7 @@ import type { InputComponent } from '../components/Input'
 import type { MeshComponent } from '../components/Mesh'
 import type { SpriteAnimationComponent } from '../components/SpriteAnimation'
 import { setAnimationState } from '@/utils/animationUtils'
+import type { RotationComponent } from '@/components/Rotation'
 
 const DEBUG = false
 
@@ -32,7 +33,7 @@ export class SpriteAnimationStateSystem extends System {
                 if (hasDirectionInput) {
                     setAnimationState(anim, 'walk')
                 } else {
-                    setAnimationState(anim, 'playerIdle')
+                    setAnimationState(anim, 'idle')
                 }
             }
 
@@ -46,6 +47,33 @@ export class SpriteAnimationStateSystem extends System {
                         sprite.scale.x = Math.abs(sprite.scale.x)
                     }
                 }
+            }
+        }
+
+        const enemies = world.getEntitiesWithTag(EntityTag.Enemy)
+
+        for (const enemy of enemies) {
+            if (
+                !enemy.hasComponent(ComponentType.SpriteAnimation) ||
+                !enemy.hasComponent(ComponentType.Rotation) ||
+                !enemy.hasComponent(ComponentType.Mesh)
+            ) {
+                continue
+            }
+
+            const rotation = enemy.getComponent<RotationComponent>(ComponentType.Rotation)!.y
+            const meshComp = enemy.getComponent<MeshComponent>(ComponentType.Mesh)!
+            const sprite = meshComp.mesh
+
+            // Convert rotation to degrees and normalize
+            const degrees = (rotation * 180) / Math.PI
+            const normalized = ((degrees % 360) + 360) % 360
+
+            // Flip horizontally if facing left-ish (180° to 360°)
+            if (normalized > 90 && normalized < 270) {
+                sprite.scale.x = -Math.abs(sprite.scale.x)
+            } else {
+                sprite.scale.x = Math.abs(sprite.scale.x)
             }
         }
     }

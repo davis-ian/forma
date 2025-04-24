@@ -18,4 +18,5 @@ export enum ComponentType {
     AI = 'ai',
     WindupDebug = 'windup-debug',
     Dash = 'dash',
+    SpawnPoint = 'spawn-point',
 }

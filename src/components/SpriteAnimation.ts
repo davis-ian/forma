@@ -1,4 +1,7 @@
+import type { SpriteName } from '@/core/registry/SpriteAtlasRegistry'
+
 export interface SpriteAnimationComponent {
+    spriteName: SpriteName
     currentFrame: number
     frameCount: number
     frameDuration: number // seconds

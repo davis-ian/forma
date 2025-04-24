@@ -1,4 +1,4 @@
-import { Texture, TextureLoader, NearestFilter, RepeatWrapping } from 'three'
+import { TextureLoader, NearestFilter, RepeatWrapping } from 'three'
 
 const loader = new TextureLoader()
 const tileAtlas = loader.load('/assets/tiny-dungeon-spritesheet.png')

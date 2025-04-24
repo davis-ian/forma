@@ -5,6 +5,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import { AttackPerformers, type AIComponent } from '../components/AI'
 import type { VelocityComponent } from '../components/Velocity'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
+import type { SpawnPointComponent } from '@/components/SpawnPoint'
 
 const DEBUG = false
 const MELEE_ATTACK_RANGE = 1.5
@@ -24,21 +25,50 @@ export class EnemyAISystem extends System {
             const ai = enemy.getComponent<AIComponent>(ComponentType.AI)
             const pos = enemy.getComponent<PositionComponent>(ComponentType.Position)
             const vel = enemy.getComponent<VelocityComponent>(ComponentType.Velocity)
+            const spawn = enemy.getComponent<SpawnPointComponent>(ComponentType.SpawnPoint)
 
-            if (!ai || !pos || !vel) continue
+            if (!ai || !pos || !vel || !spawn) continue
 
             ai.cooldownRemaining = Math.max(ai.cooldownRemaining - deltaTime, 0)
 
-            const dx = playerPos.x - pos.x
-            const dz = playerPos.z - pos.z
-            const dist = Math.hypot(dx, dz)
+            const playerDx = playerPos.x - pos.x
+            const playerDz = playerPos.z - pos.z
+            const distToPlayer = Math.hypot(playerDx, playerDz)
+
+            const leashDx = pos.x - spawn.x
+            const leashDz = pos.z - spawn.z
+            const distFromSpawn = Math.hypot(leashDx, leashDz)
+
+            if (distFromSpawn > spawn.leashRadius) {
+                ai.behavior = 'idle'
+            }
 
             switch (ai.behavior) {
+                case 'idle':
+                    if (distToPlayer <= spawn.leashRadius) {
+                        ai.behavior = 'chase'
+                    }
+
+                    if (distFromSpawn > 0.1) {
+                        const returnDx = spawn.x - pos.x
+                        const returnDz = spawn.z - pos.z
+
+                        const returnDist = Math.hypot(returnDx, returnDz)
+                        const returnSpeed = 1.5
+
+                        vel.x = (returnDx / returnDist) * returnSpeed
+                        vel.z = (returnDz / returnDist) * returnSpeed
+                    } else {
+                        vel.x = 0
+                        vel.z = 0
+                    }
+                    break
+
                 case 'chase':
-                    if (dist > MELEE_ATTACK_RANGE) {
+                    if (distToPlayer > MELEE_ATTACK_RANGE) {
                         const speed = 2.5
-                        vel.x = (dx / dist) * speed
-                        vel.z = (dz / dist) * speed
+                        vel.x = (playerDx / distToPlayer) * speed
+                        vel.z = (playerDz / distToPlayer) * speed
                     } else if (ai.cooldownRemaining <= 0) {
                         if (DEBUG) {
                             console.log('beginning windup')

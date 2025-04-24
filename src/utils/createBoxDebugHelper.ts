@@ -1,11 +1,13 @@
+import type { HitboxComponent } from '@/components/Hitbox'
+import type { HurtboxComponent } from '@/components/Hurtbox'
+import type { PositionComponent } from '@/components/Position'
+import type { RotationComponent } from '@/components/Rotation'
+import type { VisualComponent } from '@/components/Visual'
 import type { Entity, World } from '@/engine'
-import type { PositionComponent } from '../../components/Position'
+
 import { ComponentType } from '@/engine/ComponentType'
-import type { RotationComponent } from '../../components/Rotation'
+
 import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
-import type { VisualComponent } from '../../components/Visual'
-import type { HitboxComponent } from '../../components/Hitbox'
-import type { HurtboxComponent } from '../../components/Hurtbox'
 
 export interface Options {
     colorOverride?: number
@@ -31,7 +33,12 @@ export function addBoxDeugHelperForEntity(world: World, entity: Entity, options:
     const color = options.colorOverride ?? getDefaultDebugColorForEntity(entity)
 
     const geometry = new BoxGeometry(width, height, depth)
-    const material = new MeshBasicMaterial({ color: color, wireframe: true })
+    const material = new MeshBasicMaterial({
+        color: color,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.2,
+    })
     const mesh = new Mesh(geometry, material)
 
     // Apply absolute position + offset

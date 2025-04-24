@@ -64,6 +64,7 @@ export function initGame(container: HTMLElement) {
 
     const distance = 30.22
     const angleRadians = MathUtils.degToRad(45)
+    // const angleRadians = MathUtils.degToRad(20)
 
     const y = Math.sin(angleRadians) * distance
     const z = Math.cos(angleRadians) * distance

@@ -21,13 +21,13 @@ export function performPlayerSweepAttack(
         ComponentType.SpriteAnimation
     )
     const input = attackerEntity.getComponent<InputComponent>(ComponentType.Input)
-    const preset = input?.up ? 'sweepUp' : input?.down ? 'sweepDown' : 'sweepSide' // left/right share same anim row
+    // const preset = input?.up ? 'sweepUp' : input?.down ? 'sweepDown' : 'sweepSide' // left/right share same anim row
 
     if (animation) {
-        setAnimationState(animation, preset, {
+        setAnimationState(animation, 'attack', {
             locked: true,
             onComplete: () => {
-                setAnimationState(animation, 'playerIdle')
+                setAnimationState(animation, 'idle')
             },
         })
     }

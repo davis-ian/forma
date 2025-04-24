@@ -1,5 +1,5 @@
 import type { World } from '@/engine'
-import { BoxGeometry, DoubleSide, Mesh, MeshStandardMaterial, Texture } from 'three'
+import { BoxGeometry, DoubleSide, Mesh, MeshStandardMaterial, Scene, Texture } from 'three'
 import { createPlayer } from '@/gameplay/prefab/createPlayer'
 import { createEnemy } from '@/gameplay/prefab/createEnemy'
 import { TileType, type Direction, type Room, type RoomState } from './types'
@@ -9,6 +9,7 @@ import type { VisualComponent } from '@/components/Visual'
 import { getRandomInt } from './utils/random'
 import { shuffle } from './RoomGraph'
 import { TILE_ATLAS_CONFIG } from './utils/TileAtlas'
+import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
 // Room size & visuals
 const ROOM_WIDTH = 30
@@ -20,7 +21,8 @@ const FLOOR_HEIGHT = 0.1
 const WALL_Y = TILE_SIZE / 2
 const FLOOR_Y = 0
 const PLAYER_Y = FLOOR_HEIGHT / 2 + 1
-const ENEMY_Y = WALL_Y
+const ENEMY_Y = FLOOR_HEIGHT / 2 + 1
+// const ENEMY_Y = WALL_Y
 
 const START_BORDER_COLOR = '#00e676'
 const END_BORDER_COLOR = '#ff5252'
@@ -43,6 +45,7 @@ export function createRoomMeta(x: number, y: number, from?: Direction): Room {
         height: ROOM_HEIGHT,
         exits,
         tags: [],
+        theme: 'diner',
     }
 }
 
@@ -63,6 +66,9 @@ export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
     if (DEBUG) {
         console.log('🧱 Spawning Room:', room.id, room.tags)
     }
+
+    // const centerX = offsetX + Math.floor(room.width / 2)
+    // const centerZ = offsetZ + Math.floor(room.height / 2)
 
     for (let z = 0; z < tiles.length; z++) {
         for (let x = 0; x < tiles[z].length; x++) {
@@ -194,17 +200,24 @@ function renderTile(
     //     atlasHeight: 528, //11 rows * 48,
     // })
 
-    const dirtTileMat = getNamedTileMaterial('dirtPath')
-    const wallMat = getNamedTileMaterial('wall')
+    const isWhite = (x + z) % 2 === 0
+    const tileMat = isWhite ? whiteTileMat : blackTileMat
+    const wallMat = silverMat
+
+    createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, tileMat, x, FLOOR_Y, z)
+
+    // const dirtTileMat = getNamedTileMaterial('dirtPath')
+    // const wallMat = getNamedTileMaterial('wall')
     // const exitMat = getNamedTileMaterial('exitFloor')
 
     if (tile !== TileType.Wall) {
-        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, dirtTileMat, x, FLOOR_Y, z)
+        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, tileMat, x, FLOOR_Y, z)
+        // loadKitchenTile(world, x, FLOOR_Y + 0.5, z)
     }
 
     switch (tile) {
         case TileType.Floor:
-            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, dirtTileMat, x, FLOOR_Y, z)
+            // createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, dirtTileMat, x, FLOOR_Y, z)
             break
 
         case TileType.Exit:
@@ -216,7 +229,7 @@ function renderTile(
             else if (x === offsetX + room.width - 1) direction = 'right'
 
             // Draw floor under the door
-            createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, dirtTileMat, x, FLOOR_Y, z)
+            // createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, dirtTileMat, x, FLOOR_Y, z)
 
             // Add an invisible (or visible) door entity that triggers transitions
             const door = createTileEntity(
@@ -398,3 +411,28 @@ export const ExitBlockedMaterial = new MeshStandardMaterial({
     side: DoubleSide,
     depthWrite: false,
 })
+
+const blackTileMat = new MeshStandardMaterial({ color: 0x111111 })
+const whiteTileMat = new MeshStandardMaterial({ color: 0xffffff })
+const retroRedMat = new MeshStandardMaterial({ color: 0xd32f2f })
+const silverMat = new MeshStandardMaterial({ color: 0xc0c0c0 })
+
+// VERY SLOW LOAD TIME  FOR 3D ASSETS
+// const loader = new GLTFLoader()
+// export async function loadKitchenTile(world: World, x: number, y: number, z: number) {
+//     loader.load('/assets/rest_3D_assets/gltf/floor_kitchen_small.gltf', (gltf) => {
+//         const model = gltf.scene
+//         model.scale.set(0.5, 0.5, 0.5)
+//         model.position.set(x, y, z)
+
+//         world.scene?.add(model)
+
+//         const entity = world.createEntity()
+//         const visual: VisualComponent = {
+//             meshes: [{ mesh: model, ignoreRotation: false }],
+//         }
+//         entity.addComponent(ComponentType.Visual, visual)
+//         entity.addComponent(ComponentType.Position, { x, y, z })
+//         entity.addTag(EntityTag.RoomInstance)
+//     })
+// }

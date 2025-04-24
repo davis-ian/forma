@@ -12,8 +12,10 @@ import { createAiComponent } from '@/components/AI'
 import { setAnimationState } from '@/utils/animationUtils'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { updateEnemyCount } from '@/utils/roomUtils'
+import { SpriteAtlasRegistry, type SpriteName } from '@/core/registry/SpriteAtlasRegistry'
 
 const DEBUG = false
+const LEASH_RADIUS = 5
 
 export async function createEnemy(
     world: World,
@@ -35,31 +37,39 @@ export async function createEnemy(
     entity.addComponent(ComponentType.Position, { x, y, z })
     entity.addComponent(ComponentType.Rotation, { x: 0, y: 0, z: 0 })
     entity.addComponent(ComponentType.Velocity, { x: 0, y: 0, z: 0 })
+    entity.addComponent(ComponentType.SpawnPoint, { x, y, z, leashRadius: LEASH_RADIUS })
 
     // const enemyMesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 'red' }))
-    const enemyMesh = await createPlaneMeshAsync(
-        '/assets/Warrior_Blue.png',
-        6,
-        8,
-        0,
-        0,
-        PLAYER_SIZE.width * 4
-    )
+    // const enemyMesh = await createPlaneMeshAsync(
+    //     '/assets/Warrior_Blue.png',
+    //     6,
+    //     8,
+    //     0,
+    //     0,
+    //     PLAYER_SIZE.width * 4
+    // )
+
+    const spriteName: SpriteName = 'burger'
+    const atlas = SpriteAtlasRegistry[spriteName]
+    const { src, columns, rows, animations } = atlas
+
+    const enemyMesh = await createPlaneMeshAsync(src, columns, rows, 0, 0, PLAYER_SIZE.width * 4)
 
     let animationState = {
+        spriteName: spriteName,
         currentFrame: 0,
         frameCount: 0,
         frameDuration: 0,
         elapsedTime: 0,
         row: 2,
-        columns: 6,
-        rows: 8,
+        columns: columns,
+        rows: rows,
         loop: true,
         playing: true,
     } as SpriteAnimationComponent
 
     entity.addComponent(ComponentType.SpriteAnimation, animationState)
-    setAnimationState(animationState, 'playerIdle')
+    setAnimationState(animationState, 'idle')
 
     entity.addComponent(ComponentType.Mesh, {
         mesh: enemyMesh,
