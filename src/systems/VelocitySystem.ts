@@ -4,11 +4,11 @@ import type { VelocityComponent } from '../components/Velocity'
 import type { InputComponent } from '../components/Input'
 import type { ImpulseComponent } from '../components/Impulse'
 
-const DEBUG = false
+// const DEBUG = false
 const SPEED = 9
 
 export class VelocitySystem extends System {
-    update(world: World, deltaTime: number): void {
+    update(world: World): void {
         for (const entity of world.entities.values()) {
             if (entity.hasComponent(ComponentType.Velocity)) {
                 const vel = entity.getComponent<VelocityComponent>(ComponentType.Velocity)!

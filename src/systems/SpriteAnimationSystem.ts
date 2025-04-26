@@ -4,7 +4,7 @@ import type { SpriteAnimationComponent } from '../components/SpriteAnimation'
 import { Mesh, MeshBasicMaterial } from 'three'
 import type { MeshComponent } from '../components/Mesh'
 
-const DEBUG = false
+// const DEBUG = false
 
 export class SpriteAnimationSystem extends System {
     update(world: World, deltaTime: number): void {

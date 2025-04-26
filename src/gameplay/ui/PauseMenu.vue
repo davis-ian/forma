@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { gameState, resumeGame, startGame } from '@/core/GameController'
+import { gameState, resumeGame } from '@/core/GameController'
 
 function goToMenu() {
     gameState.value = 'menu'

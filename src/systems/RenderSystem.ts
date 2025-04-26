@@ -3,7 +3,7 @@ import type { PositionComponent } from '../components/Position'
 import type { MeshComponent } from '../components/Mesh'
 import { ComponentType } from '@/engine/ComponentType'
 
-const DEBUG = false
+// const DEBUG = false
 export class RenderSystem extends System {
     update(world: World) {
         for (const entity of world.entities.values()) {

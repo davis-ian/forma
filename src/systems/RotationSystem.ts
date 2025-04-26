@@ -7,9 +7,9 @@ import type { RotationComponent } from '@/components/Rotation'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '../components/Input'
 
-const DEBUG = false
+// const DEBUG = false
 export class RotationSystem extends System {
-    update(world: World, deltaTime: number): void {
+    update(world: World): void {
         for (const entity of world.entities.values()) {
             if (entity.hasComponent(ComponentType.Input)) {
                 const input = entity.getComponent<InputComponent>(ComponentType.Input)!

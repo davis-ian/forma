@@ -3,7 +3,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import type { HealthBarComponent, HealthComponent } from '../components/Health'
 import type { PositionComponent } from '../components/Position'
 
-const DEBUG = false
+// const DEBUG = false
 const showHealthBars = true
 
 export class HealthBarSystem extends System {

@@ -31,8 +31,8 @@ export function performEnemySweepAttack(
     const angle = getAngle(enemyPos, targetPosition)
     rot.y = angle
 
-    const degrees = (rot.y * 180) / Math.PI
-    const normalized = ((degrees % 360) + 360) % 360 // Normalize to 0–359
+    // const degrees = (rot.y * 180) / Math.PI
+    // const normalized = ((degrees % 360) + 360) % 360 // Normalize to 0–359
 
     applyLunge(world, enemyEntity)
 

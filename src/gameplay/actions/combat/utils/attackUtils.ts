@@ -91,7 +91,7 @@ export function spawnAttackHitbox(
 export function applyLunge(world: World, entity: Entity, force: number = 3) {
     const rotation = entity.getComponent<RotationComponent>(ComponentType.Rotation)
 
-    if (!rotation) return
+    if (!rotation || !world) return
 
     entity.addComponent(ComponentType.Impulse, {
         x: Math.sin(rotation.y) * (force * 10),

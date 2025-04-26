@@ -51,7 +51,7 @@ export async function createEnemy(
 
     const spriteName: SpriteName = 'tomato'
     const atlas = SpriteAtlasRegistry[spriteName]
-    const { src, columns, rows, animations, scale } = atlas
+    const { src, columns, rows, scale } = atlas
 
     const enemyMesh = await createPlaneMeshAsync(
         src,

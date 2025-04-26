@@ -1,11 +1,11 @@
 import type { World } from '@/engine'
 import { getRoomOffset, getRoomTiles } from '@/gameplay/level/roomFactory'
-import { TileType, type Direction, type Room } from '@/gameplay/level/types'
-import type { PositionComponent } from '../../components/Position'
-import type { VelocityComponent } from '../../components/Velocity'
+import { TileType, type Room } from '@/gameplay/level/types'
 import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
 import { remainingEnemies } from '@/core/GameState'
+import type { VelocityComponent } from '@/components/Velocity'
+import type { PositionComponent } from '@/components/Position'
 
 export function getTileAtWorldPosition(x: number, z: number, room: Room): TileType | null {
     const tiles = getRoomTiles(room)

@@ -52,7 +52,7 @@ onMounted(() => {
     console.log('game screen mounted')
     if (!canvasContainer.value) return
     console.log('starting game..')
-    startGame(canvasContainer.value, true)
+    startGame(canvasContainer.value)
 })
 </script>
 

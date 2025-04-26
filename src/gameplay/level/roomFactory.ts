@@ -1,15 +1,14 @@
 import type { World } from '@/engine'
-import { BoxGeometry, DoubleSide, Mesh, MeshStandardMaterial, Scene, Texture } from 'three'
+import { BoxGeometry, DoubleSide, Mesh, MeshStandardMaterial, Texture } from 'three'
 import { createPlayer } from '@/gameplay/prefab/createPlayer'
 import { createEnemy } from '@/gameplay/prefab/createEnemy'
-import { TileType, type Direction, type Room, type RoomState } from './types'
+import { TileType, type Direction, type Room } from './types'
 import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
 import type { VisualComponent } from '@/components/Visual'
 import { getRandomInt } from './utils/random'
 import { shuffle } from './RoomGraph'
 import { TILE_ATLAS_CONFIG } from './utils/TileAtlas'
-import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
 // Room size & visuals
 const ROOM_WIDTH = 30
@@ -24,8 +23,8 @@ const PLAYER_Y = FLOOR_HEIGHT / 2 + 1
 const ENEMY_Y = FLOOR_HEIGHT / 2 + 1
 // const ENEMY_Y = WALL_Y
 
-const START_BORDER_COLOR = '#00e676'
-const END_BORDER_COLOR = '#ff5252'
+// const START_BORDER_COLOR = '#00e676'
+// const END_BORDER_COLOR = '#ff5252'
 
 const DEBUG = false
 
@@ -52,7 +51,7 @@ export function createRoomMeta(x: number, y: number, from?: Direction): Room {
 /**
  * Renders a Room into the Three.js scene.
  */
-export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
+export function renderRoomToScene(world: World, room: Room) {
     const scene = world.scene
     if (!scene) {
         console.error('❌ No scene found for room rendering')
@@ -61,7 +60,7 @@ export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
 
     const tiles = getRoomTiles(room)
     const { offsetX, offsetZ } = getRoomOffset(room)
-    const { floorColor, wallColor } = getRoomColors(room.tags)
+    // const { floorColor, wallColor } = getRoomColors(room.tags)
 
     if (DEBUG) {
         console.log('🧱 Spawning Room:', room.id, room.tags)
@@ -76,18 +75,7 @@ export function renderRoomToScene(world: World, room: Room, state?: RoomState) {
             const worldX = x + offsetX
             const worldZ = z + offsetZ
 
-            renderTile(
-                world,
-                tile,
-                worldX,
-                worldZ,
-                room,
-                floorColor,
-                wallColor,
-                offsetX,
-                offsetZ,
-                state
-            )
+            renderTile(world, tile, worldX, worldZ, room, offsetX, offsetZ)
         }
     }
 
@@ -186,11 +174,8 @@ function renderTile(
     x: number,
     z: number,
     room: Room,
-    floorColor: string,
-    wallColor: string,
     offsetX: number,
-    offsetZ: number,
-    state?: RoomState
+    offsetZ: number
 ) {
     // const dirtTileMat = createTileFromAtlas(1, 1, {
     //     tileSize: 48,
@@ -297,12 +282,12 @@ function renderTile(
     }
 }
 
-function getRoomColors(tags: string[]): { floorColor: string; wallColor: string } {
-    if (tags.includes('start')) return { floorColor: '#555', wallColor: START_BORDER_COLOR }
-    if (tags.includes('end')) return { floorColor: '#555', wallColor: END_BORDER_COLOR }
-    if (tags.includes('shop')) return { floorColor: '#222', wallColor: '#555' }
-    return { floorColor: '#555', wallColor: '#111' }
-}
+// function getRoomColors(tags: string[]): { floorColor: string; wallColor: string } {
+//     if (tags.includes('start')) return { floorColor: '#555', wallColor: START_BORDER_COLOR }
+//     if (tags.includes('end')) return { floorColor: '#555', wallColor: END_BORDER_COLOR }
+//     if (tags.includes('shop')) return { floorColor: '#222', wallColor: '#555' }
+//     return { floorColor: '#555', wallColor: '#111' }
+// }
 
 export function createTileEntity(
     world: World,
@@ -414,7 +399,7 @@ export const ExitBlockedMaterial = new MeshStandardMaterial({
 
 const blackTileMat = new MeshStandardMaterial({ color: 0x111111 })
 const whiteTileMat = new MeshStandardMaterial({ color: 0xffffff })
-const retroRedMat = new MeshStandardMaterial({ color: 0xd32f2f })
+// const retroRedMat = new MeshStandardMaterial({ color: 0xd32f2f })
 const silverMat = new MeshStandardMaterial({ color: 0xc0c0c0 })
 
 // VERY SLOW LOAD TIME  FOR 3D ASSETS

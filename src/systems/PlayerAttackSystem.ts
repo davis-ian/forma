@@ -6,7 +6,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
 import { performPlayerSweepAttack } from '@/gameplay/actions/combat/player/performPlayerSweepAttack'
 
-const DEBUG = false
+// const DEBUG = false
 const attackCooldown = 0.25
 
 export class PlayerAttackSystem extends System {

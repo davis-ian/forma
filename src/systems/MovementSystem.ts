@@ -6,7 +6,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import { PLAYER_SIZE } from '@/gameplay/constants'
 import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
 
-const DEBUG = false
+// const DEBUG = false
 
 export class MovementSystem extends System {
     update(world: World, deltaTime: number): void {

@@ -19,13 +19,7 @@ export class RoomManager {
     ) {}
     activeRoomId: string | null = null
 
-    transitionTo(
-        roomId: string,
-        entranceFrom: Direction,
-        options?: {
-            animate?: boolean
-        }
-    ): void {
+    transitionTo(roomId: string, entranceFrom: Direction): void {
         if (DEBUG) {
             console.log('TRANSITION FROM', entranceFrom)
             console.log('TRANSITION TO', roomId)
@@ -45,7 +39,7 @@ export class RoomManager {
         this.cleanUpCurrentRoom()
 
         // If room has been visited before, re-render it in its saved state
-        renderRoomToScene(this.world, room!, room?.state)
+        renderRoomToScene(this.world, room!)
 
         // Move player to entrance position
         const player = this.world.getEntitiesWithTag(EntityTag.Player)[0]

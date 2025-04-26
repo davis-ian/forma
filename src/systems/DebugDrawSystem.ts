@@ -4,7 +4,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import type { PositionComponent } from '../components/Position'
 import type { RotationComponent } from '../components/Rotation'
 
-const DEBUG = false
+// const DEBUG = false
 export class DebugDrawSystem extends System {
     update(world: World) {
         const scene = world.scene
