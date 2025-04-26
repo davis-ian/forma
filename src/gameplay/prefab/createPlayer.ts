@@ -87,7 +87,7 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     //     // playerMaterial
 
     // )
-    const spriteName: SpriteName = 'burger'
+    const spriteName: SpriteName = 'warriorRed'
     const atlas = SpriteAtlasRegistry[spriteName]
     const { src, columns, rows, animations, scale } = atlas
     const playerMesh = await createPlaneMeshAsync(

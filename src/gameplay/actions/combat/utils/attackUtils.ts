@@ -10,7 +10,7 @@ import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 // revisit when weapons need different ranges
 // Currently using static hitboxes, circle back to this, a dynamic or hybric approach may have better gameplay feel
 
-const DEBUG = true
+const DEBUG = false
 const hitbox = {
     width: 1,
     height: 1,

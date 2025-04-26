@@ -49,11 +49,18 @@ export async function createEnemy(
     //     PLAYER_SIZE.width * 4
     // )
 
-    const spriteName: SpriteName = 'burger'
+    const spriteName: SpriteName = 'tomato'
     const atlas = SpriteAtlasRegistry[spriteName]
-    const { src, columns, rows, animations } = atlas
+    const { src, columns, rows, animations, scale } = atlas
 
-    const enemyMesh = await createPlaneMeshAsync(src, columns, rows, 0, 0, PLAYER_SIZE.width * 4)
+    const enemyMesh = await createPlaneMeshAsync(
+        src,
+        columns,
+        rows,
+        0,
+        0,
+        PLAYER_SIZE.width * scale
+    )
 
     let animationState = {
         spriteName: spriteName,

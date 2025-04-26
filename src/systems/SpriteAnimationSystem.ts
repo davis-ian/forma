@@ -49,8 +49,13 @@ export class SpriteAnimationSystem extends System {
             const texture = material.map
 
             if (texture) {
+                const frameX = anim.currentFrame % anim.columns
+                const frameY = Math.floor(anim.currentFrame / anim.columns) + anim.row
+                // texture.repeat.set(1 / anim.columns, 1 / anim.rows)
+                // texture.offset.set(anim.currentFrame / anim.columns, 1 - (anim.row + 1) / anim.rows)
+
                 texture.repeat.set(1 / anim.columns, 1 / anim.rows)
-                texture.offset.set(anim.currentFrame / anim.columns, 1 - (anim.row + 1) / anim.rows)
+                texture.offset.set(frameX / anim.columns, 1 - (frameY + 1) / anim.rows)
             }
         }
     }
