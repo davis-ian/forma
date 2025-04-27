@@ -173,7 +173,7 @@ export function initGame(container: HTMLElement) {
         camera.updateProjectionMatrix()
         renderer.setSize(width, height)
     }
-    window.addEventListener('resize', () => onResize)
+    window.addEventListener('resize', onResize)
     gameState.value = 'playing'
     animate()
 

@@ -27,6 +27,14 @@
 import { playerHealth, remainingEnemies } from '@/core/GameState'
 import { computed } from 'vue'
 
+const emit = defineEmits<{
+    (e: 'start'): void
+}>()
+
+function start() {
+    emit('start')
+}
+
 const barColor = computed(() => {
     const ratio = playerHealth.value.current / playerHealth.value.max
     if (ratio < 0.3) return 'bg-red-500'

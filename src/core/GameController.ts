@@ -43,6 +43,10 @@ export function cleanupGame() {
     }
 }
 
+export function startMenu() {
+    gameState.value = 'menu'
+}
+
 export function startGame(container: HTMLElement) {
     if (DEBUG) {
         console.log('STARTING  GAME')

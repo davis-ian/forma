@@ -1,16 +1,15 @@
 <template>
     <div class="relative h-full w-full">
         <div ref="canvasContainer" class="absolute inset-0 z-0 bg-black"></div>
-        <!-- Overlay UI -->
-        <!-- <div class="absolute top-4 left-4 z-10 text-white">🍳 Kitchen Nightmares</div> -->
 
+        <MainMenu id="home-screen" @start="initRestart" v-show="currentGameState() === 'menu'" />
         <PauseMenu v-if="currentGameState() === 'paused'"></PauseMenu>
         <GameOverMenu
             @restart="initRestart"
             v-if="currentGameState() === 'gameover'"
         ></GameOverMenu>
 
-        <HUD />
+        <HUD v-if="currentGameState() === 'playing'" />
 
         <!-- PLAYER DAMAGE OVERLAY: START -->
 
@@ -37,6 +36,7 @@ import { onMounted, ref } from 'vue'
 import { currentGameState, isTransitioning, startGame } from '@/core/GameController'
 import PauseMenu from './PauseMenu.vue'
 import GameOverMenu from './GameOverMenu.vue'
+import MainMenu from '@/ui/MainMenu.vue'
 import HUD from './HUD.vue'
 
 const canvasContainer = ref<HTMLDivElement | null>(null)
@@ -50,9 +50,6 @@ function initRestart() {
 
 onMounted(() => {
     console.log('game screen mounted')
-    if (!canvasContainer.value) return
-    console.log('starting game..')
-    startGame(canvasContainer.value)
 })
 </script>
 
@@ -83,5 +80,15 @@ onMounted(() => {
     opacity: 0;
     transition: opacity 0.2s ease-out;
     z-index: 9999;
+}
+
+#home-screen {
+    z-index: 99;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 </style>
