@@ -3,7 +3,7 @@
         <div ref="canvasContainer" class="absolute inset-0 z-0 bg-black"></div>
 
         <MainMenu id="home-screen" @start="initRestart" v-show="currentGameState() === 'menu'" />
-        <PauseMenu v-if="currentGameState() === 'paused'"></PauseMenu>
+        <PauseMenu @quit="startMenu" v-if="currentGameState() === 'paused'"></PauseMenu>
         <GameOverMenu
             @restart="initRestart"
             v-if="currentGameState() === 'gameover'"
@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { currentGameState, isTransitioning, startGame } from '@/core/GameController'
+import { currentGameState, isTransitioning, startGame, startMenu } from '@/core/GameController'
 import PauseMenu from './PauseMenu.vue'
 import GameOverMenu from './GameOverMenu.vue'
 import MainMenu from '@/ui/MainMenu.vue'

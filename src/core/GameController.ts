@@ -44,6 +44,11 @@ export function cleanupGame() {
 }
 
 export function startMenu() {
+    if (DEBUG) {
+        console.log('QUITING GAME')
+    }
+    cleanupGame()
+
     gameState.value = 'menu'
 }
 
