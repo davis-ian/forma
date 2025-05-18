@@ -20,12 +20,12 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{
+defineProps<{
     modelValue: boolean
     label?: string
 }>()
 
-const emit = defineEmits<{
+defineEmits<{
     (e: 'update:modelValue', value: boolean): void
 }>()
 </script>
