@@ -3,7 +3,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/components/Visual'
 
-import { TextureLoader } from 'three'
+import { BoxGeometry, Mesh, MeshStandardMaterial, TextureLoader } from 'three'
 import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
 import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
 import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
@@ -80,23 +80,23 @@ export async function createPlayer(world: World, x: number, y: number, z: number
         direction: { x: 0, z: 0 },
     })
 
-    // const playerMesh = new Mesh(
-    //     new BoxGeometry(1, 1, 1),
-    //     new MeshStandardMaterial({ color: 'blue' })
-    //     // playerMaterial
-
-    // )
+    const meshColor = 'blue'
+    const playerMesh = new Mesh(
+        new BoxGeometry(1, 1, 1),
+        new MeshStandardMaterial({ color: meshColor })
+        // playerMaterial
+    )
     const spriteName: SpriteName = 'warriorRed'
     const atlas = SpriteAtlasRegistry[spriteName]
     const { src, columns, rows, scale } = atlas
-    const playerMesh = await createPlaneMeshAsync(
-        src,
-        columns,
-        rows,
-        0,
-        0,
-        PLAYER_SIZE.width * scale
-    )
+    // const playerMesh = await createPlaneMeshAsync(
+    //     src,
+    //     columns,
+    //     rows,
+    //     0,
+    //     0,
+    //     PLAYER_SIZE.width * scale
+    // )
 
     let animationState = {
         spriteName: spriteName,
@@ -121,7 +121,7 @@ export async function createPlayer(world: World, x: number, y: number, z: number
 
     const visual: VisualComponent = {
         meshes: [
-            { mesh: playerMesh, ignoreRotation: true },
+            { mesh: playerMesh, ignoreRotation: true, originalColor: meshColor },
             // { mesh: bar, ignoreRotation: true },
         ],
     }

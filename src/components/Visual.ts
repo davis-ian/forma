@@ -5,5 +5,6 @@ export interface VisualComponent {
         mesh: Object3D
         ignoreRotation?: boolean
         ignoreDamageFlash?: boolean
+        originalColor: string
     }[] //could be mesh, group, etc
 }

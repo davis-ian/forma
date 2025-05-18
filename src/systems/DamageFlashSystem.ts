@@ -24,7 +24,7 @@ export class DamageFlashSystem extends System {
                 if (windup) windup.elapsed += deltaTime
                 if (flash) flash.elapsed += deltaTime
 
-                for (const { mesh, ignoreDamageFlash } of visual.meshes) {
+                for (const { mesh, ignoreDamageFlash, originalColor } of visual.meshes) {
                     if (ignoreDamageFlash) continue
                     if (!(mesh instanceof Mesh || mesh instanceof Sprite)) continue //Skip if not a mesh
 
@@ -42,19 +42,17 @@ export class DamageFlashSystem extends System {
                         if (DEBUG) {
                             console.log('flashing from windup')
                         }
-                        material.color.set('limegreen')
+                        material.color.set('lime')
                         if (windup.elapsed >= windup.duration) {
                             entity.removeComponent(ComponentType.WindupDebug)
-                            material.color.set(0xffffff)
+                            material.color.set(originalColor)
                         }
                     } else if (flash.persitstWhileInvulnerable && isInvulnerable) {
-                        // const strobe = Math.sin(flash.elapsed * 20) > 0 ? 0x00ff00 : 0xffffff
-                        // material.color.set(strobe)
-                        material.color.set(0xffffff)
+                        material.color.set(originalColor)
                         material.transparent = true
                         material.opacity = Math.sin(flash.elapsed * 20) > 0 ? 1 : 0.2
                     } else {
-                        material.color.set(0xffffff)
+                        material.color.set(originalColor)
 
                         entity.removeComponent(ComponentType.DamageFlash)
                     }

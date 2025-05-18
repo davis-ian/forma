@@ -3,7 +3,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/components/Visual'
 
-import { BoxGeometry, Mesh, MeshBasicMaterial } from 'three'
+import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
 import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
 import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
 import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
@@ -49,18 +49,25 @@ export async function createEnemy(
     //     PLAYER_SIZE.width * 4
     // )
 
+    const meshColor = 'red'
+    const enemyMesh = new Mesh(
+        new BoxGeometry(1, 1, 1),
+        new MeshStandardMaterial({ color: meshColor })
+        // playerMaterial
+    )
+
     const spriteName: SpriteName = 'tomato'
     const atlas = SpriteAtlasRegistry[spriteName]
     const { src, columns, rows, scale } = atlas
 
-    const enemyMesh = await createPlaneMeshAsync(
-        src,
-        columns,
-        rows,
-        0,
-        0,
-        PLAYER_SIZE.width * scale
-    )
+    // const enemyMesh = await createPlaneMeshAsync(
+    //     src,
+    //     columns,
+    //     rows,
+    //     0,
+    //     0,
+    //     PLAYER_SIZE.width * scale
+    // )
 
     let animationState = {
         spriteName: spriteName,
@@ -105,8 +112,8 @@ export async function createEnemy(
 
     const visual: VisualComponent = {
         meshes: [
-            { mesh: enemyMesh, ignoreRotation: true },
-            { mesh: bar, ignoreRotation: true, ignoreDamageFlash: true },
+            { mesh: enemyMesh, ignoreRotation: true, originalColor: meshColor },
+            { mesh: bar, ignoreRotation: true, ignoreDamageFlash: true, originalColor: 'white' },
         ],
     }
 
