@@ -9,8 +9,8 @@ import type { VisualComponent } from '@/components/Visual'
 import type { Scene } from 'three'
 import { currentGameState } from '@/core/GameController'
 import { InputSystem } from '@/systems/InputSystem'
+import { debugSettings } from '@/core/GameState'
 
-const DEBUG = false
 export class World {
     private nextEntityId = 0
     public entities: Map<EntityId, Entity> = new Map()
@@ -110,7 +110,7 @@ export class World {
 
     setScene(scene: Scene) {
         this.scene = scene
-        if (DEBUG) {
+        if (debugSettings.value.logState || debugSettings.value.logAll) {
             console.log(scene, 'SCENE SET')
         }
     }

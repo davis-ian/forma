@@ -13,8 +13,8 @@ import { setAnimationState } from '@/utils/animationUtils'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { updateEnemyCount } from '@/utils/roomUtils'
 import { SpriteAtlasRegistry, type SpriteName } from '@/core/registry/SpriteAtlasRegistry'
+import { debugSettings } from '@/core/GameState'
 
-const DEBUG = false
 const LEASH_RADIUS = 5
 
 export async function createEnemy(
@@ -24,7 +24,7 @@ export async function createEnemy(
     z: number,
     maxHealth: number
 ) {
-    if (DEBUG) {
+    if (debugSettings.value.logCharacter || debugSettings.value.logAll) {
         console.log('CREATING Enemy')
     }
     const scene = world.scene
@@ -113,7 +113,7 @@ export async function createEnemy(
     entity.addComponent(ComponentType.Visual, visual)
     entity.addComponent(ComponentType.AI, createAiComponent('Skeleton'))
     entity.addTag(EntityTag.Obstacle)
-    if (DEBUG) {
+    if (debugSettings.value.logCharacter || debugSettings.value.logAll) {
         addBoxDeugHelperForEntity(world, entity, { colorOverride: 0x33c9ff })
     }
 

@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { currentGameState, isTransitioning, startGame, startMenu } from '@/core/GameController'
 import PauseMenu from './PauseMenu.vue'
 import GameOverMenu from './GameOverMenu.vue'
@@ -45,13 +45,8 @@ const canvasContainer = ref<HTMLDivElement | null>(null)
 function initRestart() {
     if (!canvasContainer.value) return
 
-    console.log('restarting game..')
     startGame(canvasContainer.value)
 }
-
-onMounted(() => {
-    console.log('game screen mounted')
-})
 </script>
 
 <style scoped>

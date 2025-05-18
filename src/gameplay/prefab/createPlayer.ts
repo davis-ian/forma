@@ -11,11 +11,10 @@ import { playerHealth } from '@/core/GameState'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { setAnimationState } from '@/utils/animationUtils'
 import { SpriteAtlasRegistry, type SpriteName } from '@/core/registry/SpriteAtlasRegistry'
-
-const DEBUG = false
+import { debugSettings } from '@/core/GameState'
 
 export async function createPlayer(world: World, x: number, y: number, z: number) {
-    if (DEBUG) {
+    if (debugSettings.value.logCharacter || debugSettings.value.logAll) {
         console.log('CREATING PLAYER')
     }
     const scene = world.scene
@@ -130,7 +129,7 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     entity.addComponent(ComponentType.Visual, visual)
     console.log('PLAYER CREATED SUCCESSFULLY')
 
-    if (DEBUG) {
+    if (debugSettings.value.logCharacter || debugSettings.value.logAll) {
         addBoxDeugHelperForEntity(world, entity, { colorOverride: 0xfc33ff })
     }
 

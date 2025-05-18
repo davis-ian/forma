@@ -3,7 +3,6 @@ import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '@/components/Input'
 
-// const DEBUG = false
 export class InputSystem extends System {
     private keys = new Set<string>()
 

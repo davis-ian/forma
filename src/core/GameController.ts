@@ -1,7 +1,6 @@
 import { ref } from 'vue'
 import { initGame } from './Game'
-
-const DEBUG = false
+import { debugSettings } from '@/core/GameState'
 
 export const gameState = ref<'menu' | 'playing' | 'paused' | 'gameover'>('menu')
 export const isTransitioning = ref(false)
@@ -9,14 +8,14 @@ export const isTransitioning = ref(false)
 let cleanupFn: (() => void) | undefined
 
 export function pauseGame() {
-    if (DEBUG) {
+    if (debugSettings.value.logState || debugSettings.value.logAll) {
         console.log('PAUSING')
     }
     gameState.value = 'paused'
 }
 
 export function resumeGame() {
-    if (DEBUG) {
+    if (debugSettings.value.logState || debugSettings.value.logAll) {
         console.log('RESUMING')
     }
     gameState.value = 'playing'
@@ -27,7 +26,7 @@ export function currentGameState() {
 }
 
 export function endGame() {
-    if (DEBUG) {
+    if (debugSettings.value.logState || debugSettings.value.logAll) {
         console.log('GAME OVER')
     }
     gameState.value = 'gameover'
@@ -35,7 +34,7 @@ export function endGame() {
 
 export function cleanupGame() {
     if (cleanupFn) {
-        if (DEBUG) {
+        if (debugSettings.value.logState || debugSettings.value.logAll) {
             console.log('CLEANING UP')
         }
         cleanupFn()
@@ -44,7 +43,7 @@ export function cleanupGame() {
 }
 
 export function startMenu() {
-    if (DEBUG) {
+    if (debugSettings.value.logState || debugSettings.value.logAll) {
         console.log('QUITING GAME')
     }
     cleanupGame()
@@ -53,7 +52,7 @@ export function startMenu() {
 }
 
 export function startGame(container: HTMLElement) {
-    if (DEBUG) {
+    if (debugSettings.value.logState || debugSettings.value.logAll) {
         console.log('STARTING  GAME')
     }
     cleanupGame()
@@ -61,7 +60,7 @@ export function startGame(container: HTMLElement) {
 }
 
 export async function runRoomTransition(callback: () => void) {
-    if (DEBUG) {
+    if (debugSettings.value.logState || debugSettings.value.logAll) {
         console.log('RUNNING ROOM TRANSITION')
     }
     isTransitioning.value = true

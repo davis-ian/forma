@@ -7,8 +7,6 @@ import type { SpriteAnimationComponent } from '../components/SpriteAnimation'
 import { setAnimationState } from '@/utils/animationUtils'
 import type { RotationComponent } from '@/components/Rotation'
 
-// const DEBUG = false
-
 export class SpriteAnimationStateSystem extends System {
     update(world: World): void {
         const players = world.getEntitiesWithTag(EntityTag.Player)

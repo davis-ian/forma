@@ -40,10 +40,11 @@ import { hitPauseService } from './services/HitPauseService'
 import { registerDebugHandler } from '@/utils/DebugVisualRegistry'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { updateEnemyCount } from '@/utils/roomUtils'
-
-const DEBUG = false
+import { debugSettings } from '@/core/GameState'
 
 export function initGame(container: HTMLElement) {
+    const DEBUG = debugSettings.value.logState || debugSettings.value.logAll
+
     if (DEBUG) {
         console.log('game start initiated')
     }

@@ -3,8 +3,8 @@ import { ComponentType } from '@/engine/ComponentType'
 import { Vector3, type PerspectiveCamera } from 'three'
 import type { PositionComponent } from '../components/Position'
 import { EntityTag } from '@/engine/EntityTag'
+import { debugSettings } from '@/core/GameState'
 
-const DEBUG = false
 export class CameraSystem extends System {
     private camera: PerspectiveCamera
     private shakeOffset = new Vector3()
@@ -18,7 +18,7 @@ export class CameraSystem extends System {
     }
 
     startShake(duration: number, intensity: number) {
-        if (DEBUG) {
+        if (debugSettings.value.logCamera || debugSettings.value.logCamera) {
             console.log('start shake triggered')
         }
         this.shakeTimer = duration

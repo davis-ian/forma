@@ -9,6 +9,7 @@ import type { VisualComponent } from '@/components/Visual'
 import { getRandomInt } from './utils/random'
 import { shuffle } from './RoomGraph'
 import { TILE_ATLAS_CONFIG } from './utils/TileAtlas'
+import { debugSettings } from '@/core/GameState'
 
 // Room size & visuals
 const ROOM_WIDTH = 30
@@ -25,8 +26,6 @@ const ENEMY_Y = FLOOR_HEIGHT / 2 + 1
 
 // const START_BORDER_COLOR = '#00e676'
 // const END_BORDER_COLOR = '#ff5252'
-
-const DEBUG = false
 
 // -----------------------------
 // Public API
@@ -62,7 +61,7 @@ export function renderRoomToScene(world: World, room: Room) {
     const { offsetX, offsetZ } = getRoomOffset(room)
     // const { floorColor, wallColor } = getRoomColors(room.tags)
 
-    if (DEBUG) {
+    if (debugSettings.value.logAll || debugSettings.value.logEnvironment) {
         console.log('🧱 Spawning Room:', room.id, room.tags)
     }
 
@@ -269,12 +268,13 @@ function renderTile(
         case TileType.Wall:
             const wall = createTileEntity(world, TILE_SIZE, TILE_SIZE, wallMat, x, WALL_Y, z)
             wall.addTag(EntityTag.Solid)
-            if (DEBUG) {
+            if (debugSettings.value.logAll || debugSettings.value.logEnvironment) {
                 console.log('Tagged wall as solid', wall.id, wall.getTags())
             }
             break
         case TileType.PlayerStart:
-            if (DEBUG) console.log('✅ Player tile detected!')
+            if (debugSettings.value.logAll || debugSettings.value.logEnvironment)
+                console.log('✅ Player tile detected!')
             if (!world.getEntitiesWithTag(EntityTag.Player).length) {
                 createPlayer(world, x, PLAYER_Y, z)
             }

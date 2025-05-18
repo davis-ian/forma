@@ -7,8 +7,7 @@ import { applyLunge, spawnAttackHitbox } from '../utils/attackUtils'
 import { getAngle } from '../utils/movementUtils'
 import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
 import { setAnimationState } from '@/utils/animationUtils'
-
-const DEBUG = false
+import { debugSettings } from '@/core/GameState'
 
 export function performEnemySweepAttack(
     world: World,
@@ -16,7 +15,7 @@ export function performEnemySweepAttack(
     attackRegistry: AttackRegistry,
     targetPosition: PositionComponent
 ) {
-    if (DEBUG) {
+    if (debugSettings.value.logAll || debugSettings.value.logAttack) {
         console.log('PERFOMING ENEMY ATTACK')
     }
     const attackId = crypto.randomUUID()

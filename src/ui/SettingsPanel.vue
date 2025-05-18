@@ -2,11 +2,17 @@
     <div class="pause-menu">
         <h1 class="text-3xl">SETTINGS</h1>
 
-        <div v-if="settings" class="m-4 flex flex-col gap-4 rounded-md border-2 border-white p-4">
+        <div
+            v-if="settings"
+            class="m-4 flex w-full max-w-lg flex-col gap-4 rounded-md border-2 border-white p-4"
+        >
             <div v-for="setting in settingsSchema" :key="setting.key">
                 <div class="flex justify-between gap-8">
                     <span>{{ setting.label }}</span>
-                    <ToggleSwitch v-model="settings[setting.key]" />
+                    <ToggleSwitch
+                        :modelValue="settings[setting.key] ?? false"
+                        @update:modelValue="settings[setting.key] = $event"
+                    />
                 </div>
             </div>
         </div>

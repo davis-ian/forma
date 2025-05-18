@@ -6,8 +6,7 @@ import { playerHealth, remainingEnemies } from '@/core/GameState'
 import type { RoomManager } from '@/gameplay/level/RoomManager'
 import { endGame } from '@/core/GameController'
 import { updateEnemyCount } from '@/utils/roomUtils'
-
-const DEBUG = false
+import { debugSettings } from '@/core/GameState'
 
 export class HealthSystem extends System {
     constructor(private roomManager: RoomManager) {
@@ -16,6 +15,8 @@ export class HealthSystem extends System {
     }
 
     update(world: World, deltaTime: number) {
+        const DEBUG = debugSettings.value.logHealth || debugSettings.value.logAll
+
         const entities = world.getEntitiesWithComponent(ComponentType.Health)
 
         for (const entity of entities) {

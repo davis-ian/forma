@@ -6,8 +6,8 @@ import { AttackPerformers, type AIComponent } from '../components/AI'
 import type { VelocityComponent } from '../components/Velocity'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
 import type { SpawnPointComponent } from '@/components/SpawnPoint'
+import { debugSettings } from '@/core/GameState'
 
-const DEBUG = false
 const MELEE_ATTACK_RANGE = 1.5
 
 export class EnemyAISystem extends System {
@@ -15,6 +15,8 @@ export class EnemyAISystem extends System {
         super()
     }
     update(world: World, deltaTime: number): void {
+        const DEBUG = debugSettings.value.logEnemyAI || debugSettings.value.logAll
+
         const player = world.getEntitiesWithTag(EntityTag.Player)[0]
         if (!player) return
 

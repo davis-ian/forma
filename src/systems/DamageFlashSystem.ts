@@ -5,10 +5,11 @@ import type { DamageFlashComponent } from '../components/DamageFlash'
 import { Mesh, Sprite, type MeshBasicMaterial } from 'three'
 import type { HealthComponent } from '../components/Health'
 import type { WindupDebugComponent } from '../components/AI'
+import { debugSettings } from '@/core/GameState'
 
-const DEBUG = false
 export class DamageFlashSystem extends System {
     update(world: World, deltaTime: number): void {
+        const DEBUG = debugSettings.value.logDamage || debugSettings.value.logAll
         for (const entity of world.entities.values()) {
             if (
                 entity.hasComponent(ComponentType.Visual) &&

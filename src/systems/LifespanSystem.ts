@@ -3,14 +3,16 @@ import { ComponentType } from '@/engine/ComponentType'
 import type { LifespanComponent } from '../components/Lifespan'
 import type { DamageComponent } from '../components/Damage'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
+import { debugSettings } from '@/core/GameState'
 
-const DEBUG = false
 export class LifespanSystem extends System {
     constructor(private attackRegistry: AttackRegistry) {
         super()
     }
 
     update(world: World, deltaTime: number) {
+        const DEBUG = debugSettings.value.logEnvironment || debugSettings.value.logAll
+
         const entities = world.getEntitiesWithComponent(ComponentType.Lifespan)
 
         for (const entity of entities) {

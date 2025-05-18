@@ -1,23 +1,44 @@
 const settingsKey = 'dotdSettings'
 
 export type DebugSettings = {
-    showHitboxes: boolean
-    showDamageLogs: boolean
     godMode: boolean
-    enemyAI: boolean
+    showHitboxes: boolean
+    logDamage: boolean
+    logAttack: boolean
+    logState: boolean
+    logCamera: boolean
+    logCharacter: boolean
+    logHealth: boolean
+    logEnemyAI: boolean
+    logEnvironment: boolean
+    logAll: boolean
 }
 
 export const defaultSettings: DebugSettings = {
     showHitboxes: false,
-    showDamageLogs: false,
+    logDamage: false,
+    logAttack: false,
+    logState: false,
+    logCamera: false,
+    logCharacter: false,
+    logHealth: false,
+    logEnemyAI: false,
+    logEnvironment: false,
+    logAll: false,
     godMode: false,
-    enemyAI: false,
 }
 export const settingsSchema = [
     { key: 'showHitboxes', label: 'Show Hitboxes' },
-    { key: 'showDamageLogs', label: 'Show Damage Logs' },
+    { key: 'logDamage', label: 'Log Damage' },
+    { key: 'logAttack', label: 'Log Attack' },
+    { key: 'logState', label: 'Log Game State' },
+    { key: 'logCamera', label: 'Log Camera' },
+    { key: 'logCharacter', label: 'Log Character' },
+    { key: 'logHealth', label: 'Log Health' },
+    { key: 'logEnemyAI', label: 'Log Enemy AI' },
+    { key: 'logEnvironment', label: 'Log Environment' },
+    { key: 'logAll', label: 'Log All' },
     { key: 'godMode', label: 'God Mode' },
-    { key: 'enemyAI', label: 'Enable Enemy AI' },
 ] as const
 
 export type SettingsKey = (typeof settingsSchema)[number]['key']

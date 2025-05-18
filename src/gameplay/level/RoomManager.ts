@@ -5,12 +5,11 @@ import { EntityTag } from '@/engine/EntityTag'
 import { ComponentType } from '@/engine/ComponentType'
 import type { PositionComponent } from '@/components/Position'
 import { teleportPlayer } from '@/utils/roomUtils'
+import { debugSettings } from '@/core/GameState'
 
 //Tracks which room is 'active'
 //spawns active room, removes previous
 //handles transition animation
-
-const DEBUG = false
 
 export class RoomManager {
     constructor(
@@ -20,7 +19,7 @@ export class RoomManager {
     activeRoomId: string | null = null
 
     transitionTo(roomId: string, entranceFrom: Direction): void {
-        if (DEBUG) {
+        if (debugSettings.value.logAll || debugSettings.value.logEnvironment) {
             console.log('TRANSITION FROM', entranceFrom)
             console.log('TRANSITION TO', roomId)
         }
@@ -61,12 +60,12 @@ export class RoomManager {
     }
 
     cleanUpCurrentRoom() {
-        if (DEBUG) {
+        if (debugSettings.value.logAll || debugSettings.value.logEnvironment) {
             console.log('cleaning up room!')
         }
         const entities = this.world.getEntitiesWithTag(EntityTag.RoomInstance)
 
-        if (DEBUG) {
+        if (debugSettings.value.logAll || debugSettings.value.logEnvironment) {
             console.log(entities, 'entities to clean')
         }
         for (const entity of entities) {

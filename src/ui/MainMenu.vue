@@ -39,12 +39,10 @@ const emit = defineEmits<{
 }>()
 
 function toggleSettingsMenu() {
-    console.log('TOGGLE SETTINGS')
     showSettings.value = !showSettings.value
 }
 
 function start() {
-    console.log('START HEARD')
     emit('start')
 }
 </script>

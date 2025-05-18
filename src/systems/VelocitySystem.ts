@@ -4,7 +4,6 @@ import type { VelocityComponent } from '../components/Velocity'
 import type { InputComponent } from '../components/Input'
 import type { ImpulseComponent } from '../components/Impulse'
 
-// const DEBUG = false
 const SPEED = 9
 
 export class VelocitySystem extends System {

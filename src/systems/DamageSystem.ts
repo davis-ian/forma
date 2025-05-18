@@ -12,12 +12,13 @@ import { shakeCamera } from '@/core/services/CameraService'
 import { hitPauseService } from '@/core/services/HitPauseService'
 import { DamageOverlayService } from '@/core/services/DamageOverlayService'
 import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
-
-const DEBUG = true
+import { debugSettings } from '@/core/GameState'
 
 export class DamageSystem extends System {
     update(world: World) {
         //TODO: Current algo is O(n^2) -> revist to handle with better performance
+
+        const DEBUG = debugSettings.value.logDamage || debugSettings.value.logAll
 
         const entities = Array.from(world.entities.values())
 

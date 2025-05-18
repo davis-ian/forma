@@ -5,7 +5,6 @@ import type { InputComponent } from '../components/Input'
 import type { VelocityComponent } from '../components/Velocity'
 import type { HealthComponent } from '../components/Health'
 
-// const DEBUG = false
 export class DashSystem extends System {
     update(world: World, deltaTime: number): void {
         for (const entity of world.entities.values()) {

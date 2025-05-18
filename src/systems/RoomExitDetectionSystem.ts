@@ -7,8 +7,8 @@ import { isTransitioning, runRoomTransition } from '@/core/GameController'
 import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
 import type { PositionComponent } from '@/components/Position'
 import type { DirectionComponent } from '@/components/Direction'
+import { debugSettings } from '@/core/GameState'
 
-const DEBUG = false
 let logged = false
 export class RoomExitDetectionSystem extends System {
     constructor(private roomManager: RoomManager) {
@@ -17,6 +17,8 @@ export class RoomExitDetectionSystem extends System {
     }
 
     update(world: World) {
+        const DEBUG = debugSettings.value.logAll || debugSettings.value.logEnvironment
+
         if (isTransitioning.value) return
 
         // if (remainingEnemies.value > 0) return
