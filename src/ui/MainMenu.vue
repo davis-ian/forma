@@ -16,19 +16,32 @@
                 Start New Game
             </button>
 
-            <!-- <button
+            <button
+                @click="toggleSettingsMenu"
                 class="bg-accent text-bg hover:bg-secondary cursor-pointer rounded px-6 py-3 font-semibold shadow-md transition"
             >
                 Settings
-            </button> -->
+            </button>
         </div>
+
+        <SettingsPanel @close="toggleSettingsMenu" v-show="showSettings" />
     </div>
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue'
+import SettingsPanel from './SettingsPanel.vue'
+
+const showSettings = ref(false)
+
 const emit = defineEmits<{
     (e: 'start'): void
 }>()
+
+function toggleSettingsMenu() {
+    console.log('TOGGLE SETTINGS')
+    showSettings.value = !showSettings.value
+}
 
 function start() {
     console.log('START HEARD')

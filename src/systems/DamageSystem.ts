@@ -116,7 +116,7 @@ export class DamageSystem extends System {
 
                         shakeCamera(0.1, 0.5)
                         if (targetIsEnemy) {
-                            hitPauseService.start(0.04)
+                            setTimeout(() => hitPauseService.start(0.07), 30)
                         }
                         if (targetIsPlayer) {
                             hitPauseService.start(0.15)

@@ -11,8 +11,9 @@
 
         <HUD v-if="currentGameState() === 'playing'" />
 
-        <!-- PLAYER DAMAGE OVERLAY: START -->
+        <!-- <SettingsPanel /> -->
 
+        <!-- PLAYER DAMAGE OVERLAY: START -->
         <div id="damage-overlay"></div>
         <!-- PLAYER DAMAGE OVERLAY: END -->
 
@@ -38,20 +39,8 @@ import PauseMenu from './PauseMenu.vue'
 import GameOverMenu from './GameOverMenu.vue'
 import MainMenu from '@/ui/MainMenu.vue'
 import HUD from './HUD.vue'
-import { getSettings, initSettings } from '@/utils/settingsUtils'
 
 const canvasContainer = ref<HTMLDivElement | null>(null)
-
-function loadSettings() {
-    let settings = getSettings()
-
-    console.log('settings', settings)
-
-    if (!settings) {
-        settings = initSettings()
-        console.log('settinngs initialized')
-    }
-}
 
 function initRestart() {
     if (!canvasContainer.value) return
@@ -62,7 +51,6 @@ function initRestart() {
 
 onMounted(() => {
     console.log('game screen mounted')
-    loadSettings()
 })
 </script>
 
