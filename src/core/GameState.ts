@@ -6,3 +6,8 @@ export const playerHealth = ref({
 })
 
 export const remainingEnemies = ref(0)
+
+
+export const debugSettings = ref({
+    logGameState: false,
+})
