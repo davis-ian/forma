@@ -52,7 +52,7 @@ export function addBoxDeugHelperForEntity(world: World, entity: Entity, options:
     world.scene.add(mesh)
 
     if (visual) {
-        visual.meshes.push({ mesh, ignoreRotation: false })
+        visual.meshes.push({ mesh, ignoreRotation: false, originalColor: 'white' })
     } else {
         entity.addComponent(ComponentType.Visual, { meshes: [{ mesh, ignoreRotation: false }] })
     }

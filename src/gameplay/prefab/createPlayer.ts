@@ -4,7 +4,7 @@ import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/components/Visual'
 
 import { BoxGeometry, Mesh, MeshStandardMaterial, TextureLoader } from 'three'
-import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
+// import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
 import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
 import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
 import { playerHealth } from '@/core/GameState'
@@ -88,7 +88,7 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     )
     const spriteName: SpriteName = 'warriorRed'
     const atlas = SpriteAtlasRegistry[spriteName]
-    const { src, columns, rows, scale } = atlas
+    const { columns, rows } = atlas
     // const playerMesh = await createPlaneMeshAsync(
     //     src,
     //     columns,

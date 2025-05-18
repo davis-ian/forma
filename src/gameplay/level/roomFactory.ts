@@ -257,7 +257,7 @@ function renderTile(
                     z: blockerMesh.position.z,
                 })
                 blocker.addComponent(ComponentType.Visual, {
-                    meshes: [{ mesh: blockerMesh, ignoreRotation: false }],
+                    meshes: [{ mesh: blockerMesh, ignoreRotation: false, originalColor: 'white' }],
                 })
                 blocker.addTag(EntityTag.Solid)
                 blocker.addTag(EntityTag.ExitBlocker)
@@ -306,7 +306,7 @@ export function createTileEntity(
     const entity = world.createEntity()
 
     const visual: VisualComponent = {
-        meshes: [{ mesh, ignoreRotation: false }],
+        meshes: [{ mesh, ignoreRotation: false, originalColor: 'white' }],
     }
     entity.addComponent(ComponentType.Visual, visual)
     entity.addComponent(ComponentType.Position, { x, y, z })
