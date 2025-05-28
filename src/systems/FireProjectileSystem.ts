@@ -1,6 +1,6 @@
 import type { PositionComponent } from '@/components/Position'
 import type { ProjectileComponent } from '@/components/Projectile'
-import type { RotationComponent } from '@/components/Rotation'
+// import type { RotationComponent } from '@/components/Rotation'
 import type { ShooterComponent } from '@/components/Shooter'
 import { getMouseWorldPosition } from '@/core/services/InputService'
 import { Entity, System, type World } from '@/engine'

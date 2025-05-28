@@ -1,16 +1,16 @@
-import { System, World, Entity } from '@/engine'
+import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { PositionComponent } from '@/components/Position'
-import type { VelocityComponent } from '@/components/Velocity'
+// import type { VelocityComponent } from '@/components/Velocity'
 import type { HitboxComponent } from '@/components/Hitbox'
 import type { DamageComponent } from '@/components/Damage'
-import type { HealthComponent } from '@/components/Health'
+// import type { HealthComponent } from '@/components/Health'
 import type { HurtboxComponent } from '@/components/Hurtbox'
 import { EntityTag } from '@/engine/EntityTag'
 import { getAABB, boxesIntersect } from '@/utils/collisionUtils'
 
 export class ProjectileCollisionSystem extends System {
-    update(world: World, delta: number): void {
+    update(world: World): void {
         const projectiles = Array.from(world.entities.values()).filter(
             (e) =>
                 e.hasComponent(ComponentType.Projectile) &&

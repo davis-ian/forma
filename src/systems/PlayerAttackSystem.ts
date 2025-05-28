@@ -18,6 +18,7 @@ export class PlayerAttackSystem extends System {
 
     update(world: World, deltaTime: number) {
         this.attackCooldown -= deltaTime
+        if (!this.attackRegistry) return
 
         //TODO: Support multiple players here
         const players = world.getEntitiesWithTag(EntityTag.Player)
@@ -33,7 +34,6 @@ export class PlayerAttackSystem extends System {
             if (player.hasComponent(ComponentType.Shooter)) {
                 const shooter = player.getComponent<ShooterComponent>(ComponentType.Shooter)!
                 shooter.trigger = input.attack
-                
             }
             this.attackCooldown = attackCooldown
         }

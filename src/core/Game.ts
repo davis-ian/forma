@@ -42,7 +42,7 @@ import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { updateEnemyCount } from '@/utils/roomUtils'
 import { debugSettings } from '@/core/GameState'
 import { FireProjectileSystem } from '@/systems/FireProjectileSystem'
-import { ProjectileCollisionSystem } from '@/systems/ProjectileCollisionSystem'
+// import { ProjectileCollisionSystem } from '@/systems/ProjectileCollisionSystem'
 import { initMouseTracking } from './services/InputService'
 
 export function initGame(container: HTMLElement) {
