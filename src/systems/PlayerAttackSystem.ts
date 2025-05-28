@@ -4,7 +4,8 @@ import type { InputComponent } from '../components/Input'
 
 import { EntityTag } from '@/engine/EntityTag'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
-import { performPlayerSweepAttack } from '@/gameplay/actions/combat/player/performPlayerSweepAttack'
+// import { performPlayerSweepAttack } from '@/gameplay/actions/combat/player/performPlayerSweepAttack'
+import type { ShooterComponent } from '@/components/Shooter'
 
 const attackCooldown = 0.25
 
@@ -28,8 +29,12 @@ export class PlayerAttackSystem extends System {
         if (!input) return
 
         if (input.attack && this.attackCooldown <= 0) {
-            performPlayerSweepAttack(world, player, this.attackRegistry)
-
+            // performPlayerSweepAttack(world, player, this.attackRegistry)
+            if (player.hasComponent(ComponentType.Shooter)) {
+                const shooter = player.getComponent<ShooterComponent>(ComponentType.Shooter)!
+                shooter.trigger = input.attack
+                
+            }
             this.attackCooldown = attackCooldown
         }
     }

@@ -2,12 +2,12 @@ import { System, type World } from '@/engine'
 import { EntityTag } from '@/engine/EntityTag'
 import { RoomManager } from '@/gameplay/level/RoomManager'
 import { ComponentType } from '@/engine/ComponentType'
-import { PLAYER_SIZE } from '@/gameplay/constants'
 import { isTransitioning, runRoomTransition } from '@/core/GameController'
 import { boxesIntersect, getAABB } from '@/utils/collisionUtils'
 import type { PositionComponent } from '@/components/Position'
 import type { DirectionComponent } from '@/components/Direction'
 import { debugSettings } from '@/core/GameState'
+import { SizeProfiles } from '@/gameplay/constants'
 
 let logged = false
 export class RoomExitDetectionSystem extends System {
@@ -24,13 +24,14 @@ export class RoomExitDetectionSystem extends System {
         // if (remainingEnemies.value > 0) return
         // console.log('active room')
         //TODO: Support multiple players here
+        const playerSize = SizeProfiles.player
         const player = world.getEntitiesWithTag(EntityTag.Player)[0]
         if (!player) return
 
         const pos = player.getComponent<PositionComponent>(ComponentType.Position)
         if (!pos) return
 
-        const playerBox = getAABB(pos, PLAYER_SIZE)
+        const playerBox = getAABB(pos, playerSize)
 
         const exits = world.getEntitiesWithTag(EntityTag.ExitDoor)
 
@@ -48,7 +49,7 @@ export class RoomExitDetectionSystem extends System {
             //     // console.log(exitPos, 'exit')
             // }
 
-            const exitBox = getAABB(exitPos, PLAYER_SIZE)
+            const exitBox = getAABB(exitPos, playerSize)
             const intersecting = boxesIntersect(
                 playerBox.min,
                 playerBox.max,

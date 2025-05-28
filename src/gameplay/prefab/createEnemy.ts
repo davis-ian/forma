@@ -1,129 +1,152 @@
 import type { World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
-import type { VisualComponent } from '@/components/Visual'
-
+// import type { VisualComponent } from '@/components/Visual'
 import { BoxGeometry, Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three'
-// import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
-import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
-import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
-
+import { SizeProfiles } from '../constants'
+import type { Entity } from '@/engine'
 import { createAiComponent } from '@/components/AI'
-import { setAnimationState } from '@/utils/animationUtils'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { updateEnemyCount } from '@/utils/roomUtils'
-import { SpriteAtlasRegistry, type SpriteName } from '@/core/registry/SpriteAtlasRegistry'
 import { debugSettings } from '@/core/GameState'
 
-const LEASH_RADIUS = 5
+export type EnemyType = 'slicer' | 'charger' | 'caster' | 'swarm' | 'boss'
 
-export async function createEnemy(
-    world: World,
-    x: number,
-    y: number,
-    z: number,
+interface EnemyDefinition {
+    name: string
+    color: string
     maxHealth: number
-) {
-    if (debugSettings.value.logCharacter || debugSettings.value.logAll) {
-        console.log('CREATING Enemy')
-    }
+    aiType: EnemyType
+    meshSize?: { width: number; height: number; depth: number }
+}
+
+const EnemyRegistry: Record<EnemyType, EnemyDefinition> = {
+    slicer: {
+        name: 'Slicer',
+        color: 'red',
+        maxHealth: 3,
+        aiType: 'slicer',
+    },
+    charger: {
+        name: 'Charger',
+        color: 'orange',
+        maxHealth: 4,
+        aiType: 'charger',
+    },
+    caster: {
+        name: 'Caster',
+        color: 'purple',
+        maxHealth: 2,
+        aiType: 'caster',
+    },
+    swarm: {
+        name: 'Gremlin',
+        color: 'green',
+        maxHealth: 1,
+        aiType: 'swarm',
+        meshSize: { width: 0.7, height: 0.7, depth: 0.7 },
+    },
+    boss: {
+        name: 'Bone Chef',
+        color: 'black',
+        maxHealth: 10,
+        aiType: 'boss',
+        meshSize: { width: 1.5, height: 1.5, depth: 1.5 },
+    },
+}
+
+export async function createEnemy(world: World, x: number, y: number, z: number, type: EnemyType) {
     const scene = world.scene
-    if (!scene) {
-        console.error('Player create called but no scene  exists!')
-    }
+    if (!scene) return
 
+    const def = EnemyRegistry[type]
     const entity = world.createEntity()
+    setupBaseComponents(entity, x, y, z)
 
-    entity.addComponent(ComponentType.Position, { x, y, z })
-    entity.addComponent(ComponentType.Rotation, { x: 0, y: 0, z: 0 })
-    entity.addComponent(ComponentType.Velocity, { x: 0, y: 0, z: 0 })
-    entity.addComponent(ComponentType.SpawnPoint, { x, y, z, leashRadius: LEASH_RADIUS })
+    const size = SizeProfiles.player
+    const meshSize = def.meshSize ?? size
+    const meshColor = def.color
 
-    // const enemyMesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshStandardMaterial({ color: 'red' }))
-    // const enemyMesh = await createPlaneMeshAsync(
-    //     '/assets/Warrior_Blue.png',
-    //     6,
-    //     8,
-    //     0,
-    //     0,
-    //     PLAYER_SIZE.width * 4
-    // )
+    const enemyMesh = createBoxMesh(meshColor, meshSize)
+    const healthBarMesh = createHealthBarMesh()
 
-    const meshColor = 'red'
-    const enemyMesh = new Mesh(
-        new BoxGeometry(1, 1, 1),
-        new MeshStandardMaterial({ color: meshColor })
-        // playerMaterial
-    )
-
-    const spriteName: SpriteName = 'tomato'
-    const atlas = SpriteAtlasRegistry[spriteName]
-    const { columns, rows } = atlas
-
-    // const enemyMesh = await createPlaneMeshAsync(
-    //     src,
-    //     columns,
-    //     rows,
-    //     0,
-    //     0,
-    //     PLAYER_SIZE.width * scale
-    // )
-
-    let animationState = {
-        spriteName: spriteName,
-        currentFrame: 0,
-        frameCount: 0,
-        frameDuration: 0,
-        elapsedTime: 0,
-        row: 2,
-        columns: columns,
-        rows: rows,
-        loop: true,
-        playing: true,
-    } as SpriteAnimationComponent
-
-    entity.addComponent(ComponentType.SpriteAnimation, animationState)
-    setAnimationState(animationState, 'idle')
-
-    entity.addComponent(ComponentType.Mesh, {
-        mesh: enemyMesh,
-    })
-
-    entity.addComponent(ComponentType.Hurtbox, {
-        width: PLAYER_SIZE.width,
-        height: PLAYER_SIZE.height,
-        depth: PLAYER_SIZE.depth,
-        offsetX: HURTBOX_OFFSET.x,
-        offsetY: HURTBOX_OFFSET.y,
-        offsetZ: HURTBOX_OFFSET.z,
-    })
-
-    entity.addComponent(ComponentType.Health, { current: maxHealth, max: maxHealth })
-
-    const bar = new Mesh(new BoxGeometry(1, 0.1, 0.1), new MeshBasicMaterial({ color: 'green' }))
-    bar.geometry.translate(0, 0.8, 0)
-
-    entity.addTag(EntityTag.Enemy)
-    entity.addTag(EntityTag.RoomInstance)
     scene.add(enemyMesh)
-    scene.add(bar)
+    scene.add(healthBarMesh)
 
-    entity.addComponent(ComponentType.HealthBar, { mesh: bar })
+    addHealthComponents(entity, def.maxHealth)
+    addVisualComponent(entity, enemyMesh, healthBarMesh, meshColor)
+    addEnemyTags(entity)
+    addEnemyAI(entity, def.aiType)
 
-    const visual: VisualComponent = {
-        meshes: [
-            { mesh: enemyMesh, ignoreRotation: true, originalColor: meshColor },
-            { mesh: bar, ignoreRotation: true, ignoreDamageFlash: true, originalColor: 'white' },
-        ],
-    }
+    entity.addComponent(ComponentType.Mesh, { mesh: enemyMesh })
+    entity.addComponent(ComponentType.HealthBar, { mesh: healthBarMesh })
 
-    entity.addComponent(ComponentType.Visual, visual)
-    entity.addComponent(ComponentType.AI, createAiComponent('Skeleton'))
-    entity.addTag(EntityTag.Obstacle)
     if (debugSettings.value.logCharacter || debugSettings.value.logAll) {
         addBoxDeugHelperForEntity(world, entity, { colorOverride: 0x33c9ff })
     }
 
     updateEnemyCount(world)
     return entity
+}
+
+function setupBaseComponents(entity: Entity, x: number, y: number, z: number) {
+    entity.addComponent(ComponentType.Position, { x, y, z })
+    entity.addComponent(ComponentType.Rotation, { x: 0, y: 0, z: 0 })
+    entity.addComponent(ComponentType.Velocity, { x: 0, y: 0, z: 0 })
+    entity.addComponent(ComponentType.SpawnPoint, {
+        x,
+        y,
+        z,
+        leashRadius: 5,
+    })
+}
+
+function createBoxMesh(color: string, size: { width: number; height: number; depth: number }) {
+    const geo = new BoxGeometry(size.width, size.height, size.depth)
+    const mat = new MeshStandardMaterial({ color })
+    return new Mesh(geo, mat)
+}
+
+function createHealthBarMesh() {
+    const geo = new BoxGeometry(1, 0.1, 0.1)
+    const mat = new MeshBasicMaterial({ color: 'green' })
+    geo.translate(0, 0.8, 0)
+    return new Mesh(geo, mat)
+}
+
+function addHealthComponents(entity: Entity, maxHealth: number) {
+    entity.addComponent(ComponentType.Health, {
+        current: maxHealth,
+        max: maxHealth,
+    })
+
+    const size = SizeProfiles.player
+
+    entity.addComponent(ComponentType.Hurtbox, {
+        width: size.width,
+        height: size.height,
+        depth: size.depth,
+        offsetX: size.offsetX,
+        offsetY: size.offsetY,
+        offsetZ: size.offsetZ,
+    })
+}
+
+function addVisualComponent(entity: Entity, mesh: Mesh, bar: Mesh, color: string) {
+    entity.addComponent(ComponentType.Visual, {
+        meshes: [
+            { mesh, ignoreRotation: true, originalColor: color },
+            { mesh: bar, ignoreRotation: true, ignoreDamageFlash: true, originalColor: 'white' },
+        ],
+    })
+}
+
+function addEnemyTags(entity: Entity) {
+    entity.addTag(EntityTag.Enemy)
+    entity.addTag(EntityTag.RoomInstance)
+    entity.addTag(EntityTag.Obstacle)
+}
+
+function addEnemyAI(entity: Entity, aiType: EnemyType) {
+    entity.addComponent(ComponentType.AI, createAiComponent(aiType))
 }

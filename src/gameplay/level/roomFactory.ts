@@ -10,6 +10,7 @@ import { getRandomInt } from './utils/random'
 import { shuffle } from './RoomGraph'
 import { TILE_ATLAS_CONFIG } from './utils/TileAtlas'
 import { debugSettings } from '@/core/GameState'
+import { SizeProfiles } from '../constants'
 
 // Room size & visuals
 const ROOM_WIDTH = 30
@@ -18,10 +19,11 @@ const ROOM_HEIGHT = 20
 const ROOM_PADDING = 1
 const TILE_SIZE = 1
 const FLOOR_HEIGHT = 0.1
-const WALL_Y = TILE_SIZE / 2
-const FLOOR_Y = 0
-const PLAYER_Y = FLOOR_HEIGHT / 2 + 1
-const ENEMY_Y = FLOOR_HEIGHT / 2 + 1
+const Y_OFFSET = 0
+// const WALL_Y = TILE_SIZE / 2
+// const FLOOR_Y = 0
+// const PLAYER_Y = FLOOR_HEIGHT / 2 + 1
+// const ENEMY_Y = FLOOR_HEIGHT / 2 + 1
 // const ENEMY_Y = WALL_Y
 
 // const START_BORDER_COLOR = '#00e676'
@@ -99,7 +101,7 @@ export function renderRoomToScene(world: World, room: Room) {
         const spawnTiles = shuffle(floorPositions).slice(0, enemyCount)
 
         for (const pos of spawnTiles) {
-            createEnemy(world, pos.x, ENEMY_Y, pos.z, 3)
+            createEnemy(world, pos.x, Y_OFFSET, pos.z, 'slicer')
         }
 
         room.tags.push('spawned') // Prevent re-spawning
@@ -188,16 +190,17 @@ function renderTile(
     const tileMat = isWhite ? whiteTileMat : blackTileMat
     const wallMat = silverMat
 
-    createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, tileMat, x, FLOOR_Y, z)
+    createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, tileMat, x, Y_OFFSET, z)
 
     // const dirtTileMat = getNamedTileMaterial('dirtPath')
     // const wallMat = getNamedTileMaterial('wall')
     // const exitMat = getNamedTileMaterial('exitFloor')
 
     if (tile !== TileType.Wall) {
-        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, tileMat, x, FLOOR_Y, z)
+        createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, tileMat, x, Y_OFFSET, z)
         // loadKitchenTile(world, x, FLOOR_Y + 0.5, z)
     }
+    const wallSize = SizeProfiles.wall
 
     switch (tile) {
         case TileType.Floor:
@@ -218,11 +221,11 @@ function renderTile(
             // Add an invisible (or visible) door entity that triggers transitions
             const door = createTileEntity(
                 world,
-                TILE_SIZE,
-                FLOOR_HEIGHT,
+                wallSize.width,
+                wallSize.height,
                 TransparentMaterial,
                 x,
-                FLOOR_Y + 1,
+                Y_OFFSET,
                 z
             )
             door.addTag(EntityTag.ExitDoor)
@@ -236,11 +239,11 @@ function renderTile(
                 const width = isHorizontal ? TILE_SIZE : 0.1
                 const depth = isHorizontal ? 0.1 : TILE_SIZE
 
-                const geometry = new BoxGeometry(width, TILE_SIZE, depth)
+                const geometry = new BoxGeometry(width, wallSize.height, depth)
                 const blockerMesh = new Mesh(geometry, ExitBlockedMaterial)
                 blockerMesh.position.set(x, TILE_SIZE / 2, z)
 
-                const offsetAmount = 0.45
+                const offsetAmount = 0.2
 
                 // Offset slightly depending on exit direction
                 if (direction === 'top') blockerMesh.position.z += offsetAmount
@@ -266,8 +269,26 @@ function renderTile(
             break
 
         case TileType.Wall:
-            const wall = createTileEntity(world, TILE_SIZE, TILE_SIZE, wallMat, x, WALL_Y, z)
+            const wall = createTileEntity(
+                world,
+                wallSize.width,
+                wallSize.height,
+                wallMat,
+                x,
+                Y_OFFSET,
+                z
+            )
             wall.addTag(EntityTag.Solid)
+
+            wall.addComponent(ComponentType.Hitbox, {
+                width: TILE_SIZE,
+                height: TILE_SIZE,
+                depth: TILE_SIZE,
+                offsetX: 0,
+                offsetY: 0,
+                offsetZ: 0,
+            })
+
             if (debugSettings.value.logAll || debugSettings.value.logEnvironment) {
                 console.log('Tagged wall as solid', wall.id, wall.getTags())
             }
@@ -276,7 +297,7 @@ function renderTile(
             if (debugSettings.value.logAll || debugSettings.value.logEnvironment)
                 console.log('✅ Player tile detected!')
             if (!world.getEntitiesWithTag(EntityTag.Player).length) {
-                createPlayer(world, x, PLAYER_Y, z)
+                createPlayer(world, x, Y_OFFSET, z)
             }
             break
     }

@@ -5,7 +5,7 @@ import type { VisualComponent } from '@/components/Visual'
 
 import { BoxGeometry, Mesh, MeshStandardMaterial, TextureLoader } from 'three'
 // import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
-import { HURTBOX_OFFSET, PLAYER_SIZE } from '../constants'
+import { SizeProfiles } from '../constants'
 import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
 import { playerHealth } from '@/core/GameState'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
@@ -38,13 +38,14 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     entity.addTag(EntityTag.CameraFollow)
     entity.addTag(EntityTag.Player)
 
+    const size = SizeProfiles.player
     entity.addComponent(ComponentType.Hurtbox, {
-        width: PLAYER_SIZE.width,
-        height: PLAYER_SIZE.height,
-        depth: PLAYER_SIZE.depth,
-        offsetX: HURTBOX_OFFSET.x,
-        offsetY: HURTBOX_OFFSET.y,
-        offsetZ: HURTBOX_OFFSET.z,
+        width: size.width,
+        height: size.height,
+        depth: size.depth,
+        offsetX: size.offsetX,
+        offsetY: size.offsetY,
+        offsetZ: size.offsetZ,
     })
 
     const maxHealth = 5
@@ -116,6 +117,14 @@ export async function createPlayer(world: World, x: number, y: number, z: number
 
     entity.addComponent(ComponentType.Mesh, {
         mesh: playerMesh,
+    })
+
+    entity.addComponent(ComponentType.Shooter, {
+        cooldown: 0.3,
+        cooldownRemaining: 0,
+        damage: 1,
+        trigger: false,
+        fromEnemy: false,
     })
     scene.add(playerMesh)
 

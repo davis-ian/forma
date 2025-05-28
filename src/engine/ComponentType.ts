@@ -19,4 +19,6 @@ export enum ComponentType {
     WindupDebug = 'windup-debug',
     Dash = 'dash',
     SpawnPoint = 'spawn-point',
+    Shooter = 'shooter',
+    Projectile = 'projectile',
 }

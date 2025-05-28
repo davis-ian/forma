@@ -41,6 +41,9 @@ import { registerDebugHandler } from '@/utils/DebugVisualRegistry'
 import { addBoxDeugHelperForEntity } from '@/utils/createBoxDebugHelper'
 import { updateEnemyCount } from '@/utils/roomUtils'
 import { debugSettings } from '@/core/GameState'
+import { FireProjectileSystem } from '@/systems/FireProjectileSystem'
+import { ProjectileCollisionSystem } from '@/systems/ProjectileCollisionSystem'
+import { initMouseTracking } from './services/InputService'
 
 export function initGame(container: HTMLElement) {
     const DEBUG = debugSettings.value.logState || debugSettings.value.logAll
@@ -110,6 +113,8 @@ export function initGame(container: HTMLElement) {
     const world = new World()
     world.setScene(scene)
 
+    initMouseTracking(camera, renderer)
+
     const generator = new LevelGenerator()
     const roomGraph = generator.init(world, 10)
     const attackRegistry = new AttackRegistry()
@@ -136,6 +141,8 @@ export function initGame(container: HTMLElement) {
 
     world.addSystem(new PlayerAttackSystem(attackRegistry))
     world.addSystem(new LifespanSystem(attackRegistry))
+    world.addSystem(new FireProjectileSystem())
+    // world.addSystem(new ProjectileCollisionSystem())
     world.addSystem(new DamageSystem())
     world.addSystem(new DamageFlashSystem())
     world.addSystem(new HealthBarSystem())

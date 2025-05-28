@@ -2,8 +2,8 @@ import type { Entity, World } from '@/engine'
 import type { AttackRegistry } from '@/gameplay/actions/combat/AttackRegistry'
 import type { PositionComponent } from './Position'
 import { performEnemySweepAttack } from '@/gameplay/actions/combat/enemy/performEnemySweepAttack'
+import type { EnemyType } from '@/gameplay/prefab/createEnemy'
 
-export type EnemyType = 'Skeleton' | 'Boss'
 export type EnemyAttackType = 'sweep'
 export type EnemyState = 'chase' | 'windup' | 'attack' | 'cooldown' | 'idle'
 
