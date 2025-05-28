@@ -159,6 +159,10 @@ export class DamageSystem extends System {
 
                         console.log(`Entity ${targetEntity.id} took ${damage.amount} damage`)
                     }
+
+                    if (damageEntity.hasComponent(ComponentType.Projectile)) {
+                        world.destroyEntity(damageEntity.id)
+                    }
                 }
             }
         }

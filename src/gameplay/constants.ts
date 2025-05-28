@@ -8,9 +8,9 @@ export const SizeProfiles = {
         offsetZ: 0,
     },
     projectile: {
-        width: 0.5,
-        height: 0.5,
-        depth: 0.5,
+        width: 0.35,
+        height: 0.35,
+        depth: 0.35,
         offsetX: 0,
         offsetY: 0,
         offsetZ: 0,

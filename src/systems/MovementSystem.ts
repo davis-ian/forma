@@ -37,7 +37,7 @@ export class MovementSystem extends System {
                     return boxesIntersect(boxAfterX.min, boxAfterX.max, wallBox.min, wallBox.max)
                 })
                 if (blockedX) {
-                    console.log('COLLIDE  X')
+                    // console.log('COLLIDE  X')
 
                     pos.x = originalX
                     vel.x = 0
@@ -56,7 +56,7 @@ export class MovementSystem extends System {
                     return boxesIntersect(boxAfterZ.min, boxAfterZ.max, wallBox.min, wallBox.max)
                 })
                 if (blockedZ) {
-                    console.log('COLLIDE  Z')
+                    // console.log('COLLIDE  Z')
                     pos.z = originalZ
                     vel.z = 0
                     if (entity.hasComponent(ComponentType.Projectile)) {

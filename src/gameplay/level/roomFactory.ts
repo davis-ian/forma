@@ -97,7 +97,7 @@ export function renderRoomToScene(world: World, room: Room) {
             }
         }
 
-        const enemyCount = Math.min(getRandomInt(2, 6), floorPositions.length)
+        const enemyCount = Math.min(getRandomInt(6, 12), floorPositions.length) + 1
         const spawnTiles = shuffle(floorPositions).slice(0, enemyCount)
 
         for (const pos of spawnTiles) {

@@ -97,7 +97,7 @@ function setupBaseComponents(entity: Entity, x: number, y: number, z: number) {
         x,
         y,
         z,
-        leashRadius: 5,
+        leashRadius: 8,
     })
 }
 

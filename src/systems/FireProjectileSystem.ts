@@ -7,7 +7,7 @@ import { Entity, System, type World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import { SizeProfiles } from '@/gameplay/constants'
 import { normalizeVector } from '@/utils/collisionUtils'
-import { BoxGeometry, Mesh, MeshStandardMaterial } from 'three'
+import { Mesh, MeshStandardMaterial, SphereGeometry } from 'three'
 
 export function spawnProjectile(world: World, shooter: Entity, props: ProjectileComponent) {
     const projectile = world.createEntity()
@@ -52,7 +52,7 @@ export function spawnProjectile(world: World, shooter: Entity, props: Projectile
     })
 
     const mesh = new Mesh(
-        new BoxGeometry(projectileSize.width, projectileSize.height, projectileSize.depth),
+        new SphereGeometry(projectileSize.width, 32, 16),
         new MeshStandardMaterial({ color: props.fromEnemy ? 'red' : 'cyan' })
     )
 
