@@ -23,7 +23,7 @@ interface EnemyDefinition {
 const EnemyRegistry: Record<EnemyType, EnemyDefinition> = {
     slicer: {
         name: 'Slicer',
-        color: 'red',
+        color: '#7965C1',
         maxHealth: 3,
         aiType: 'slicer',
     },
@@ -109,7 +109,7 @@ function createBoxMesh(color: string, size: { width: number; height: number; dep
 
 function createHealthBarMesh() {
     const geo = new BoxGeometry(1, 0.1, 0.1)
-    const mat = new MeshBasicMaterial({ color: 'green' })
+    const mat = new MeshBasicMaterial({ color: '#00D888' })
     geo.translate(0, 0.8, 0)
     return new Mesh(geo, mat)
 }

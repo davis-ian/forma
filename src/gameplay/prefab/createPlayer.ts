@@ -3,7 +3,7 @@ import { ComponentType } from '@/engine/ComponentType'
 import { EntityTag } from '@/engine/EntityTag'
 import type { VisualComponent } from '@/components/Visual'
 
-import { BoxGeometry, Mesh, MeshStandardMaterial, TextureLoader } from 'three'
+import { BoxGeometry, Color, Mesh, MeshStandardMaterial, TextureLoader } from 'three'
 // import { createPlaneMeshAsync } from '../level/utils/createSpriteMesh'
 import { SizeProfiles } from '../constants'
 import type { SpriteAnimationComponent } from '@/components/SpriteAnimation'
@@ -81,7 +81,8 @@ export async function createPlayer(world: World, x: number, y: number, z: number
         direction: { x: 0, z: 0 },
     })
 
-    const meshColor = 'blue'
+    // const meshColor = 'blue'
+    const meshColor = '#57B4BA'
     const playerMesh = new Mesh(
         new BoxGeometry(1, 1, 1),
         new MeshStandardMaterial({ color: meshColor })

@@ -43,21 +43,3 @@ export function getMouseWorldPosition(): Vector3 {
 
     return mouseWorld
 }
-
-export function createCrosshairMesh() {
-    const size = 0.5
-    const geometry = new PlaneGeometry(size, size)
-
-    const texture = new TextureLoader().load('/textures/crosshair.png') // or use a solid color
-    const material = new MeshBasicMaterial({
-        map: texture,
-        transparent: true,
-        depthWrite: false,
-    })
-
-    const mesh = new Mesh(geometry, material)
-    mesh.rotation.x = -Math.PI / 2 // face upward
-    mesh.renderOrder = 10 // render above ground
-
-    return mesh
-}

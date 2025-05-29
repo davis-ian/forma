@@ -59,7 +59,7 @@ export class MiniMap {
                 const px = centerX + 0 * this.scale + this.scale / 2 // player dot centered in tile
                 const py = centerY + 0 * this.scale + this.scale / 2
 
-                ctx.fillStyle = '#00f'
+                ctx.fillStyle = '#000000'
                 ctx.beginPath()
                 ctx.arc(px, py, 3, 0, Math.PI * 2) // circle marker
                 ctx.fill()

@@ -8,8 +8,8 @@ export type EnemyAttackType = 'sweep'
 export type EnemyState = 'chase' | 'windup' | 'attack' | 'cooldown' | 'idle'
 
 const WINDUP_DURATIONS = {
-    jab: 0.3,
-    melee: 0.5,
+    jab: 0.2,
+    melee: 0.3,
     heavySlam: 1,
     boss: 1.5,
 }

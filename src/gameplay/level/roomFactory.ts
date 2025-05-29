@@ -187,7 +187,8 @@ function renderTile(
     // })
 
     const isWhite = (x + z) % 2 === 0
-    const tileMat = isWhite ? whiteTileMat : blackTileMat
+    // const tileMat = isWhite ? whiteTileMat : blackTileMat
+    const tileMat = brownTileMat
     const wallMat = silverMat
 
     createTileEntity(world, TILE_SIZE, FLOOR_HEIGHT, tileMat, x, Y_OFFSET, z)
@@ -422,6 +423,7 @@ const blackTileMat = new MeshStandardMaterial({ color: 0x111111 })
 const whiteTileMat = new MeshStandardMaterial({ color: 0xffffff })
 // const retroRedMat = new MeshStandardMaterial({ color: 0xd32f2f })
 const silverMat = new MeshStandardMaterial({ color: 0xc0c0c0 })
+const brownTileMat = new MeshStandardMaterial({ color: '#4B352A' })
 
 // VERY SLOW LOAD TIME  FOR 3D ASSETS
 // const loader = new GLTFLoader()

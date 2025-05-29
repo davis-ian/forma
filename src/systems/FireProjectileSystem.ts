@@ -53,7 +53,7 @@ export function spawnProjectile(world: World, shooter: Entity, props: Projectile
 
     const mesh = new Mesh(
         new SphereGeometry(projectileSize.width, 32, 16),
-        new MeshStandardMaterial({ color: props.fromEnemy ? 'red' : 'cyan' })
+        new MeshStandardMaterial({ color: props.fromEnemy ? 'white' : 'white' })
     )
 
     world.scene?.add(mesh)

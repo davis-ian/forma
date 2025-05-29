@@ -44,6 +44,7 @@ import { debugSettings } from '@/core/GameState'
 import { FireProjectileSystem } from '@/systems/FireProjectileSystem'
 // import { ProjectileCollisionSystem } from '@/systems/ProjectileCollisionSystem'
 import { initMouseTracking } from './services/InputService'
+import { createCrosshairMesh, CrosshairSystem } from '@/systems/CrosshairSystem'
 
 export function initGame(container: HTMLElement) {
     const DEBUG = debugSettings.value.logState || debugSettings.value.logAll
@@ -120,7 +121,8 @@ export function initGame(container: HTMLElement) {
     const attackRegistry = new AttackRegistry()
     const roomManager = new RoomManager(world, roomGraph)
     const minimap = new MiniMap(roomManager)
-
+    const crosshair = createCrosshairMesh()
+    scene.add(crosshair)
     /**
      * Create a cube mesh and attach to ECS entity
      * The cube's transform will be driven by ECS data and systems
@@ -155,6 +157,7 @@ export function initGame(container: HTMLElement) {
     world.addSystem(new RoomExitDetectionSystem(roomManager))
     world.addSystem(new SpriteAnimationSystem())
     world.addSystem(new SpriteAnimationStateSystem())
+    world.addSystem(new CrosshairSystem(crosshair))
 
     let animationFrameId: number
     /**
