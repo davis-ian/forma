@@ -28,7 +28,7 @@ export const defaultSettings: DebugSettings = {
     godMode: false,
 }
 export const settingsSchema = [
-    { key: 'showHitboxes', label: 'Show Hitboxes' },
+    // { key: 'showHitboxes', label: 'Show Hitboxes' },
     { key: 'logDamage', label: 'Log Damage' },
     { key: 'logAttack', label: 'Log Attack' },
     { key: 'logState', label: 'Log Game State' },

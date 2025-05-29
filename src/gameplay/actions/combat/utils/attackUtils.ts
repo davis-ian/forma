@@ -82,10 +82,10 @@ export function spawnAttackHitbox(
         attackRegistry.register(attackId, hitboxEntity.id)
     }
 
-    if (debugSettings.value.showHitboxes) {
-        hitboxEntity.addComponent(ComponentType.Visual, { meshes: [] })
-        addBoxDeugHelperForEntity(world, hitboxEntity)
-    }
+    // if (debugSettings.value.showHitboxes) {
+    hitboxEntity.addComponent(ComponentType.Visual, { meshes: [] })
+    addBoxDeugHelperForEntity(world, hitboxEntity)
+    // }
 }
 
 export function applyLunge(world: World, entity: Entity, force: number = 3) {
