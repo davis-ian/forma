@@ -36,13 +36,13 @@ export class DamageFlashSystem extends System {
                     const flashingFromWindup = windup && windup.isActive
 
                     if (initialFlash) {
-                        material.color.set('#FE303A')
+                        material.color.set(0xff0000)
                     } else if (flashingFromWindup) {
                         //TODO: move to windup animation
                         if (DEBUG) {
                             console.log('flashing from windup')
                         }
-                        material.color.set('#F4C582')
+                        material.color.set(0xfc33ff)
                         if (windup.elapsed >= windup.duration) {
                             entity.removeComponent(ComponentType.WindupDebug)
                             material.color.set(originalColor)
@@ -55,6 +55,7 @@ export class DamageFlashSystem extends System {
                         material.color.set(originalColor)
 
                         entity.removeComponent(ComponentType.DamageFlash)
+                        entity.removeComponent(ComponentType.WindupDebug)
                     }
                 }
             }

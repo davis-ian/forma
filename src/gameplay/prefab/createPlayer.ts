@@ -82,7 +82,8 @@ export async function createPlayer(world: World, x: number, y: number, z: number
     })
 
     // const meshColor = 'blue'
-    const meshColor = '#57B4BA'
+    // const meshColor = '#57B4BA'
+    const meshColor = '#00D888'
     const playerMesh = new Mesh(
         new BoxGeometry(1, 1, 1),
         new MeshStandardMaterial({ color: meshColor })
