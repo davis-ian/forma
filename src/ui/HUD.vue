@@ -25,6 +25,9 @@
             <div id="joystick-container"></div>
             <button id="attack-button">A</button>
             <!-- <button id="dash-button">💨</button> -->
+            <p id="mobile-banner">
+                mobile support is limited, for a better experience play on desktop
+            </p>
         </div>
     </div>
 </template>
@@ -164,6 +167,19 @@ onMounted(async () => {
 }
 #dash-button {
     right: 100px;
+}
+
+#mobile-banner {
+    position: absolute;
+    top: 100px;
+    max-width: 200px;
+    padding: 12px;
+    margin: 12px;
+    border: 1px solid;
+    border-radius: 8px;
+    text-transform: uppercase;
+    font-size: small;
+    color: #f7cc42;
 }
 
 @media (pointer: fine) {
