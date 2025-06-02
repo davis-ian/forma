@@ -2,6 +2,7 @@ import { currentGameState, pauseGame, resumeGame } from '@/core/GameController'
 import { System, World } from '@/engine'
 import { ComponentType } from '@/engine/ComponentType'
 import type { InputComponent } from '@/components/Input'
+import { InputService } from '@/core/services/InputService'
 
 export class InputSystem extends System {
     private keys = new Set<string>()
@@ -27,7 +28,10 @@ export class InputSystem extends System {
                     }
                 }
 
-                const dashKeyDown = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight')
+                const dashKeyDown =
+                    this.keys.has('ShiftLeft') ||
+                    this.keys.has('ShiftRight') ||
+                    InputService.dashPressed
 
                 // Dash only triggers on new press (just like attack)
                 input.dash = dashKeyDown && !input.dashPressedLastFrame
@@ -35,11 +39,23 @@ export class InputSystem extends System {
 
                 input.pausePressedLastFrame = escapeDown
 
-                input.up = this.keys.has('KeyW') || this.keys.has('ArrowUp')
-                input.down = this.keys.has('KeyS') || this.keys.has('ArrowDown')
-                input.left = this.keys.has('KeyA') || this.keys.has('ArrowLeft')
-                input.right = this.keys.has('KeyD') || this.keys.has('ArrowRight')
-                const attackKeyDown = this.keys.has('Space')
+                input.up =
+                    this.keys.has('KeyW') ||
+                    this.keys.has('ArrowUp') ||
+                    InputService.moveDirection.y > 0.5
+                input.down =
+                    this.keys.has('KeyS') ||
+                    this.keys.has('ArrowDown') ||
+                    InputService.moveDirection.y < -0.5
+                input.left =
+                    this.keys.has('KeyA') ||
+                    this.keys.has('ArrowLeft') ||
+                    InputService.moveDirection.x < -0.5
+                input.right =
+                    this.keys.has('KeyD') ||
+                    this.keys.has('ArrowRight') ||
+                    InputService.moveDirection.x > 0.5
+                const attackKeyDown = this.keys.has('Space') || InputService.attackPressed
 
                 //Only  trigger new attack if its just been pressed, not looping attack for holding attack btn
                 input.attack = attackKeyDown && !input.attackPressedLastFrame
