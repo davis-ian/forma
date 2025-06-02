@@ -80,7 +80,14 @@ function initJoystick() {
         // ATTACK button
         const attackBtn = document.getElementById('attack-button')
         if (attackBtn) {
-            attackBtn.addEventListener('touchstart', () => InputService.setAttackPressed(true))
+            attackBtn.addEventListener(
+                'touchstart',
+                (e) => {
+                    e.preventDefault()
+                    InputService.setAttackPressed(true)
+                },
+                { passive: false }
+            )
             attackBtn.addEventListener('touchend', () => InputService.setAttackPressed(false))
             attackBtn.addEventListener('mousedown', () => InputService.setAttackPressed(true))
             attackBtn.addEventListener('mouseup', () => InputService.setAttackPressed(false))
@@ -149,6 +156,7 @@ onMounted(async () => {
     font-size: 24px;
     background: rgba(0, 0, 0, 0.6);
     color: white;
+    touch-action: manipulation;
 }
 
 #attack-button {
