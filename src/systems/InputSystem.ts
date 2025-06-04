@@ -6,11 +6,17 @@ import { InputService } from '@/core/services/InputService'
 
 export class InputSystem extends System {
     private keys = new Set<string>()
+    private mouseDown = new Set<number>()
 
     constructor() {
         super()
         window.addEventListener('keydown', (e) => this.keys.add(e.code))
         window.addEventListener('keyup', (e) => this.keys.delete(e.code))
+
+        window.addEventListener('mousedown', (e) => this.mouseDown.add(e.button))
+        window.addEventListener('mouseup', (e) => this.mouseDown.delete(e.button))
+
+        window.addEventListener('contextmenu', (e) => e.preventDefault())
     }
 
     update(world: World): void {
@@ -31,6 +37,7 @@ export class InputSystem extends System {
                 const dashKeyDown =
                     this.keys.has('ShiftLeft') ||
                     this.keys.has('ShiftRight') ||
+                    this.mouseDown.has(2) ||
                     InputService.dashPressed
 
                 // Dash only triggers on new press (just like attack)
@@ -55,7 +62,8 @@ export class InputSystem extends System {
                     this.keys.has('KeyD') ||
                     this.keys.has('ArrowRight') ||
                     InputService.moveDirection.x > 0.5
-                const attackKeyDown = this.keys.has('Space') || InputService.attackPressed
+                const attackKeyDown =
+                    this.keys.has('Space') || this.mouseDown.has(0) || InputService.attackPressed
 
                 //Only  trigger new attack if its just been pressed, not looping attack for holding attack btn
                 input.attack = attackKeyDown && !input.attackPressedLastFrame

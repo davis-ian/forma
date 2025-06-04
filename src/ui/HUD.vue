@@ -18,7 +18,8 @@
         </div>
 
         <div class="absolute top-14 left-3 rounded bg-black/70 px-2 py-1 text-sm text-white">
-            👹 Enemies Left: {{ remainingEnemies }}
+            <span> 👹 Enemies Left: {{ remainingEnemies }} </span>
+            <div class="mt-4"><code class="rounded border-1 p-3">controls: C</code></div>
         </div>
 
         <div v-if="isMobile" id="touch-controls">
@@ -29,12 +30,27 @@
                 mobile support is limited, for a better experience play on desktop
             </p>
         </div>
+
+        <!-- Control overlay -->
+        <div v-if="showControls" id="controlsOverlay">
+            <h2 class="pb-4 text-center text-2xl">Game Controls</h2>
+            <ul>
+                <ul class="m-2">
+                    <li class="m-1">
+                        Move - <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or Arrow Keys
+                    </li>
+                    <li class="m-1">Attack - <kbd>Space</kbd> or Left Click</li>
+                    <li class="m-1">Dash - <kbd>Shift</kbd> or Right Click</li>
+                    <li class="m-1">Show Controls - Hold <kbd>C</kbd></li>
+                </ul>
+            </ul>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { playerHealth, remainingEnemies } from '@/core/GameState'
-import { computed, onMounted, ref, nextTick } from 'vue'
+import { computed, onMounted, ref, nextTick, onBeforeMount } from 'vue'
 import nipplejs from 'nipplejs'
 import { Vector2 } from 'three'
 import { InputService } from '@/core/services/InputService'
@@ -109,12 +125,34 @@ function initJoystick() {
     })
 }
 
+const showControls = ref(false)
+
+const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'KeyC') {
+        showControls.value = true
+    }
+}
+
+const handleKeyUp = (e: KeyboardEvent) => {
+    if (e.code === 'KeyC') {
+        showControls.value = false
+    }
+}
+
 onMounted(async () => {
     isMobile.value = window.matchMedia('(pointer: coarse)').matches
     if (isMobile.value) {
         await nextTick()
         initJoystick()
     }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+})
+
+onBeforeMount(() => {
+    window.removeEventListener('keydown', handleKeyDown)
+    window.removeEventListener('keyup', handleKeyUp)
 })
 </script>
 
@@ -180,6 +218,23 @@ onMounted(async () => {
     text-transform: uppercase;
     font-size: small;
     color: #f7cc42;
+}
+
+#controlsOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(0, 0, 0, 0.85);
+    border: 2px solid white;
+    border-radius: 8px;
+    color: white;
+    z-index: 1000;
+    padding: 2rem;
 }
 
 @media (pointer: fine) {
